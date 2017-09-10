@@ -9,7 +9,12 @@ mod parser_tests {
     use robin_core::parser;
 
     #[test]
-    fn it_works() {
-        assert_eq!(parser::abcd_parser(b"abcd"), IResult::Done(&b""[..], &b"abcd"[..]))
+    fn parse_a_single_hex_digit() {
+        assert_eq!(parser::hex_digits_literal(b"0x1"), IResult::Done(&b""[..], 1.0));
+    }
+
+    #[test]
+    fn parse_a_multiple_hex_digit() {
+        assert_eq!(parser::hex_digits_literal(b"0x1AB"), IResult::Done(&b""[..], 427.0));
     }
 }
