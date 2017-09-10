@@ -1,8 +1,17 @@
-use nom::{ hex_digit, oct_digit };
+use nom::{ digit, hex_digit, oct_digit };
 use std::{ str, i32 };
 
 // Temporarly use a f64 to represent JS numbers
 type JSNumber = f64;
+
+fn bytes_to_digit(bytes: &[u8]) -> JSNumber {
+    // TODO: Fix this unwrap
+    let string = str::from_utf8(bytes).unwrap();
+
+    // TODO: Fix this unwrap
+    //i32::from_str_radix(&string, 10).unwrap() as JSNumber
+    string.parse::<JSNumber>().unwrap()
+}
 
 fn bytes_to_binary(bytes: &[u8]) -> JSNumber {
     // TODO: Fix this unwrap
@@ -31,7 +40,16 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
     i32::from_str_radix(&string[2..], 16).unwrap() as JSNumber
 }
 
-named!(pub binary_digits_literal<&[u8], JSNumber>,
+// Support for negating and un-negating numbers will be supplied
+// by a function within the language, so we don't parse it
+named!(pub decimal_digits_literal<JSNumber>, 
+    map!(
+        digit,
+        bytes_to_digit
+    )
+);
+
+named!(pub binary_digits_literal<JSNumber>,
     map!(
         recognize!(
             tuple!(
@@ -45,7 +63,7 @@ named!(pub binary_digits_literal<&[u8], JSNumber>,
 
 named!(binary_digit, alt!(tag!("0") | tag!("1")));
 
-named!(pub oct_digits_literal<&[u8], JSNumber>,
+named!(pub oct_digits_literal<JSNumber>,
     map!(
         recognize!(
             tuple!(
@@ -58,7 +76,7 @@ named!(pub oct_digits_literal<&[u8], JSNumber>,
     )
 );
 
-named!(pub hex_digits_literal<&[u8], JSNumber>,
+named!(pub hex_digits_literal<JSNumber>,
     map!(
         recognize!(
             tuple!(
