@@ -27,4 +27,14 @@ mod parser_tests {
     fn parse_a_multiple_oct_digits() {
         assert_eq!(parser::oct_digits_literal(b"0o67"), IResult::Done(&b""[..], 55.0));
     }
+
+    #[test]
+    fn parse_a_single_binary_digit() {
+        assert_eq!(parser::binary_digits_literal(b"0b1"), IResult::Done(&b""[..], 1.0));
+    }
+
+    #[test]
+    fn parse_a_multiple_binary_digits() {
+        assert_eq!(parser::binary_digits_literal(b"0b011"), IResult::Done(&b""[..], 3.0));
+    }
 }
