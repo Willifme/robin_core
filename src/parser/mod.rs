@@ -8,8 +8,6 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
     // TODO: Fix this unwrap
     let string = str::from_utf8(bytes).unwrap();
 
-    println!("SOMETHING !!! {} SOMETHING !!!", string);
-
     // TODO: Fix this unwrap
     // Rust does not support 0x in hexadecimal, so just skip it
     i32::from_str_radix(&string[2..], 16).unwrap() as JSNumber
