@@ -1,0 +1,7 @@
+[package]
+name = "robin_core"
+version = "0.1.0"
+authors = ["William Collier <coll01502449@scc.ac.uk>"]
+
+[dependencies]
+nom = "^3.2"

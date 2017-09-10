@@ -1,0 +1,1 @@
+named!(pub abcd_parser, tag!("abcd"));
