@@ -51,6 +51,14 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
     i32::from_str_radix(&string[2..], 16).unwrap() as JSNumber
 }
 
+named!(pub numeric_literals<JSNumber>,
+    alt!(hex_digits_literal 
+        | oct_digits_literal 
+        | binary_digits_literal 
+        | decimal_digits_literal 
+        | exponent_part_digits_literal)
+);
+
 named!(pub exponent_part_digits_literal<JSNumber>,
     map!(
         recognize!(
