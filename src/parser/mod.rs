@@ -4,6 +4,17 @@ use std::{ str, i32 };
 // Temporarly use a f64 to represent JS numbers
 type JSNumber = f64;
 
+// TODO: Implement proper parsing (and saving) of the number literal.
+
+fn bytes_to_exponent(bytes: &[u8]) -> JSNumber {
+    // TODO: Fix this unwrap
+    let string = str::from_utf8(bytes).unwrap();
+
+    // TODO: Fix this unwrap
+    // Rust does not support e or E in exponents, so just skip it
+    i32::from_str_radix(&string[1..], 10).unwrap() as JSNumber
+}
+
 fn bytes_to_digit(bytes: &[u8]) -> JSNumber {
     // TODO: Fix this unwrap
     let string = str::from_utf8(bytes).unwrap();
@@ -39,6 +50,18 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
     // Rust does not support 0x in hexadecimal, so just skip it
     i32::from_str_radix(&string[2..], 16).unwrap() as JSNumber
 }
+
+named!(pub exponent_part_digits_literal<JSNumber>,
+    map!(
+        recognize!(
+            tuple!(
+                alt!(tag!("e") | tag!("E")),
+                decimal_digits_literal
+            )
+        ),
+        bytes_to_exponent
+    )
+);
 
 // Support for negating and un-negating numbers will be supplied
 // by a function within the language, so we don't parse it
