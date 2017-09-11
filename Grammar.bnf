@@ -1,0 +1,19 @@
+// A temporary (out of date) grammar file
+
+Grammar   ::= Expr*
+Expr            ::= Boolean 
+                    | Func 
+                    | Vector 
+                    | List 
+                    | Ident
+                    | Dictionary 
+                    | StringLiteral 
+                    | FuncCall
+Boolean     ::= "true" | "false"
+Func           ::= "(" Vector Expr ")"
+Vector        ::= "[" Expr+ "]"
+List             ::= "(" Expr+ ")"
+Ident          ::= [a-zA-Z]
+FuncCall    ::= "(" Ident* ")"
+Dictionary ::= "{" (Ident+ ":" Expr ","+)+ "}"
+StringLiteral ::= '"' [^"]* '"' | "'" [^']* "'"
