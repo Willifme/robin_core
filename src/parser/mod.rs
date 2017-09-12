@@ -1,5 +1,5 @@
-use nom::{ digit, hex_digit, oct_digit };
-use std::{ str, i32 };
+use nom::{digit, hex_digit, oct_digit};
+use std::{str, i32};
 
 // Temporarly use a f64 to represent JS numbers
 type JSNumber = f64;
