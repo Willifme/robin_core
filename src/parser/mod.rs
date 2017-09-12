@@ -52,10 +52,10 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
 }
 
 named!(pub numeric_literals<JSNumber>,
-    alt!(hex_digits_literal 
-        | oct_digits_literal 
-        | binary_digits_literal 
-        | decimal_digits_literal 
+    alt!(hex_digits_literal
+        | oct_digits_literal
+        | binary_digits_literal
+        | decimal_digits_literal
         | exponent_part_digits_literal)
 );
 
@@ -73,7 +73,7 @@ named!(pub exponent_part_digits_literal<JSNumber>,
 
 // Support for negating and un-negating numbers will be supplied
 // by a function within the language, so we don't parse it
-named!(pub decimal_digits_literal<JSNumber>, 
+named!(pub decimal_digits_literal<JSNumber>,
     map!(
         digit,
         bytes_to_digit
@@ -116,6 +116,6 @@ named!(pub hex_digits_literal<JSNumber>,
                 opt!(complete!(hex_digit))
             )
         ),
-        bytes_to_hex 
+        bytes_to_hex
     )
 );
