@@ -12,7 +12,7 @@ fn bytes_to_exponent(bytes: &[u8]) -> JSNumber {
 
     // TODO: Fix this unwrap
     // Rust does not support e or E in exponents, so just skip it
-    i32::from_str_radix(&string[1..], 10).unwrap() as JSNumber
+    f64::from(i32::from_str_radix(&string[1..], 10).unwrap())
 }
 
 fn bytes_to_digit(bytes: &[u8]) -> JSNumber {
@@ -30,7 +30,7 @@ fn bytes_to_binary(bytes: &[u8]) -> JSNumber {
 
     // TODO: Fix this unwrap
     // Rust does not support 0b in binary, so just skip it
-    i32::from_str_radix(&string[2..], 2).unwrap() as JSNumber
+    f64::from(i32::from_str_radix(&string[2..], 2).unwrap())
 }
 
 fn bytes_to_oct(bytes: &[u8]) -> JSNumber {
@@ -39,7 +39,7 @@ fn bytes_to_oct(bytes: &[u8]) -> JSNumber {
 
     // TODO: Fix this unwrap
     // Rust does not support 0o in hexadecimal, so just skip it
-    i32::from_str_radix(&string[2..], 8).unwrap() as JSNumber
+    f64::from(i32::from_str_radix(&string[2..], 8).unwrap())
 }
 
 fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
@@ -48,7 +48,7 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
 
     // TODO: Fix this unwrap
     // Rust does not support 0x in hexadecimal, so just skip it
-    i32::from_str_radix(&string[2..], 16).unwrap() as JSNumber
+    f64::from(i32::from_str_radix(&string[2..], 16).unwrap())
 }
 
 named!(pub numeric_literals<JSNumber>,
