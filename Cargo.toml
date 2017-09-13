@@ -6,6 +6,5 @@ description = "A simple (custom) Lisp to JavaScript source-to-source compiler"
 license = "Apache-2.0"
 repository = "https://github.com/willifme/robin_core"
 
-
 [dependencies]
 nom = "^3.2"
