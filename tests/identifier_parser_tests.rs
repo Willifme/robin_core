@@ -173,8 +173,8 @@ mod parser_tests {
     }
 
     #[test]
-    fn parse_a_symbol_and_an_alpha() {
+    fn do_not_parse_a_symbol_and_an_alpha() {
         assert_eq!(identifier::alpha_identifier(b"gg{"),
-                   IResult::Done(&b""[..], "gg{".to_string()));
+                   IResult::Done(&b"{"[..], "gg".to_string()));
     }
 }
