@@ -8,6 +8,13 @@ mod parser_tests {
 
     use robin_core::parser::identifier;
 
+    // I think this test is correct
+    #[test]
+    fn do_not_parse_a_symbol_then_an_alpha() {
+        assert_ne!(identifier::identifier_literal(b"+g"),
+                   IResult::Done(&b""[..], "+g".to_string()));
+    }
+
     #[test]
     fn parse_a_left_brace() {
         assert_eq!(identifier::symbol_identifier(b"{"),
