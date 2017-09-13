@@ -1,12 +1,17 @@
 use nom::alpha;
 use std::str;
+use ast::Expression;
 
 fn bytes_to_string(bytes: &[u8]) -> String {
     str::from_utf8(bytes).unwrap().to_string()
 }
 
-named!(pub identifier_literal<String>,
-    alt!(symbol_identifier | alpha_identifier)
+// Convert the main parser to the AST
+named!(pub identifier_literal<Expression>,
+    map!(
+        alt!(symbol_identifier | alpha_identifier),
+        Expression::Identifier
+    )
 );
 
 // In Lisp, we can use symbols for identifiers so parse them as such
