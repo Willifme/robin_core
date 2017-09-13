@@ -51,13 +51,7 @@ named!(pub symbol_identifier<String>,
 // Represents letters etc in identifiers
 named!(pub alpha_identifier<String>, 
     map!(
-        recognize!(
-            tuple!(
-                alpha,
-                // Somethimes a symbol might follow a letter
-                opt!(symbol_identifier)
-            )
-        ), 
+        alpha,
         bytes_to_string
-    )
+    ) 
 );
