@@ -145,7 +145,10 @@ mod parser_tests {
         assert_eq!(identifier::symbol_identifier(b":"),
                    IResult::Done(&b""[..], ":".to_string()));
     }
+
+    #[test]
+    fn parse_multiple_symbols() {
+        assert_eq!(identifier::symbol_identifier(b"|>+"),
+                   IResult::Done(&b""[..], "|>+".to_string()));
+    }
 }
-/*
-                | tag!(":")
-*/
