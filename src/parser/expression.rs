@@ -4,6 +4,6 @@ use parser::identifier::identifier_literal;
 use ast::Expression;
 
 // Temp do bad stuff
-named!(pub expr_literal<Expression>, 
+named!(pub expression_literal<Expression>, 
     alt!(numeric_literal | identifier_literal)
 );
