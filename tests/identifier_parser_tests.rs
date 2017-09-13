@@ -151,4 +151,22 @@ mod parser_tests {
         assert_eq!(identifier::symbol_identifier(b"|>+"),
                    IResult::Done(&b""[..], "|>+".to_string()));
     }
+
+    #[test]
+    fn parse_a_single_alpha_identifier() {
+        assert_eq!(identifier::alpha_identifier(b"g"),
+                   IResult::Done(&b""[..], "g".to_string()));
+    }
+
+    #[test]
+    fn parse_multiple_alpha_identifiers() {
+        assert_eq!(identifier::alpha_identifier(b"gbd"),
+                   IResult::Done(&b""[..], "gbd".to_string()));
+    }
+
+    #[test]
+    fn parse_a_symbol_and_an_alpha() {
+        assert_eq!(identifier::alpha_identifier(b"gg{"),
+                   IResult::Done(&b""[..], "gg{".to_string()));
+    }
 }
