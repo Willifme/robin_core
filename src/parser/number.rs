@@ -21,7 +21,6 @@ fn bytes_to_digit(bytes: &[u8]) -> JSNumber {
     let string = str::from_utf8(bytes).unwrap();
 
     // TODO: Fix this unwrap
-    //i32::from_str_radix(&string, 10).unwrap() as JSNumber
     string.parse::<JSNumber>().unwrap()
 }
 
