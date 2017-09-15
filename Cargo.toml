@@ -8,3 +8,4 @@ repository = "https://github.com/willifme/robin_core"
 
 [dependencies]
 nom = "^3.2"
+ansi_term = "0.9"
