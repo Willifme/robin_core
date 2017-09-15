@@ -12,12 +12,9 @@ pub struct ErrorStack(Vec<(ErrorLevel, &'static str)>);
 
 impl fmt::Display for ErrorStack {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0
-            .iter()
-            .map(|e| write!(f, "[{:?}] {}\n", e.0, e.1))
-
-            // We must consume the closure
-            .collect::<Vec<fmt::Result>>();
+        for error in &self.0 {
+            write!(f, "[{:?}] {}\n", error.0, error.1).unwrap();
+        }
 
         write!(f, "")
     }
