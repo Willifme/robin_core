@@ -20,7 +20,7 @@ impl fmt::Display for Error {
             ErrorLevel::Error => Colour::Red.paint("Error"),
         };
 
-        write!(f, "[{}] {}\n", colour_level, (self.0).1)
+        write!(f, "[{}] {}", colour_level, (self.0).1)
     }
 }
 
