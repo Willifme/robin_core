@@ -1,9 +1,12 @@
+use nom::IResult;
+use ast::Expression;
+use std::boxed::Box;
+
 // Such imports are used to allow for the expr_literal macro to work
 use parser::number::numeric_literal;
 use parser::identifier::identifier_literal;
-use ast::Expression;
 
 // Temp do bad stuff
 named!(pub expression_literal<Expression>, 
-    alt!(numeric_literal | identifier_literal)
+    complete!(alt!(numeric_literal | identifier_literal))
 );
