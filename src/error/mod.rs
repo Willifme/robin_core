@@ -5,4 +5,4 @@ pub enum ErrorLevel {
 }
 
 // Use a hashmap which contains an error level and a string
-type ErrorStack = Vec<(ErrorLevel, String)>;
+pub type ErrorStack = Vec<(ErrorLevel, String)>;
