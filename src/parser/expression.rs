@@ -1,6 +1,4 @@
-use nom::IResult;
 use ast::Expression;
-use std::boxed::Box;
 
 // Such imports are used to allow for the expr_literal macro to work
 use parser::number::numeric_literal;
