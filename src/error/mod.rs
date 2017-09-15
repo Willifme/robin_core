@@ -8,7 +8,7 @@ pub enum ErrorLevel {
 }
 
 // Use a hashmap which contains an error level and a string
-pub struct ErrorStack(Vec<(ErrorLevel, &'static str)>);
+pub struct ErrorStack(pub Vec<(ErrorLevel, &'static str)>);
 
 impl fmt::Display for ErrorStack {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
