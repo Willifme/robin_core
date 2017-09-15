@@ -1,4 +1,5 @@
 use std::fmt;
+use ansi_term::Colour;
 
 #[derive(Debug)]
 pub enum ErrorLevel {
@@ -11,7 +12,15 @@ pub struct Error(pub (ErrorLevel, &'static str));
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{:?}] {}", (self.0).0, (self.0).1)
+        let colour_level = match (self.0).0 {
+            ErrorLevel::Info => Colour::Yellow.paint("Info"),
+
+            // ansi_term does not have orange for some reason
+            ErrorLevel::Warning => Colour::RGB(255, 210, 0).paint("Warning"),
+            ErrorLevel::Error => Colour::Red.paint("Error"),
+        };
+
+        write!(f, "[{:?}] {}\n", colour_level, (self.0).1)
     }
 }
 
@@ -22,7 +31,7 @@ impl fmt::Display for ErrorStack {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for error in &self.0 {
             // TODO: Remove this unwrap
-            write!(f, "{}", error).unwrap();
+            write!(f, "{}\n", error).unwrap();
         }
 
         write!(f, "")
