@@ -14,13 +14,13 @@ pub enum ParseResult<'a> {
 pub fn parse_expression(bytes: &[u8]) -> ParseResult {
     match expression_literal(bytes) {
         IResult::Done(rest, complete) => {
-            if rest.len() > 0 {
+            if !rest.is_empty() {
                 ParseResult::Error(rest, Box::new(complete))
 
             } else {
                 ParseResult::Done(Box::new(complete))
             }
-        },
+        }
 
         // TODO: Better error here
         _ => panic!("Parsing error here"),
@@ -28,6 +28,6 @@ pub fn parse_expression(bytes: &[u8]) -> ParseResult {
 }
 
 // Temp do bad stuff
-named!(pub expression_literal<Expression>, 
+named!(pub expression_literal<Expression>,
     complete!(alt!(numeric_literal | identifier_literal))
 );

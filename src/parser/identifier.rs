@@ -9,7 +9,7 @@ fn bytes_to_string(bytes: &[u8]) -> String {
 // Convert the main parser to the AST
 named!(pub identifier_literal<Expression>,
     map!(
-        // Alpha must come before symbol_identifier otherwise the symbol parses 
+        // Alpha must come before symbol_identifier otherwise the symbol parses
         // all the text resultin in malformed expressions
         alt!(alpha_identifier | symbol_identifier),
         Expression::Identifier
@@ -51,6 +51,6 @@ named!(pub symbol_identifier<String>,
 );
 
 // Represents letters etc in identifiers
-named!(pub alpha_identifier<String>, 
+named!(pub alpha_identifier<String>,
     map!(alpha, bytes_to_string)
 );
