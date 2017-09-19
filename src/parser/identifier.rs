@@ -50,7 +50,20 @@ named!(pub symbol_identifier<String>,
     )
 );
 
+named!(keywords,
+    alt!(tag!("true") | tag!("false"))
+);
+
 // Represents letters etc in identifiers
+// TODO: Consider reporting an error if a keyword is found.
 named!(pub alpha_identifier<String>,
-    map!(alpha, bytes_to_string)
+    map!(
+        do_parse!(
+            alp: alpha >> 
+            not!(keywords) >>
+            (alp)
+        ),
+        bytes_to_string
+    )
+//    map!(alpha, bytes_to_string)
 );

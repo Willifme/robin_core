@@ -30,5 +30,5 @@ pub fn parse_expression(bytes: &[u8]) -> ParseResult {
 
 // Temp do bad stuff
 named!(pub expression_literal<Expression>,
-    complete!(alt!(numeric_literal | boolean_literal | identifier_literal))
+    complete!(alt!(numeric_literal | identifier_literal | boolean_literal))
 );
