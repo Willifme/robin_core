@@ -20,4 +20,10 @@ mod parser_tests {
         assert_eq!(expression::expression_literal(b"falsecat"),
                    IResult::Done(&b""[..], Expression::Identifier("falsecat".to_string())));
     }
+
+    #[test]
+    fn booleans_should_return_a_boolean_node() {
+        assert_eq!(expression::expression_literal(b"true"),
+                   IResult::Done(&b""[..], Expression::Boolean(true)));
+    }
 }

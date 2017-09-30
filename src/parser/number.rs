@@ -1,6 +1,5 @@
 use nom::{digit, hex_digit, oct_digit};
 use std::{str, i32};
-use ast::Expression;
 
 // Temporarly use a f64 to represent JS numbers
 type JSNumber = f64;
@@ -52,14 +51,12 @@ fn bytes_to_hex(bytes: &[u8]) -> JSNumber {
 }
 
 // Convert the main parser to the AST
-named!(pub numeric_literal<Expression>,
-    map!(
-        alt!(hex_digits_literal
-            | oct_digits_literal
-            | binary_digits_literal
-            | decimal_digits_literal
-            | exponent_part_digits_literal),
-        Expression::Number
+named!(pub numeric_literal<JSNumber>,
+    alt!(hex_digits_literal
+        | oct_digits_literal
+        | binary_digits_literal
+        | decimal_digits_literal
+        | exponent_part_digits_literal
     )
 );
 

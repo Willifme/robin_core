@@ -7,13 +7,12 @@ mod parser_tests {
     use nom::IResult;
 
     use robin_core::parser::identifier;
-    use robin_core::ast::Expression;
 
     // I think this test is correct
     #[test]
     fn do_not_parse_a_symbol_then_an_alpha() {
         assert_ne!(identifier::identifier_literal(b"+g"),
-                   IResult::Done(&b""[..], Expression::Identifier("+g".to_string())));
+                   IResult::Done(&b""[..],"+g".to_string()));
     }
 
     #[test]

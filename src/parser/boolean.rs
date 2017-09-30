@@ -1,8 +1,6 @@
-use ast::Expression;
-
-named!(pub boolean_literal<Expression>,
+named!(pub boolean_literal<bool>,
     alt!(
-        value!(Expression::Boolean(true), tag!("true")) |
-        value!(Expression::Boolean(false), tag!("false"))
+        value!(true, tag!("true")) |
+        value!(false, tag!("false"))
     )
 );
