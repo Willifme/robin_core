@@ -1,22 +1,33 @@
 extern crate robin_core;
 
-extern crate nom;
+#[macro_use]
+extern crate pest;
 
 #[cfg(test)]
 mod parser_tests {
-    use nom::IResult;
-
-    use robin_core::parser::boolean;
+    use robin_core::parser::{ExpressionParser, Rule};
 
     #[test]
     fn parse_a_true_literal() {
-        assert_eq!(boolean::boolean_literal(b"true"),
-                   IResult::Done(&b""[..], true));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "true",
+            rule: Rule::boolean_literal,
+            tokens: [
+                boolean_literal(0, 4)
+            ]
+        )
     }
 
     #[test]
     fn parse_a_false_literal() {
-        assert_eq!(boolean::boolean_literal(b"false"),
-                   IResult::Done(&b""[..], false));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "false",
+            rule: Rule::boolean_literal,
+            tokens: [
+                boolean_literal(0, 5)
+            ]
+        )
     }
 }
