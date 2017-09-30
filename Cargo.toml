@@ -7,5 +7,6 @@ license = "Apache-2.0"
 repository = "https://github.com/willifme/robin_core"
 
 [dependencies]
-nom = "^3.2"
+pest = "^1.0.0-beta"
+pest_derive = "^1.0.0-beta"
 ansi_term = "0.9"
