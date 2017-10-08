@@ -1,7 +1,4 @@
-
 extern crate robin_core;
-
-extern crate pest;
 
 #[cfg(test)]
 mod parser_tests {
