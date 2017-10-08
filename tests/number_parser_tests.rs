@@ -1,82 +1,154 @@
-extern crate robin_core;
 
-extern crate nom;
+extern crate robin_core;
+#[macro_use]
+extern crate pest;
 
 #[cfg(test)]
 mod parser_tests {
-    use nom::IResult;
-
-    use robin_core::parser::number;
+    use robin_core::parser::{ExpressionParser, Rule};
 
     #[test]
     fn parse_a_single_hex_digit() {
-        assert_eq!(number::hex_digits_literal(b"0x1"),
-                   IResult::Done(&b""[..], 1.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "0x1",
+            rule: Rule::hex_digits_literal,
+            tokens: [
+                hex_digits_literal(0, 3)
+            ]
+        )
     }
 
     #[test]
     fn parse_multiple_hex_digits() {
-        assert_eq!(number::hex_digits_literal(b"0x1AB"),
-                   IResult::Done(&b""[..], 427.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "0x1AB",
+            rule: Rule::hex_digits_literal,
+            tokens: [
+                hex_digits_literal(0, 5)
+            ]
+        )
     }
 
     #[test]
     fn parse_a_single_oct_digit() {
-        assert_eq!(number::oct_digits_literal(b"0o7"),
-                   IResult::Done(&b""[..], 7.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "0o7",
+            rule: Rule::oct_digits_literal,
+            tokens: [
+                oct_digits_literal(0, 3)
+            ]
+        )
     }
 
     #[test]
     fn parse_multiple_oct_digits() {
-        assert_eq!(number::oct_digits_literal(b"0o67"),
-                   IResult::Done(&b""[..], 55.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "0o67",
+            rule: Rule::oct_digits_literal,
+            tokens: [
+                oct_digits_literal(0, 4)
+            ]
+        )
     }
 
     #[test]
     fn parse_a_single_binary_digit() {
-        assert_eq!(number::binary_digits_literal(b"0b1"),
-                   IResult::Done(&b""[..], 1.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "0b1",
+            rule: Rule::binary_digits_literal,
+            tokens: [
+                binary_digits_literal(0, 3)
+            ]
+        )
     }
 
     #[test]
     fn parse_multiple_binary_digits() {
-        assert_eq!(number::binary_digits_literal(b"0b011"),
-                   IResult::Done(&b""[..], 3.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "0b011",
+            rule: Rule::binary_digits_literal,
+            tokens: [
+                binary_digits_literal(0, 5)
+            ]
+        )
     }
 
     #[test]
     fn parse_a_single_decimal_digit() {
-        assert_eq!(number::decimal_digits_literal(b"5"),
-                   IResult::Done(&b""[..], 5.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "5",
+            rule: Rule::decimal_digits_literal,
+            tokens: [
+                decimal_digits_literal(0, 1)
+            ]
+        )
     }
+
 
     #[test]
     fn parse_multiple_decimal_digits() {
-        assert_eq!(number::decimal_digits_literal(b"55"),
-                   IResult::Done(&b""[..], 55.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "55",
+            rule: Rule::decimal_digits_literal,
+            tokens: [
+                decimal_digits_literal(0, 2)
+            ]
+        )
     }
 
     #[test]
     fn parse_a_single_lower_exponent_digit() {
-        assert_eq!(number::exponent_part_digits_literal(b"e6"),
-                   IResult::Done(&b""[..], 6.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "5e6",
+            rule: Rule::decimal_digits_literal,
+            tokens: [
+                decimal_digits_literal(0, 3)
+            ]
+        )
     }
 
     #[test]
-    fn parse_multiple_single_digits() {
-        assert_eq!(number::exponent_part_digits_literal(b"e66"),
-                   IResult::Done(&b""[..], 66.0));
+    fn parse_multiple_lower_exponent_digits() {
+        parses_to!(
+            parser: ExpressionParser,
+            input: "55e66",
+            rule: Rule::decimal_digits_literal,
+            tokens: [
+                decimal_digits_literal(0, 5)
+            ]
+        )
     }
 
     #[test]
     fn parse_a_single_upper_exponent_digit() {
-        assert_eq!(number::exponent_part_digits_literal(b"E7"),
-                   IResult::Done(&b""[..], 7.0));
+        parses_to!(
+            parser: ExpressionParser,
+            input: "3E7",
+            rule: Rule::decimal_digits_literal,
+            tokens: [
+                decimal_digits_literal(0, 3)
+            ]
+        )
     }
 
     #[test]
-    fn parse_multiple_upper_digits() {
-        assert_eq!(number::exponent_part_digits_literal(b"E77"),
-                   IResult::Done(&b""[..], 77.0));
+    fn parse_multiple_upper_exponent_digits() {
+        parses_to!(
+            parser: ExpressionParser,
+            input: "66E77",
+            rule: Rule::decimal_digits_literal,
+            tokens: [
+                decimal_digits_literal(0, 5)
+            ]
+        )
     }
 }

@@ -1,29 +1,50 @@
+
 extern crate robin_core;
 
-extern crate nom;
+extern crate pest;
 
 #[cfg(test)]
 mod parser_tests {
-    use nom::IResult;
-
-    use robin_core::parser::expression;
+    use robin_core::parser;
     use robin_core::ast::Expression;
 
     #[test]
-    fn parse_an_identifier_bool_lookalike_suffix() {
-        assert_eq!(expression::expression_literal(b"truedog"),
-                   IResult::Done(&b""[..], Expression::Identifier("truedog".to_string())));
-    }
-
-    #[test]
-    fn parse_an_identifier_bool_lookalike_prefix() {
-        assert_eq!(expression::expression_literal(b"falsecat"),
-                   IResult::Done(&b""[..], Expression::Identifier("falsecat".to_string())));
-    }
-
-    #[test]
     fn booleans_should_return_a_boolean_node() {
-        assert_eq!(expression::expression_literal(b"true"),
-                   IResult::Done(&b""[..], Expression::Boolean(true)));
+        assert_eq!(parser::parse("true"), Expression::Boolean(true))
+    }
+
+    #[test]
+    fn identifiers_that_look_like_booleans_should_return_identifiers() {
+        assert_eq!(parser::parse("truedog"), Expression::Identifier("truedog".to_string()))
+    }
+
+    #[test]
+    fn identifiers_should_return_a_identifier_node() {
+        assert_eq!(parser::parse("hello"), Expression::Identifier("hello".to_string()))
+    }
+
+    #[test]
+    fn decimals_should_return_a_number_node() {
+        assert_eq!(parser::parse("47"), Expression::Number(47.0))
+    }
+
+    #[test]
+    fn exponents_should_return_a_number_node() {
+        assert_eq!(parser::parse("5e1"), Expression::Number(50.0))
+    }
+
+    #[test]
+    fn binary_should_return_a_number_node() {
+        assert_eq!(parser::parse("0b1"), Expression::Number(1.0))
+    }
+
+    #[test]
+    fn octal_should_return_a_number_node() {
+        assert_eq!(parser::parse("0o2"), Expression::Number(2.0))
+    }
+
+    #[test]
+    fn hexadecimal_should_return_a_number_node() {
+        assert_eq!(parser::parse("0xA"), Expression::Number(10.0))
     }
 }
