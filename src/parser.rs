@@ -11,9 +11,9 @@ const _GRAMMAR: &'static str = include_str!("grammar/grammar.pest");
 #[grammar = "grammar/grammar.pest"]
 pub struct ExpressionParser;
 
-pub fn parse(input: &'static str) -> Expression {
+pub fn parse(input: String) -> Expression {
     // TODO: Remove unwrap
-    let mut pairs = ExpressionParser::parse_str(Rule::expression_literal, input).unwrap();
+    let mut pairs = ExpressionParser::parse_str(Rule::expression_literal, &input).unwrap();
 
     let first = pairs.nth(0).unwrap().into_inner().nth(0).unwrap();
 
