@@ -1,1 +1,32 @@
+expression_literal = { keywords | identifier_literal }
+
+// We must differentiate between parsing identifiers, keywords and identifiers which begin with keywords
+// For example, "true", "hello" and "trueexample"
+// The below parsing is odd, but it works.
+identifier_literal = @{ !keywords ~ identifier }
+
+keywords = _{ (boolean_literal | numeric_literal) ~ !identifier }
+
+identifier = @{ (alpha | "_") ~ (alpha_numeric | "_")* }
+
+alpha_numeric = _{ alpha | '0'..'9' }
+
+alpha = _{ 'a'..'z' | 'A'..'Z' }
+
 boolean_literal = @{ "true" | "false" }
+
+symbol_literal = @{ 
+    ("{" | "}" | "(" | ")" | "[" | "]" | "." | ";" | "," | "<" | ">" | "=" | "!" | "+" | "-" | "*" | "/" | "&" | "|" | "^" | "~" | "?" | ":")*
+}
+
+numeric_literal = _{ hex_digits_literal | oct_digits_literal | binary_digits_literal | decimal_digits_literal }
+
+decimal_digits_literal = @{ ('0'..'9')* ~ exponent_part? }
+
+exponent_part = _{ ("e" | "E") ~ decimal_digits_literal }
+
+binary_digits_literal = @{ ("0b" | "0B") ~ '0'..'1'* }
+
+oct_digits_literal = @{ ("0o" | "0O") ~ '0'..'7'* }
+
+hex_digits_literal = @{ ("0x" | "0X") ~ ('0'..'9' | 'A'..'F')* }
