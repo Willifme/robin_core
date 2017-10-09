@@ -24,7 +24,6 @@ impl fmt::Display for Error {
     }
 }
 
-// Use a hashmap which contains an error level and a string
 pub struct ErrorStack(pub Vec<Error>);
 
 impl fmt::Display for ErrorStack {
