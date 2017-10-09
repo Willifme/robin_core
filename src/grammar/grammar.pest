@@ -36,4 +36,9 @@ oct_digits_literal = @{ ("0o" | "0O") ~ '0'..'7'* }
 
 hex_digits_literal = @{ ("0x" | "0X") ~ ('0'..'9' | 'A'..'F')* }
 
-whitespace = _{ " " | "\t" | "\r" | "\n" }
+// Exists for use in whitespace and comment rules
+newline = _{ "\r" | "\n" }
+
+whitespace = _{ " " | "\t" | newline }
+
+comment = _{ ";" ~ (!newline ~ any)* }
