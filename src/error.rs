@@ -8,7 +8,7 @@ pub enum ErrorLevel {
     Error,
 }
 
-pub struct Error(pub (ErrorLevel, &'static str));
+pub struct Error(pub (ErrorLevel, String));
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
