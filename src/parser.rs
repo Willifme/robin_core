@@ -19,6 +19,10 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
             Expression::Boolean(
                 input.into_span().as_str().parse::<bool>().unwrap()
             ),
+
+        Rule::string_literal => 
+            Expression::String(format!("{}", input.into_span().as_str())
+            ),
         
         Rule::identifier_literal =>
             Expression::Identifier(input.into_span().as_str().to_string()),

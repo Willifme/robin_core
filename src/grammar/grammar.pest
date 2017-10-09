@@ -1,5 +1,5 @@
 // The main rule. soi and eoi only parsers when complete (not before). This prevents parsing errors
-expression_literal = { soi ~ (keywords | identifier_literal | numeric_literal) ~ eoi }
+expression_literal = { soi ~ (string_literal | keywords | identifier_literal | numeric_literal) ~ eoi }
 
 // We must differentiate between parsing identifiers, keywords and identifiers which begin with keywords
 // For example, "true", "hello" and "trueexample"
@@ -19,6 +19,10 @@ boolean_literal = @{ "true" | "false" }
 symbol_literal = @{ 
     ("{" | "}" | "(" | ")" | "[" | "]" | "." | ";" | "," | "<" | ">" | "=" | "!" | "+" | "-" | "*" | "/" | "&" | "|" | "^" | "~" | "?" | ":")*
 }
+
+string_literal = @{ "\"" ~ (escape_code | !("\"" | "\\") ~ any)* ~ "\"" }
+
+escape_code = @{ "\\" ~ ("\"" | "\\" | "b" | "f" | "n" | "r" | "t" | "v" | "0") }
 
 numeric_literal = _{ hex_digits_literal | oct_digits_literal | binary_digits_literal | decimal_digits_literal }
 
