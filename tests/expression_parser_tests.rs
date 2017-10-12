@@ -44,4 +44,11 @@ mod parser_tests {
     fn hexadecimal_should_return_a_number_node() {
         assert_eq!(parser::parse("0xA".to_string()), Ok(Expression::Number(10.0)))
     }
+
+    #[test]
+    fn list_should_return_a_list_node() {
+        let expr = Expression::List(vec![Box::new(Expression::Boolean(true))]);
+
+        assert_eq!(parser::parse("(true)".to_string()), Ok(expr));
+    }
 }
