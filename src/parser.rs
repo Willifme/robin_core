@@ -51,6 +51,13 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
                 f64::from(i32::from_str_radix(&input.into_span().as_str()[2..], 16).unwrap())
             ),
 
+        Rule::list_literal => 
+            Expression::List(input
+                            .into_inner()
+                            .into_iter()
+                            .map(|r| Box::new(parse_expression(r)))
+                            .collect()),
+
         // Temporary
         _ => unreachable!()
     }
@@ -59,7 +66,7 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
 
 pub fn parse(input: String) -> Result<Expression, String> {
     // TODO: Remove unwrap
-    match ExpressionParser::parse_str(Rule::expression_literal, &input) {
+    match ExpressionParser::parse_str(Rule::main, &input) {
         Ok(mut pair) =>
             Ok(parse_expression(pair.nth(0).unwrap().into_inner().nth(0).unwrap())),
         
