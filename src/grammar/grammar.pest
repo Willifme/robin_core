@@ -1,16 +1,14 @@
 // The main rule. soi and eoi only parsers when complete (not before). This prevents parsing errors
 main = { soi ~ expression_literal ~ eoi }
 
-expression_literal = _{ string_literal | list_literal | keywords | identifier_literal | numeric_literal | comment }
+expression_literal = _{ string_literal | list_literal | boolean_literal | identifier_literal | numeric_literal | comment }
 
 list_literal = { "(" ~ expression_literal* ~ ")" | "(" ~ ")" }
 
-// We must differentiate between parsing identifiers, keywords and identifiers which begin with keywords
+// We must differentiate between parsing identifiers, boolean literals and identifiers which begin with boolean literals
 // For example, "true", "hello" and "trueexample"
 // The below parsing is odd, but it works.
-identifier_literal = @{ !keywords ~ identifier }
-
-keywords = _{ (boolean_literal) ~ !identifier }
+identifier_literal = @{ !boolean_literal ~ identifier }
 
 identifier = @{ (alpha | "_") ~ (alpha_numeric | "_")* }
 
@@ -18,7 +16,7 @@ alpha_numeric = _{ alpha | decimal_digit }
 
 alpha = _{ 'a'..'z' | 'A'..'Z' }
 
-boolean_literal = @{ "true" | "false" }
+boolean_literal = @{ ("true" | "false") ~ !identifier_literal }
 
 symbol_literal = @{ 
     ("{" | "}" | "(" | ")" | "[" | "]" | "." | ";" | "," | "<" | ">" | "=" | "!" | "+" | "-" | "*" | "/" | "&" | "|" | "^" | "~" | "?" | ":")*
