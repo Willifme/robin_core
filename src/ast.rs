@@ -4,4 +4,5 @@ pub enum Expression {
     Identifier(String),
     Boolean(bool),
     String(String),
+    List(Vec<Box<Expression>>)
 }
