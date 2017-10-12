@@ -1,16 +1,20 @@
 // The main rule. soi and eoi only parsers when complete (not before). This prevents parsing errors
-expression_literal = { soi ~ (string_literal | keywords | identifier_literal | numeric_literal) ~ eoi }
+main = { soi ~ expression_literal ~ eoi }
+
+expression_literal = _{ (string_literal | list_literal | keywords | identifier_literal | numeric_literal)* }
+
+list_literal = { "(" ~ expression_literal ~ (whitespace ~ expression_literal)* ~ ")" | "(" ~ ")" }
 
 // We must differentiate between parsing identifiers, keywords and identifiers which begin with keywords
 // For example, "true", "hello" and "trueexample"
-// The below parsing is odd, but it works.
+// The below!parsing is odd, but it works.
 identifier_literal = @{ !keywords ~ identifier }
 
 keywords = _{ (boolean_literal) ~ !identifier }
 
 identifier = @{ (alpha | "_") ~ (alpha_numeric | "_")* }
 
-alpha_numeric = _{ alpha | '0'..'9' }
+alpha_numeric = _{ alpha | decimal_digit }
 
 alpha = _{ 'a'..'z' | 'A'..'Z' }
 
@@ -26,7 +30,7 @@ escape_code = @{ "\\" ~ ("\"" | "\\" | "b" | "f" | "n" | "r" | "t" | "v" | "0") 
 
 numeric_literal = _{ hex_digits_literal | oct_digits_literal | binary_digits_literal | decimal_digits_literal }
 
-decimal_digits_literal = @{ ('0'..'9')* ~ exponent_part? }
+decimal_digits_literal = @{ ("0" | ('1'..'9') ~ decimal_digit*) ~ exponent_part? }
 
 exponent_part = @{ ("e" | "E") ~ decimal_digits_literal }
 
@@ -34,7 +38,9 @@ binary_digits_literal = @{ ("0b" | "0B") ~ '0'..'1'* }
 
 oct_digits_literal = @{ ("0o" | "0O") ~ '0'..'7'* }
 
-hex_digits_literal = @{ ("0x" | "0X") ~ ('0'..'9' | 'A'..'F')* }
+hex_digits_literal = @{ ("0x" | "0X") ~ (decimal_digit | 'A'..'F')* }
+
+decimal_digit = { '0'..'9' }
 
 // Exists for use in whitespace and comment rules
 newline = _{ "\r" | "\n" }
