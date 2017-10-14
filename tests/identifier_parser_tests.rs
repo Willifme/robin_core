@@ -8,85 +8,13 @@ mod parser_tests {
     use robin_core::parser::{ExpressionParser, Rule};
 
     #[test]
-    fn parse_a_left_brace() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "{",
-            rule: Rule::symbol_literal,
-            tokens: [
-                symbol_literal(0, 1)
-            ]
-        )
-    }
-
-    #[test]
-    fn parse_a_right_brace() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "}",
-            rule: Rule::symbol_literal,
-            tokens: [
-                symbol_literal(0, 1)
-            ]
-        )
-    }
-
-    #[test]
-    fn parse_a_left_bracket() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "(",
-            rule: Rule::symbol_literal,
-            tokens: [
-                symbol_literal(0, 1)
-            ]
-        )
-    }
-
-    #[test]
-    fn parse_a_right_bracket() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: ")",
-            rule: Rule::symbol_literal,
-            tokens: [
-                symbol_literal(0, 1)
-            ]
-        )
-    }
-
-    #[test]
-    fn parse_a_left_square_bracket() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "[",
-            rule: Rule::symbol_literal,
-            tokens: [
-                symbol_literal(0, 1)
-            ]
-        )
-    }
-
-    #[test]
-    fn parse_a_right_square_bracket() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "]",
-            rule: Rule::symbol_literal,
-            tokens: [
-                symbol_literal(0, 1)
-            ]
-        )
-    }
-
-    #[test]
     fn parse_a_fullstop() {
         parses_to!(
             parser: ExpressionParser,
             input: ".",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -96,9 +24,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: ";",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -108,9 +36,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: ",",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -120,9 +48,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "<",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -132,9 +60,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: ">",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -144,9 +72,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "=",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -155,10 +83,10 @@ mod parser_tests {
     fn parse_exclamation() {
         parses_to!(
             parser: ExpressionParser,
-            input: "=",
-            rule: Rule::symbol_literal,
+            input: "!",
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -168,9 +96,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "+",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -180,9 +108,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "-",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -192,9 +120,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "*",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -204,9 +132,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "/",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -216,9 +144,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "&",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -228,9 +156,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "|",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -240,9 +168,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "^",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -252,9 +180,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "~",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -264,9 +192,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "?",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -276,9 +204,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: ":",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 1)
+                identifier_literal(0, 1)
             ]
         )
     }
@@ -288,9 +216,9 @@ mod parser_tests {
         parses_to!(
             parser: ExpressionParser,
             input: "?+=",
-            rule: Rule::symbol_literal,
+            rule: Rule::identifier_literal,
             tokens: [
-                symbol_literal(0, 3)
+                identifier_literal(0, 3)
             ]
         )
     }
