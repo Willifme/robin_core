@@ -1,6 +1,6 @@
 [package]
 name = "robin_core"
-version = "0.3.8"
+version = "0.3.9"
 authors = ["William Collier <coll01502449@scc.ac.uk>"]
 description = "A simple (custom) Lisp to JavaScript source-to-source compiler"
 license = "Apache-2.0"
