@@ -14,13 +14,13 @@ identifier = @{ (alpha | "_") ~ (alpha_numeric | "_")* }
 
 alpha_numeric = _{ alpha | decimal_digit }
 
-alpha = _{ 'a'..'z' | 'A'..'Z' }
+alpha = _{ 'a'..'z' | 'A'..'Z' | symbol_literal }
+
+symbol_literal = _{ 
+    "." | ";" | "," | "<" | ">" | "=" | "!" | "+" | "-" | "*" | "/" | "&" | "|" | "^" | "~" | "?" | ":"
+}
 
 boolean_literal = @{ ("true" | "false") ~ !identifier_literal }
-
-symbol_literal = @{ 
-    ("{" | "}" | "(" | ")" | "[" | "]" | "." | ";" | "," | "<" | ">" | "=" | "!" | "+" | "-" | "*" | "/" | "&" | "|" | "^" | "~" | "?" | ":")*
-}
 
 string_literal = @{ "\"" ~ (escape_code | !("\"" | "\\") ~ any)* ~ "\"" }
 
