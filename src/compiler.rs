@@ -19,7 +19,7 @@ impl Compiler {
         }
     }
 
-    fn compile(tree: Vec<Expression>) -> String {
+    fn compile(tree: &[Expression]) -> String {
         unimplemented!()
     }
 }

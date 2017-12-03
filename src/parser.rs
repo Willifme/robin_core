@@ -7,7 +7,7 @@ use ast::Expression;
 
 use std::f64;
 
-const _GRAMMAR: &'static str = include_str!("grammar/grammar.pest");
+const _GRAMMAR: &str = include_str!("grammar/grammar.pest");
 
 #[derive(Parser)]
 #[grammar = "grammar/grammar.pest"]
@@ -106,9 +106,9 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
 
 }
 
-pub fn parse(input: String) -> Result<Expression, String> {
+pub fn parse(input: &str) -> Result<Expression, String> {
     // TODO: Remove unwrap
-    match ExpressionParser::parse_str(Rule::main, &input) {
+    match ExpressionParser::parse_str(Rule::main, input) {
         Ok(mut pair) => Ok(parse_expression(
             pair.nth(0).unwrap().into_inner().nth(0).unwrap(),
         )),

@@ -8,7 +8,7 @@ mod parser_tests {
     #[test]
     fn booleans_should_return_a_boolean_node() {
         assert_eq!(
-            parser::parse("true".to_string()),
+            parser::parse("true"),
             Ok(Expression::Boolean(true))
         )
     }
@@ -16,7 +16,7 @@ mod parser_tests {
     #[test]
     fn identifiers_that_look_like_booleans_should_return_identifiers() {
         assert_eq!(
-            parser::parse("truedog".to_string()),
+            parser::parse("truedog"),
             Ok(Expression::Identifier("truedog".to_string()))
         )
     }
@@ -24,7 +24,7 @@ mod parser_tests {
     #[test]
     fn identifiers_should_return_a_identifier_node() {
         assert_eq!(
-            parser::parse("hello".to_string()),
+            parser::parse("hello"),
             Ok(Expression::Identifier("hello".to_string()))
         )
     }
@@ -32,7 +32,7 @@ mod parser_tests {
     #[test]
     fn decimals_should_return_a_number_node() {
         assert_eq!(
-            parser::parse("47".to_string()),
+            parser::parse("47"),
             Ok(Expression::Number(47.0))
         )
     }
@@ -40,7 +40,7 @@ mod parser_tests {
     #[test]
     fn exponents_should_return_a_number_node() {
         assert_eq!(
-            parser::parse("5e1".to_string()),
+            parser::parse("5e1"),
             Ok(Expression::Number(50.0))
         )
     }
@@ -48,7 +48,7 @@ mod parser_tests {
     #[test]
     fn binary_should_return_a_number_node() {
         assert_eq!(
-            parser::parse("0b1".to_string()),
+            parser::parse("0b1"),
             Ok(Expression::Number(1.0))
         )
     }
@@ -56,7 +56,7 @@ mod parser_tests {
     #[test]
     fn octal_should_return_a_number_node() {
         assert_eq!(
-            parser::parse("0o2".to_string()),
+            parser::parse("0o2"),
             Ok(Expression::Number(2.0))
         )
     }
@@ -64,7 +64,7 @@ mod parser_tests {
     #[test]
     fn hexadecimal_should_return_a_number_node() {
         assert_eq!(
-            parser::parse("0xA".to_string()),
+            parser::parse("0xA"),
             Ok(Expression::Number(10.0))
         )
     }
@@ -73,7 +73,7 @@ mod parser_tests {
     fn list_should_return_a_list_node() {
         let expr = Expression::List(vec![Box::new(Expression::Boolean(true))]);
 
-        assert_eq!(parser::parse("[true]".to_string()), Ok(expr));
+        assert_eq!(parser::parse("[true]"), Ok(expr));
     }
 
     #[test]
@@ -84,7 +84,7 @@ mod parser_tests {
             Box::new(Expression::Boolean(true)),
         );
 
-        assert_eq!(parser::parse("(example [x] true)".to_string()), Ok(expr));
+        assert_eq!(parser::parse("(example [x] true)"), Ok(expr));
     }
 
     #[test]
@@ -95,7 +95,7 @@ mod parser_tests {
             Box::new(Expression::Boolean(true)),
         );
 
-        assert_eq!(parser::parse("(example [x y] true)".to_string()), Ok(expr));
+        assert_eq!(parser::parse("(example [x y] true)"), Ok(expr));
     }
 
     #[test]
@@ -105,7 +105,7 @@ mod parser_tests {
             vec![Box::new(Expression::Boolean(true))],
         );
 
-        assert_eq!(parser::parse("(example true)".to_string()), Ok(expr));
+        assert_eq!(parser::parse("(example true)"), Ok(expr));
     }
 
     #[test]
@@ -118,6 +118,6 @@ mod parser_tests {
             ],
         );
 
-        assert_eq!(parser::parse("(example true false)".to_string()), Ok(expr));
+        assert_eq!(parser::parse("(example true false)"), Ok(expr));
     }
 }
