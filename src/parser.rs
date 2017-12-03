@@ -18,9 +18,9 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
         Rule::function_literal => { 
             let mut pairs = input.into_inner().flatten();
 
-            panic!("Nth(0) {}", pairs.nth(0));
-            panic!("Nth(1) {}", pairs.nth(1));
-            panic!("Nth(2) {}", pairs.nth(2));
+            panic!("Nth(0) {:?}", pairs.nth(0));
+            panic!("Nth(1) {:?}", pairs.nth(1));
+            panic!("Nth(2) {:?}", pairs.nth(2));
 
             Expression::FuncLiteral(
 //                format!("{}", pairs.nth(0).unwrap().into_span().as_str()),
