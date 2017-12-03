@@ -1,4 +1,4 @@
-/// For some reason, Pest cannot find the grammar file if listed in parser/mod.rs, so I listed it here
+/// For some reason, Pest cannot find the grammar file if listed in parser/mod.rs
 use pest::Parser;
 use pest::iterators::Pair;
 use pest::inputs::StrInput;
@@ -15,45 +15,68 @@ pub struct ExpressionParser;
 
 fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
     match input.as_rule() {
-        Rule::function_literal => { 
+        Rule::function_literal => {
             let mut pairs = input.into_inner();
 
-            panic!("Pairs: {:?}, Nth(0): {:?}, Nth(1): {:?}, Nth(2): {:?}", pairs.clone(), pairs.nth(0), pairs.nth(1), pairs.nth(2));
+            let name = pairs
+                        .next()
+                        .unwrap()
+                        .into_span()
+                        .as_str()
+                        .to_string();
 
-            Expression::FuncLiteral(
-//                format!("{}", pairs.nth(0).unwrap().into_span().as_str()),
-//               Box::new(parse_expression(pairs.nth(1).unwrap().into_span())),
-//                Box::new(parse_expression(pairs.nth(2).unwrap().into_span()))
-                format!("{}", pairs.nth(0).unwrap().into_span().as_str()), 
-                Box::new(parse_expression(pairs.nth(1).unwrap())), 
-                Box::new(parse_expression(pairs.nth(2).unwrap()))
-            )
+            let args_list = pairs
+                                .next()
+                                .unwrap()
+                                .into_inner()
+                                .into_iter()
+                                .map(|r| Box::new(format!("{}", r.into_span().as_str())))
+                                .collect();
+
+            let body = Box::new(
+                            parse_expression(pairs.next().unwrap()));
+
+            Expression::FuncLiteral(name, args_list, body)
         }
 
         Rule::function_call_literal => {
             let mut pairs = input.into_inner();
 
-            println!("{:?}", pairs);
+            let name = pairs
+                        .next()
+                        .unwrap()
+                        .into_span()
+                        .as_str()
+                        .to_string();
 
-            Expression::FuncCall(
-                format!("{}", pairs.nth(0).unwrap().into_span().as_str()),
-                Some(Box::new(parse_expression(pairs.nth(2).unwrap())))
-            )
+            let args = pairs
+                        .into_iter()
+                        .map(|r| Box::new(parse_expression(r)))
+                        .collect();
+
+            Expression::FuncCall(name, args)
         }
+
+        Rule::list_literal =>
+            Expression::List(input
+                            .into_inner()
+                            .into_iter()
+                            .map(|r| Box::new(parse_expression(r)))
+                            .collect()),
 
         Rule::boolean_literal =>
             Expression::Boolean(
                 input.into_span().as_str().parse::<bool>().unwrap()
             ),
 
-        Rule::string_literal => 
+        Rule::string_literal =>
             Expression::String(format!("{}", input.into_span().as_str())
             ),
 
         Rule::identifier_literal =>
             Expression::Identifier(input.into_span().as_str().to_string()),
 
-        // TODO: For now, just conver the value into a normal f64. No formatting!
+        // TODO: For now, just convert the value into a normal f64. No formatting!
         Rule::decimal_digits_literal =>
             Expression::Number(
                 input.into_span().as_str().parse::<f64>().unwrap()
@@ -77,13 +100,6 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
                 f64::from(i32::from_str_radix(&input.into_span().as_str()[2..], 16).unwrap())
             ),
 
-        Rule::list_literal => 
-            Expression::List(input
-                            .into_inner()
-                            .into_iter()
-                            .map(|r| Box::new(parse_expression(r)))
-                            .collect()),
-
         // Temporary
         _ => unreachable!()
     }
@@ -93,9 +109,10 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
 pub fn parse(input: String) -> Result<Expression, String> {
     // TODO: Remove unwrap
     match ExpressionParser::parse_str(Rule::main, &input) {
-        Ok(mut pair) =>
-            Ok(parse_expression(pair.nth(0).unwrap().into_inner().nth(0).unwrap())),
-        
-        Err(e) => Err(format!("{}", e))
+        Ok(mut pair) => Ok(parse_expression(
+            pair.nth(0).unwrap().into_inner().nth(0).unwrap(),
+        )),
+
+        Err(e) => Err(format!("{}", e)),
     }
 }

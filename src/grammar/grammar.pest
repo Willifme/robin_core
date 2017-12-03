@@ -7,7 +7,7 @@ function_literal = { "(" ~ identifier_literal ~ args_list ~ expression_literal ~
 
 args_list = { "[" ~ identifier_literal* ~ "]" | "[" ~ "]"}
 
-function_call_literal = { "(" ~ identifier_literal ~ list_literal? ~ ")" }
+function_call_literal = { "(" ~ identifier_literal ~ expression_literal*? ~ ")" }
 
 list_literal = { "[" ~ expression_literal* ~ "]" | "[" ~ "]" }
 
