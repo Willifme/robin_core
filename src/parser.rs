@@ -16,7 +16,7 @@ pub struct ExpressionParser;
 fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
     match input.as_rule() {
         Rule::function_literal => { 
-            let mut pairs = input.into_inner().flatten();
+            let mut pairs = input.into_inner();
 
             panic!("Nth(0): {:?}, Nth(1): {:?}, Nth(2): {:?}", pairs.nth(0), pairs.nth(1), pairs.nth(2));
 
