@@ -26,12 +26,12 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
                         .to_string();
 
             let args_list = pairs
-                                .next()
-                                .unwrap()
-                                .into_inner()
-                                .into_iter()
-                                .map(|r| Box::new(r.into_span().as_str().to_string()))
-                                .collect();
+                            .next()
+                            .unwrap()
+                            .into_inner()
+                            .into_iter()
+                            .map(|r| r.into_span().as_str().to_string())
+                            .collect();
 
             let body = Box::new(
                             parse_expression(pairs.next().unwrap()));
