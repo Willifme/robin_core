@@ -62,7 +62,7 @@ mod parser_tests {
     fn function_literal_should_return_a_function_literal_node() {
         let expr = Expression::FuncLiteral(
             "example".to_string(),
-            vec![Box::new("x".to_string())],
+            vec!["x".to_string()],
             Box::new(Expression::Boolean(true)),
         );
 
@@ -73,7 +73,7 @@ mod parser_tests {
     fn function_literal_with_multiple_arguments() {
         let expr = Expression::FuncLiteral(
             "example".to_string(),
-            vec![Box::new("x".to_string()), Box::new("y".to_string())],
+            vec!["x".to_string(), "y".to_string()],
             Box::new(Expression::Boolean(true)),
         );
 
