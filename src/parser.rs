@@ -18,6 +18,8 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
         Rule::function_literal => { 
             let mut pairs = input.into_inner();
 
+            println!("{:?}", pairs);
+
             Expression::FuncLiteral(
                 format!("{}", pairs.nth(0).unwrap().into_span().as_str()), 
                 Box::new(parse_expression(pairs.nth(1).unwrap())), 
@@ -27,6 +29,8 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
 
         Rule::function_call_literal => {
             let mut pairs = input.into_inner();
+
+            println!("{:?}", pairs);
 
             Expression::FuncCall(
                 format!("{}", pairs.nth(0).unwrap().into_span().as_str()),
