@@ -3,7 +3,9 @@ main = { soi ~ expression_literal ~ eoi }
 
 expression_literal = _{ string_literal | function_literal | function_call_literal | list_literal | boolean_literal | identifier_literal | numeric_literal | comment }
 
-function_literal = { "(" ~ identifier_literal ~ list_literal ~ expression_literal ~ ")" }
+function_literal = { "(" ~ identifier_literal ~ args_list ~ expression_literal ~ ")" }
+
+args_list = { "[" ~ identifier_literal* ~ "]" | "[" ~ "]"}
 
 function_call_literal = { "(" ~ identifier_literal ~ list_literal? ~ ")" }
 

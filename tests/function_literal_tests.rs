@@ -14,7 +14,7 @@ mod parser_tests {
             input: "(hello [] [])",
             rule: Rule::function_literal,
             tokens: [
-                function_literal(0, 13, [identifier_literal(1, 6), list_literal(7, 9), list_literal(10, 12)])
+                function_literal(0, 13, [identifier_literal(1, 6), args_list(7, 9), list_literal(10, 12)])
             ]
         )
     }
@@ -26,7 +26,7 @@ mod parser_tests {
             input: "(hello [x] [])",
             rule: Rule::function_literal,
             tokens: [
-                function_literal(0, 14, [identifier_literal(1, 6), list_literal(7, 10, [identifier_literal(8, 9)]), list_literal(11, 13)])
+                function_literal(0, 14, [identifier_literal(1, 6), args_list(7, 10, [identifier_literal(8, 9)]), list_literal(11, 13)])
             ]
         )
     }
@@ -38,7 +38,7 @@ mod parser_tests {
             input: "(hello [x y] [])",
             rule: Rule::function_literal,
             tokens: [
-                function_literal(0, 16, [identifier_literal(1, 6), list_literal(7, 12, [identifier_literal(8, 9), identifier_literal(10, 11)]), list_literal(13, 15)])
+                function_literal(0, 16, [identifier_literal(1, 6), args_list(7, 12, [identifier_literal(8, 9), identifier_literal(10, 11)]), list_literal(13, 15)])
             ]
         )
     }
