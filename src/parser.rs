@@ -15,6 +15,25 @@ pub struct ExpressionParser;
 
 fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
     match input.as_rule() {
+        Rule::function_literal => { 
+            let mut pairs = input.into_inner();
+
+            Expression::FuncLiteral(
+                format!("{}", pairs.nth(0).unwrap().into_span().as_str()), 
+                Box::new(parse_expression(pairs.nth(1).unwrap())), 
+                Box::new(parse_expression(pairs.nth(2).unwrap()))
+            )
+        }
+
+        Rule::function_call_literal => {
+            let mut pairs = input.into_inner();
+
+            Expression::FuncCall(
+                format!("{}", pairs.nth(0).unwrap().into_span().as_str()),
+                Some(Box::new(parse_expression(pairs.nth(2).unwrap())))
+            )
+        }
+
         Rule::boolean_literal =>
             Expression::Boolean(
                 input.into_span().as_str().parse::<bool>().unwrap()

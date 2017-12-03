@@ -49,6 +49,6 @@ mod parser_tests {
     fn list_should_return_a_list_node() {
         let expr = Expression::List(vec![Box::new(Expression::Boolean(true))]);
 
-        assert_eq!(parser::parse("(true)".to_string()), Ok(expr));
+        assert_eq!(parser::parse("[true]".to_string()), Ok(expr));
     }
 }
