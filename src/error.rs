@@ -8,6 +8,7 @@ pub enum ErrorLevel {
     Error,
 }
 
+#[derive(Debug)]
 pub struct Error(pub (ErrorLevel, String));
 
 impl fmt::Display for Error {
@@ -24,6 +25,7 @@ impl fmt::Display for Error {
     }
 }
 
+#[derive(Debug)]
 pub struct ErrorStack(pub Vec<Error>);
 
 impl fmt::Display for ErrorStack {
