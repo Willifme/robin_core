@@ -62,8 +62,12 @@ mod parser_tests {
             input: "[+ 1 1]",
             rule: Rule::list_literal,
             tokens: [
-                list_literal(0, 7, 
-                    [identifier_literal(1, 2), decimal_digits_literal(3, 4), decimal_digits_literal(5, 6)]
+                list_literal(0, 7,
+                    [
+                        identifier_literal(1, 2),
+                        decimal_digits_literal(3, 4),
+                        decimal_digits_literal(5, 6)
+                    ]
                 )
             ]
         )

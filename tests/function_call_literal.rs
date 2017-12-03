@@ -14,7 +14,7 @@ mod parser_tests {
             input: "(hello)",
             rule: Rule::function_call_literal,
             tokens: [
-                function_call_literal(0, 7, [identifier_literal(1, 6)]) 
+                function_call_literal(0, 7, [identifier_literal(1, 6)])
             ]
         )
     }
@@ -26,9 +26,9 @@ mod parser_tests {
             input: "(hello [1])",
             rule: Rule::function_call_literal,
             tokens: [
-                function_call_literal(0, 11, 
-                    [identifier_literal(1, 6), list_literal(7, 10, 
-                        [decimal_digits_literal(8, 9)])]) 
+                function_call_literal(0, 11,
+                    [identifier_literal(1, 6), list_literal(7, 10,
+                        [decimal_digits_literal(8, 9)])])
             ]
         )
     }
@@ -40,9 +40,9 @@ mod parser_tests {
             input: "(hello [1 2])",
             rule: Rule::function_call_literal,
             tokens: [
-                function_call_literal(0, 13, 
-                    [identifier_literal(1, 6), list_literal(7, 12, 
-                        [decimal_digits_literal(8, 9), decimal_digits_literal(10, 11)])]) 
+                function_call_literal(0, 13,
+                    [identifier_literal(1, 6), list_literal(7, 12,
+                        [decimal_digits_literal(8, 9), decimal_digits_literal(10, 11)])])
             ]
         )
     }
