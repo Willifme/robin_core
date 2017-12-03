@@ -7,8 +7,12 @@ pub enum Expression {
     Boolean(bool),
     String(String),
     List(Vec<Box<Expression>>),
-    FuncLiteral(String, Box<Expression>, Box<Expression>),
-    FuncCall(String, Option<Box<Expression>>)
+
+    // String = Function Name, Vec<Box<String>> = Argument List, Box<Expression> = Body
+    FuncLiteral(String, Vec<Box<String>>, Box<Expression>),
+
+    // String = Function Name, Vec<Box<Expression>> = Arguments
+    FuncCall(String, Vec<Box<Expression>>),
 }
 
 /*
@@ -30,5 +34,5 @@ impl ToJavaScript for Expression {
             }
         }
     }
-} 
+}
 */
