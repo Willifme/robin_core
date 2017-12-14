@@ -49,7 +49,7 @@ impl ToJavaScript for Expression {
                     .collect::<Vec<String>>()
                     .join(",");
 
-                format!("({}({})", name, args)
+                format!("({}({}))", name, args)
             }
         }
     }
