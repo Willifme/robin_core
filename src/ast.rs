@@ -36,7 +36,8 @@ impl ToJavaScript for Expression {
                 let args = args
                             .into_iter()
                             // TODO: Remove clone
-                            .map(|e| e.clone())
+                            .cloned()
+                            .map(|e| e)
                             .collect::<Vec<String>>()
                             .join(",");
 

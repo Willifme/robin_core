@@ -108,9 +108,7 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
 pub fn parse(input: &str) -> Result<Expression, String> {
     // TODO: Remove unwrap
     match ExpressionParser::parse_str(Rule::main, input) {
-        Ok(mut pair) => Ok(parse_expression(
-            pair.nth(0).unwrap().into_inner().nth(0).unwrap(),
-        )),
+        Ok(mut pair) => Ok(parse_expression(pair.nth(0).unwrap().into_inner().nth(0).unwrap())),
 
         Err(e) => Err(format!("{}", e)),
     }
