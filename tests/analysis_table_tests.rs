@@ -3,7 +3,6 @@ extern crate robin_core;
 #[cfg(test)]
 mod parser_tests {
     use robin_core::ast::Expression;
-    use robin_core::error::ErrorKind;
     use robin_core::analysis::table::Table;
 
     #[test]
@@ -12,7 +11,7 @@ mod parser_tests {
 
         table.insert("example", Expression::Boolean(true));
 
-        assert_eq!(Ok(&Expression::Boolean(true)), table.get("example"));
+        assert_eq!(Some(&Expression::Boolean(true)), table.get("example"));
     }
 
     #[test]
@@ -21,20 +20,20 @@ mod parser_tests {
 
         table.insert("example", Expression::Boolean(true));
 
-        assert_eq!(Ok(&Expression::Boolean(true)), table.get("example"));
+        assert_eq!(Some(&Expression::Boolean(true)), table.get("example"));
     }
 
     #[test]
     fn find_unknown_local_variable_without_parent() {
         let table = Table::<Expression>::new(None);
 
-        assert_eq!(ErrorKind::UndefinedVar, table.get("Example").unwrap_err().0);
+        assert_eq!(None, table.get("Example"));
     }
 
     #[test]
     fn find_unknown_local_variable_with_parent() {
         let table = Table::<Expression>::new(Some(Box::new(Table::new(None))));
 
-        assert_eq!(ErrorKind::UndefinedVar, table.get("example").unwrap_err().0);
+        assert_eq!(None, table.get("example"));
     }
 }

@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::boxed::Box;
 
 use to_javascript::ToJavaScript;
-use error::{Error, ErrorKind, ErrorLevel};
 
 /// Create a type alias for the table containing the symbols
 /// All items are acccessible via their name
@@ -35,18 +34,11 @@ impl<T: ToJavaScript> Table<T> {
     /// Attempt to get a value from the table
     /// If the value can't be found within this scope. try the parent.
     /// After descending through all the scopes, return an undefiend error
-    pub fn get(&self, key: &'static str) -> Result<&T, Error> {
+    pub fn get(&self, key: &'static str) -> Option<&T> {
         // First we get from the local scope
         match self.container.get(key) {
-            Some(value) => Ok(value),
-            None => {
-                self.parent
-                    .as_ref()
-                    // TODO: Improve error message
-                    .map_or(Err(
-                        Error(ErrorKind::UndefinedVar, ErrorLevel::Error, "Variable not found")),
-                        |i| i.get(key))
-            }
+            Some(value) => Some(value),
+            None => self.parent.as_ref().and_then(|i| i.get(key)),
         }
     }
 }
