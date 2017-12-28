@@ -1,19 +1,24 @@
 use std::fmt;
 use ansi_term::Colour;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum ErrorKind {
+    UndefinedVar = 0,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum ErrorLevel {
     Info,
     Warning,
     Error,
 }
 
-#[derive(Debug)]
-pub struct Error(pub (ErrorLevel, String));
+#[derive(Debug, PartialEq)]
+pub struct Error(pub ErrorKind, pub ErrorLevel, pub &'static str);
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let colour_level = match (self.0).0 {
+        let colour_level = match self.1 {
             ErrorLevel::Info => Colour::Yellow.paint("Info"),
 
             // ansi_term does not have orange for some reason
@@ -21,7 +26,8 @@ impl fmt::Display for Error {
             ErrorLevel::Error => Colour::Red.paint("Error"),
         };
 
-        write!(f, "[{}] {}", colour_level, (self.0).1)
+        // TODO: Remove clone
+        write!(f, "[{}] (E{}) {}", colour_level, self.0 as i32, self.2)
     }
 }
 
