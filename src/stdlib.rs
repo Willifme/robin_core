@@ -7,7 +7,7 @@ use to_javascript::ToJavaScript;
 type BuiltinMap = HashMap<&'static str, fn(&Vec<Box<Expression>>) -> Result<String, Error>>;
 
 lazy_static! {
-    pub static ref BUILTINS: BuiltinMap = { 
+    pub static ref BUILTINS: BuiltinMap = {
         // The type definition is required to prevent compile errors
         let mut map: BuiltinMap = HashMap::new();
 
