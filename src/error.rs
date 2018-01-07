@@ -7,14 +7,14 @@ pub enum ErrorKind {
     TooFewArguments = 1,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum ErrorLevel {
     Info,
     Warning,
     Error,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Error(pub ErrorLevel, pub ErrorKind, pub &'static str);
 
 impl fmt::Display for Error {
