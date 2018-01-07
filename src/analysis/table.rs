@@ -10,6 +10,7 @@ pub type Container<T> = HashMap<&'static str, T>;
 
 /// This is the generic container for all symbol tables
 /// `T` must implement `ToJavaScript`
+#[derive(Debug)]
 pub struct Table<T: ToJavaScript> {
     /// This is the optional parent struct.
     /// The parent will most likely have a value unless the scope is global
