@@ -1,25 +1,28 @@
-use std::collections::HashMap;
-
+use analysis::table::Table;
 use ast::Expression;
 use error::ErrorStack;
-
-type SymbolTable = HashMap<String, Expression>;
+use to_javascript::ToJavaScript;
 
 #[derive(Debug)]
 struct Compiler {
-    global: SymbolTable,
+    global: Table<Expression>,
     errors: ErrorStack,
 }
 
 impl Compiler {
     fn new() -> Compiler {
         Compiler {
-            global: SymbolTable::new(),
+            global: Table::new(None),
             errors: ErrorStack(vec![]),
         }
     }
 
     fn compile(tree: &[Expression]) -> String {
-        unimplemented!()
+        tree
+            .iter()
+            // TODO: Remove unwrap
+            .map(|expr| expr.eval().unwrap())
+            .collect::<Vec<String>>()
+            .join(";")
     }
 }
