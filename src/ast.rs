@@ -50,15 +50,16 @@ impl ToJavaScript for Expression {
 
             Expression::FuncCall(ref name, ref args) => {
                 if let Some(func) = BUILTINS.get(name.as_str()) {
-                    func(args).or_else(|i| Err(i)).unwrap();
+                    func(args).or_else(|i| Err(i))
+
+                } else {
+                    let args = args.into_iter()
+                        .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
+                        .collect::<Vec<String>>()
+                        .join(",");
+
+                    Ok(format!("({}({}))", name, args))
                 }
-
-                let args = args.into_iter()
-                    .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
-                    .collect::<Vec<String>>()
-                    .join(",");
-
-                Ok(format!("({}({}))", name, args))
             }
         }
     }
