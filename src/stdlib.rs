@@ -23,7 +23,7 @@ pub fn builtin_if(args: &Vec<Box<Expression>>) -> Result<String, Error> {
         0 => {
             Err(Error(ErrorLevel::Error,
                       ErrorKind::TooFewArguments,
-                      "Too Few Arguments applied for if"))
+                      "Too few Arguments applied for if"))
         }
         1 => {
             Err(Error(ErrorLevel::Error,
@@ -31,12 +31,12 @@ pub fn builtin_if(args: &Vec<Box<Expression>>) -> Result<String, Error> {
                       "No expression applied for condition"))
         }
         2 => {
-            Ok(format!("(if {} {{ {} }})",
+            Ok(format!("(if ({}) {{ {} }})",
                        args[0].eval().unwrap(),
                        args[1].eval().unwrap()))
         }
         3 => {
-            Ok(format!("(if {} {{ {} }} else {{ {} }})",
+            Ok(format!("(if ({}) {{ {} }} else {{ {} }})",
                        args[0].eval().unwrap(),
                        args[1].eval().unwrap(),
                        args[2].eval().unwrap()))
