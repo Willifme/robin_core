@@ -4,7 +4,6 @@ extern crate robin_core;
 mod parser_tests {
     use robin_core::parser;
     use robin_core::ast::Expression;
-    use robin_core::error::{Error, ErrorLevel, ErrorKind};
 
     #[test]
     fn booleans_should_return_a_boolean_node() {
