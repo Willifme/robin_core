@@ -34,7 +34,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Boolean(true)),
                                              Box::new(Expression::Number(1.0))]);
 
-        assert_eq!(expr.eval(), Ok(String::from("(if (true) { 1 })")))
+        assert_eq!(expr.eval(), Ok(String::from("if (true) { 1 }")))
     }
 
     #[test]
@@ -44,7 +44,6 @@ mod eval_expr_tests {
                                              Box::new(Expression::Number(1.0)),
                                              Box::new(Expression::Number(1.0))]);
 
-        assert_eq!(expr.eval(),
-                   Ok(String::from("(if (true) { 1 } else { 1 })")))
+        assert_eq!(expr.eval(), Ok(String::from("if (true) { 1 } else { 1 }")))
     }
 }
