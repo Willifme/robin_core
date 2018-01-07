@@ -1,4 +1,6 @@
 use to_javascript::ToJavaScript;
+use stdlib::BUILTINS;
+use error::Error;
 
 #[derive(Debug, PartialEq)]
 pub enum Expression {
@@ -16,20 +18,20 @@ pub enum Expression {
 }
 
 impl ToJavaScript for Expression {
-    fn eval(&self) -> String {
+    fn eval(&self) -> Result<String, Error> {
         match *self {
-            Expression::Number(ref val) => format!("{}", val),
-            Expression::Identifier(ref val) => format!("{}", val),
-            Expression::Boolean(ref val) => format!("{}", val),
-            Expression::String(ref val) => val.clone(),
+            Expression::Number(ref val) => Ok(format!("{}", val)),
+            Expression::Identifier(ref val) => Ok(format!("{}", val)),
+            Expression::Boolean(ref val) => Ok(format!("{}", val)),
+            Expression::String(ref val) => Ok(val.clone()),
 
             Expression::List(ref vals) => {
                 let vals = vals.into_iter()
-                    .map(|e| e.eval())
+                    .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
 
-                format!("[{}]", vals)
+                Ok(format!("[{}]", vals))
             }
 
             Expression::FuncLiteral(ref name, ref args, ref body) => {
@@ -41,16 +43,22 @@ impl ToJavaScript for Expression {
                             .collect::<Vec<String>>()
                             .join(",");
 
-                format!("(function {} ({}){{ {}; }})", name, args, body.eval())
+                let body = body.eval().or_else(|i| Err(i)).unwrap();
+
+                Ok(format!("(function {} ({}){{ {}; }})", name, args, body))
             }
 
             Expression::FuncCall(ref name, ref args) => {
+                if let Some(func) = BUILTINS.get(name.as_str()) {
+                    func(args).or_else(|i| Err(i)).unwrap();
+                }
+
                 let args = args.into_iter()
-                    .map(|e| e.eval())
+                    .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
 
-                format!("({}({}))", name, args)
+                Ok(format!("({}({}))", name, args))
             }
         }
     }
