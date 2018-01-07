@@ -4,24 +4,31 @@ use error::ErrorStack;
 use to_javascript::ToJavaScript;
 
 #[derive(Debug)]
-struct Compiler {
+pub struct Compiler {
     global: Table<Expression>,
     errors: ErrorStack,
 }
 
 impl Compiler {
-    fn new() -> Compiler {
+    pub fn new() -> Compiler {
         Compiler {
             global: Table::new(None),
             errors: ErrorStack(vec![]),
         }
     }
 
-    fn compile(tree: &[Expression]) -> String {
+    pub fn compile(&mut self, tree: &[Expression]) -> String {
         tree
             .iter()
             // TODO: Remove unwrap
-            .map(|expr| expr.eval().unwrap())
+            .map(|expr| expr.eval())
+            .filter_map(move |expr| {
+                if expr.is_err() {
+                    self.errors.0.push(expr.clone().unwrap_err());
+                }
+
+                expr.ok()
+            })
             .collect::<Vec<String>>()
             .join(";")
     }
