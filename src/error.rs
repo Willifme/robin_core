@@ -4,6 +4,7 @@ use ansi_term::Colour;
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum ErrorKind {
     UndefinedVar = 0,
+    TooFewArguments = 1,
 }
 
 #[derive(Debug, PartialEq)]
@@ -14,11 +15,11 @@ pub enum ErrorLevel {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Error(pub ErrorKind, pub ErrorLevel, pub &'static str);
+pub struct Error(pub ErrorLevel, pub ErrorKind, pub &'static str);
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let colour_level = match self.1 {
+        let colour_level = match self.0 {
             ErrorLevel::Info => Colour::Yellow.paint("Info"),
 
             // ansi_term does not have orange for some reason
@@ -27,7 +28,7 @@ impl fmt::Display for Error {
         };
 
         // TODO: Remove clone
-        write!(f, "[{}] (E{}) {}", colour_level, self.0 as i32, self.2)
+        write!(f, "[{}] (E{}) {}", colour_level, self.1 as i32, self.2)
     }
 }
 
