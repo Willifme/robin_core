@@ -5,8 +5,8 @@ use to_javascript::ToJavaScript;
 
 #[derive(Debug)]
 pub struct Compiler {
-    global: Table<Expression>,
-    errors: ErrorStack,
+    pub global: Table<Expression>,
+    pub errors: ErrorStack,
 }
 
 impl Compiler {
