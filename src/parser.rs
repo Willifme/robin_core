@@ -1,7 +1,6 @@
 /// For some reason, Pest cannot find the grammar file if listed in parser/mod.rs
 use pest::Parser;
 use pest::iterators::Pair;
-use pest::inputs::StrInput;
 
 use ast::Expression;
 
@@ -13,7 +12,7 @@ const _GRAMMAR: &str = include_str!("grammar/grammar.pest");
 #[grammar = "grammar/grammar.pest"]
 pub struct ExpressionParser;
 
-fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
+fn parse_expression(input: Pair<Rule>) -> Expression {
     match input.as_rule() {
         Rule::function_literal => {
             let mut pairs = input.into_inner();
@@ -107,7 +106,7 @@ fn parse_expression(input: Pair<Rule, StrInput>) -> Expression {
 
 pub fn parse(input: &str) -> Result<Expression, String> {
     // TODO: Remove unwrap
-    match ExpressionParser::parse_str(Rule::main, input) {
+    match ExpressionParser::parse(Rule::main, input) {
         Ok(mut pair) => Ok(parse_expression(pair.nth(0).unwrap().into_inner().nth(0).unwrap())),
 
         Err(e) => Err(format!("{}", e)),
