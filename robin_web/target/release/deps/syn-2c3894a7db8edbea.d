@@ -1,0 +1,16 @@
+/home/william/Documents/robin_core/robin_web/target/release/deps/libsyn-2c3894a7db8edbea.rlib: /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/lib.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/attr.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/constant.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/data.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/escape.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/generics.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/ident.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/lit.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/mac.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/derive.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/op.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/ty.rs
+
+/home/william/Documents/robin_core/robin_web/target/release/deps/syn-2c3894a7db8edbea.d: /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/lib.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/attr.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/constant.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/data.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/escape.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/generics.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/ident.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/lit.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/mac.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/derive.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/op.rs /home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/ty.rs
+
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/lib.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/attr.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/constant.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/data.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/escape.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/generics.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/ident.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/lit.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/mac.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/derive.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/op.rs:
+/home/william/.cargo/registry/src/github.com-1ecc6299db9ec823/syn-0.11.11/src/ty.rs:
