@@ -104,6 +104,7 @@ fn parse_expression(input: Pair<Rule>) -> Expression {
 
 }
 
+#[no_mangle]
 pub fn parse(input: &str) -> Result<Expression, String> {
     // TODO: Remove unwrap
     match ExpressionParser::parse(Rule::main, input) {
