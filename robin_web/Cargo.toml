@@ -4,5 +4,5 @@ version = "0.1.0"
 authors = ["Willifme <penguinwithwaffle@gmail.com>"]
 
 [dependencies]
-stdweb = { git = "https://github.com/koute/stdweb" }
+stdweb = { git = "https://github.com/koute/stdweb" } 
 robin_core = { path = "../" }

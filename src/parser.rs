@@ -104,12 +104,17 @@ fn parse_expression(input: Pair<Rule>) -> Expression {
 
 }
 
-#[no_mangle]
-pub fn parse(input: &str) -> Result<Expression, String> {
-    // TODO: Remove unwrap
-    match ExpressionParser::parse(Rule::main, input) {
-        Ok(mut pair) => Ok(parse_expression(pair.nth(0).unwrap().into_inner().nth(0).unwrap())),
+// TODO: Work out how to return a slice from this
+pub fn parse(input: &str) -> Result<Vec<Expression>, String> {
+    // TODO: Remove these unwraps
+    ExpressionParser::parse(Rule::main, input)
+        .map(|pairs|
+             pairs
+             .flat_map(|sub_pairs|
+                       sub_pairs
+                        .into_inner()
+                       .map(|pair| parse_expression(pair)))
+             .collect::<Vec<Expression>>())
 
-        Err(e) => Err(format!("{}", e)),
-    }
+        .map_err(|error| format!("{}", error))
 }

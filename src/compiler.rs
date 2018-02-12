@@ -10,7 +10,6 @@ pub struct Compiler {
 }
 
 impl Compiler {
-    #[no_mangle]
     pub fn new() -> Compiler {
         Compiler {
             global: Table::new(None),
@@ -18,7 +17,6 @@ impl Compiler {
         }
     }
 
-    #[no_mangle]
     pub fn compile(&mut self, tree: &[Expression]) -> String {
         tree
             .iter()

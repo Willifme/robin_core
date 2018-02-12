@@ -1,5 +1,5 @@
 // The main rule. soi and eoi only parsers when complete (not before). This prevents parsing errors
-main = { soi ~ expression_literal ~ eoi }
+main = { soi ~ (expression_literal)* ~ eoi }
 
 expression_literal = _{ string_literal | function_literal | function_call_literal | list_literal | boolean_literal | identifier_literal | numeric_literal }
 
