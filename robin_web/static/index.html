@@ -4,19 +4,49 @@
       <style text="text/css" media="screen">
 	.container {
 	  display: flex;
-	  height: 100vh;
+	  height: 80vh;
 	}
 
 	.editor {
 	  flex: 1;
 	  height: 100%;
 	}
+
+	#compiler-list {
+	  list-style: none;
+	  padding-left: 2px;
+	}
+
+	.list-item {
+	  border-top: 2px;
+	  padding-bottom: 2px;
+	  border-bottom: 2px solid gray;
+	}
+
+	.error {
+	  background-color: #E86464;
+	}
+
+	.warning {
+	  background-color: #F49542;
+	}
+
+	.info {
+	  background-color: #90EE90;
+	}
       </style>
 
       <button id="run" type="button">Run!</button>
+
       <div class="container">
 	<div id="lisp-input" class="editor"></div>
+
 	<div id="js-output" class="editor"></div>
+      </div>
+
+      <div>
+	<ul id="compiler-list">
+	</ul>
       </div>
 
       <script type="text/javascript" src="ace.js"></script>
