@@ -5,12 +5,12 @@ extern crate robin_core;
 
 use std::borrow::BorrowMut;
 
-use stdweb::web::{IEventTarget, INode, IElement, Element, document};
+use stdweb::web::{document, Element, IElement, IEventTarget, INode};
 use stdweb::web::event::ClickEvent;
 
 use robin_core::compiler::Compiler;
 use robin_core::parser::parse;
-use robin_core::error::{Error, ErrorLevel, ErrorKind};
+use robin_core::error::{Error, ErrorKind, ErrorLevel};
 
 fn create_error_element(error: Error) -> Element {
     let error_class = match error.0 {
@@ -20,12 +20,9 @@ fn create_error_element(error: Error) -> Element {
     };
 
     // TODO: Remove unwrap
-    let element = document()
-                    .create_element("li")
-                    .unwrap();
+    let element = document().create_element("li").unwrap();
 
-    element
-        .set_text_content(&format!("(E{}) {}", error.1 as i32, error.2));
+    element.set_text_content(&format!("(E{}) {}", error.1 as i32, error.2));
 
     // TODO: Remove unwrap
     element.class_list().add(error_class).unwrap();
@@ -45,9 +42,7 @@ fn main() {
             return lisp_input.getSession().getValue();
         };
 
-        let compiler_list = document() 
-                .get_element_by_id("compiler-list")
-                .unwrap();
+        let compiler_list = document().get_element_by_id("compiler-list").unwrap();
 
         // Clear error nodes
         while compiler_list.has_child_nodes() {
@@ -65,27 +60,20 @@ fn main() {
             let error_element = create_error_element(error);
 
             compiler_list.append_child(&error_element);
-            
         } else {
             let parse_result_unwrapped = parse_result.unwrap();
 
-            let compiled = &compiler
-                .borrow_mut()
-                .compile(&parse_result_unwrapped);
+            let compiled = &compiler.borrow_mut().compile(&parse_result_unwrapped);
 
             if !compiler.errors.0.is_empty() {
-                compiler
-                    .errors.0
-                    .iter()
-                    .for_each(|error| {
-                        let error_element = create_error_element(*error); 
+                compiler.errors.0.iter().for_each(|error| {
+                    let error_element = create_error_element(*error);
 
-                        compiler_list.append_child(&error_element);
-                    });
+                    compiler_list.append_child(&error_element);
+                });
 
                 // Clear the error list
                 compiler.errors.0.clear();
-
             } else {
                 js! {
                     js_output.setValue(@{compiled});

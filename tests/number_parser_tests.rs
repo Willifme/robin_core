@@ -91,7 +91,6 @@ mod parser_tests {
         )
     }
 
-
     #[test]
     fn parse_multiple_decimal_digits() {
         parses_to!(

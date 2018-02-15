@@ -19,14 +19,18 @@ mod parser_tests {
 
     #[test]
     fn identifiers_that_look_like_booleans_should_return_identifiers() {
-        assert_eq!(parser::parse("truedog"),
-                   Ok(vec![Expression::Identifier("truedog".to_string())]))
+        assert_eq!(
+            parser::parse("truedog"),
+            Ok(vec![Expression::Identifier("truedog".to_string())])
+        )
     }
 
     #[test]
     fn identifiers_should_return_a_identifier_node() {
-        assert_eq!(parser::parse("hello"),
-                   Ok(vec![Expression::Identifier("hello".to_string())]))
+        assert_eq!(
+            parser::parse("hello"),
+            Ok(vec![Expression::Identifier("hello".to_string())])
+        )
     }
 
     #[test]
@@ -63,35 +67,45 @@ mod parser_tests {
 
     #[test]
     fn function_literal_should_return_a_function_literal_node() {
-        let expr = Expression::FuncLiteral("example".to_string(),
-                                           vec!["x".to_string()],
-                                           Box::new(Expression::Boolean(true)));
+        let expr = Expression::FuncLiteral(
+            "example".to_string(),
+            vec!["x".to_string()],
+            Box::new(Expression::Boolean(true)),
+        );
 
         assert_eq!(parser::parse("(example [x] true)"), Ok(vec![expr]));
     }
 
     #[test]
     fn function_literal_with_multiple_arguments() {
-        let expr = Expression::FuncLiteral("example".to_string(),
-                                           vec!["x".to_string(), "y".to_string()],
-                                           Box::new(Expression::Boolean(true)));
+        let expr = Expression::FuncLiteral(
+            "example".to_string(),
+            vec!["x".to_string(), "y".to_string()],
+            Box::new(Expression::Boolean(true)),
+        );
 
         assert_eq!(parser::parse("(example [x y] true)"), Ok(vec![expr]));
     }
 
     #[test]
     fn function_call_should_return_a_function_call_node() {
-        let expr = Expression::FuncCall(Box::new(Expression::Identifier("example".to_string())),
-                                        vec![Box::new(Expression::Boolean(true))]);
+        let expr = Expression::FuncCall(
+            Box::new(Expression::Identifier("example".to_string())),
+            vec![Box::new(Expression::Boolean(true))],
+        );
 
         assert_eq!(parser::parse("(example true)"), Ok(vec![expr]));
     }
 
     #[test]
     fn function_call_with_multiple_arguments() {
-        let expr = Expression::FuncCall(Box::new(Expression::Identifier("example".to_string())),
-                                        vec![Box::new(Expression::Boolean(true)),
-                                             Box::new(Expression::Boolean(false))]);
+        let expr = Expression::FuncCall(
+            Box::new(Expression::Identifier("example".to_string())),
+            vec![
+                Box::new(Expression::Boolean(true)),
+                Box::new(Expression::Boolean(false)),
+            ],
+        );
 
         assert_eq!(parser::parse("(example true false)"), Ok(vec![expr]));
     }

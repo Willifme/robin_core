@@ -98,20 +98,16 @@ fn parse_expression(input: Pair<Rule>) -> Expression {
         // Temporary
         _ => unreachable!()
     }
-
 }
 
 // TODO: Work out how to return a slice from this
 pub fn parse(input: &str) -> Result<Vec<Expression>, String> {
     // TODO: Remove these unwraps
     ExpressionParser::parse(Rule::main, input)
-        .map(|pairs|
-             pairs
-             .flat_map(|sub_pairs|
-                       sub_pairs
-                        .into_inner()
-                       .map(|pair| parse_expression(pair)))
-             .collect::<Vec<Expression>>())
-
+        .map(|pairs| {
+            pairs
+                .flat_map(|sub_pairs| sub_pairs.into_inner().map(|pair| parse_expression(pair)))
+                .collect::<Vec<Expression>>()
+        })
         .map_err(|error| format!("{}", error))
 }

@@ -56,10 +56,9 @@ impl ToJavaScript for Expression {
                 match expr_name {
                     &Expression::Identifier(ref ident) => {
                         // We unwrap, but it should be okay
-                        if let Some(func) = BUILTINS.get(&ident as &str) { 
+                        if let Some(func) = BUILTINS.get(&ident as &str) {
                             func(args).or_else(|i| Err(i))
                         } else {
-
                             let args = args.into_iter()
                                 .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
                                 .collect::<Vec<String>>()
@@ -68,7 +67,7 @@ impl ToJavaScript for Expression {
                             // TODO: Remove unwrap()
                             Ok(format!("({}({}))", name.eval().unwrap(), args))
                         }
-                    },
+                    }
 
                     _ => {
                         // TODO: Remove unwrap()

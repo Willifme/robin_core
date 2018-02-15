@@ -20,27 +20,27 @@ lazy_static! {
 pub fn builtin_if(args: &Vec<Box<Expression>>) -> Result<String, Error> {
     // TODO: Remove unwraps
     match args.len() {
-        0 => {
-            Err(Error(ErrorLevel::Error,
-                      ErrorKind::TooFewArguments,
-                      "Too few Arguments applied for if"))
-        }
-        1 => {
-            Err(Error(ErrorLevel::Error,
-                      ErrorKind::TooFewArguments,
-                      "No expression applied for condition"))
-        }
-        2 => {
-            Ok(format!("if ({}) {{ {} }}",
-                       args[0].eval().unwrap(),
-                       args[1].eval().unwrap()))
-        }
-        3 => {
-            Ok(format!("if ({}) {{ {} }} else {{ {} }}",
-                       args[0].eval().unwrap(),
-                       args[1].eval().unwrap(),
-                       args[2].eval().unwrap()))
-        }
+        0 => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "Too few Arguments applied for if",
+        )),
+        1 => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "No expression applied for condition",
+        )),
+        2 => Ok(format!(
+            "if ({}) {{ {} }}",
+            args[0].eval().unwrap(),
+            args[1].eval().unwrap()
+        )),
+        3 => Ok(format!(
+            "if ({}) {{ {} }} else {{ {} }}",
+            args[0].eval().unwrap(),
+            args[1].eval().unwrap(),
+            args[2].eval().unwrap()
+        )),
         _ => panic!("Unknown number of arguments supplied to if-statement"),
     }
 }
