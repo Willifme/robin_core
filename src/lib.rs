@@ -1,3 +1,5 @@
+#![feature(box_patterns, box_syntax)]
+
 extern crate pest;
 
 #[macro_use]
