@@ -106,7 +106,7 @@ pub fn parse(input: &str) -> Result<Vec<Expression>, String> {
     ExpressionParser::parse(Rule::main, input)
         .map(|pairs| {
             pairs
-                .flat_map(|sub_pairs| sub_pairs.into_inner().map(|pair| parse_expression(pair)))
+                .flat_map(|sub_pairs| sub_pairs.into_inner().map(|e| parse_expression(e)))
                 .collect::<Vec<Expression>>()
         })
         .map_err(|error| format!("{}", error))

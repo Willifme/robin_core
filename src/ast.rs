@@ -27,7 +27,7 @@ impl ToJavaScript for Expression {
 
             Expression::List(ref vals) => {
                 let vals = vals.into_iter()
-                    .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
+                    .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
 
@@ -43,7 +43,7 @@ impl ToJavaScript for Expression {
                             .collect::<Vec<String>>()
                             .join(",");
 
-                let body = body.eval().or_else(|i| Err(i)).unwrap();
+                let body = body.eval().or_else(|e| Err(e)).unwrap();
 
                 Ok(format!("(function {} ({}){{ {}; }})", name, args, body))
             }
@@ -53,14 +53,14 @@ impl ToJavaScript for Expression {
                 let &box ref expr_name = name;
 
                 // TODO: Rethink this code
-                match expr_name {
-                    &Expression::Identifier(ref ident) => {
+                match *expr_name {
+                    Expression::Identifier(ref ident) => {
                         // We unwrap, but it should be okay
-                        if let Some(func) = BUILTINS.get(&ident as &str) {
-                            func(args).or_else(|i| Err(i))
+                        if let Some(func) = BUILTINS.get(ident as &str) {
+                            func(args).or_else(|e| Err(e))
                         } else {
                             let args = args.into_iter()
-                                .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
+                                .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
                                 .collect::<Vec<String>>()
                                 .join(",");
 
