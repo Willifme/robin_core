@@ -41,12 +41,9 @@ fn parse_expression(input: Pair<Rule>) -> Expression {
         Rule::function_call_literal => {
             let mut pairs = input.into_inner();
 
-            let name = pairs
+            let name = Box::new(parse_expression(pairs
                         .next()
-                        .unwrap()
-                        .into_span()
-                        .as_str()
-                        .to_string();
+                        .unwrap()));
 
             let args = pairs
                         .into_iter()

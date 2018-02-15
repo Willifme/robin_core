@@ -7,7 +7,7 @@ mod eval_expr_tests {
 
     #[test]
     fn if_with_no_args_should_return_an_err() {
-        let expr = Expression::FuncCall("if".to_string(), vec![]);
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())), vec![]);
 
         let err = Err(Error(ErrorLevel::Error,
                             ErrorKind::TooFewArguments,
@@ -18,7 +18,7 @@ mod eval_expr_tests {
 
     #[test]
     fn if_with_no_expression_after_condition_should_return_an_err() {
-        let expr = Expression::FuncCall("if".to_string(),
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())),
                                         vec![Box::new(Expression::Boolean(true))]);
 
         let err = Err(Error(ErrorLevel::Error,
@@ -30,7 +30,7 @@ mod eval_expr_tests {
 
     #[test]
     fn if_with_only_one_branch_should_return_an_func() {
-        let expr = Expression::FuncCall("if".to_string(),
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())),
                                         vec![Box::new(Expression::Boolean(true)),
                                              Box::new(Expression::Number(1.0))]);
 
@@ -39,7 +39,7 @@ mod eval_expr_tests {
 
     #[test]
     fn if_with_else_branch_should_return_a_func() {
-        let expr = Expression::FuncCall("if".to_string(),
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())),
                                         vec![Box::new(Expression::Boolean(true)),
                                              Box::new(Expression::Number(1.0)),
                                              Box::new(Expression::Number(1.0))]);

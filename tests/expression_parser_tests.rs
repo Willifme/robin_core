@@ -81,7 +81,7 @@ mod parser_tests {
 
     #[test]
     fn function_call_should_return_a_function_call_node() {
-        let expr = Expression::FuncCall("example".to_string(),
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("example".to_string())),
                                         vec![Box::new(Expression::Boolean(true))]);
 
         assert_eq!(parser::parse("(example true)"), Ok(vec![expr]));
@@ -89,7 +89,7 @@ mod parser_tests {
 
     #[test]
     fn function_call_with_multiple_arguments() {
-        let expr = Expression::FuncCall("example".to_string(),
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("example".to_string())),
                                         vec![Box::new(Expression::Boolean(true)),
                                              Box::new(Expression::Boolean(false))]);
 
