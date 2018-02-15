@@ -5,11 +5,33 @@ extern crate robin_core;
 
 use std::borrow::BorrowMut;
 
-use stdweb::web::{IEventTarget, INode, document};
+use stdweb::web::{IEventTarget, INode, IElement, Element, document};
 use stdweb::web::event::ClickEvent;
 
 use robin_core::compiler::Compiler;
 use robin_core::parser::parse;
+use robin_core::error::{Error, ErrorLevel, ErrorKind};
+
+fn create_error_element(error: Error) -> Element {
+    let error_class = match error.0 {
+        ErrorLevel::Info => "info",
+        ErrorLevel::Warning => "warning",
+        ErrorLevel::Error => "error",
+    };
+
+    // TODO: Remove unwrap
+    let element = document()
+                    .create_element("li")
+                    .unwrap();
+
+    element
+        .set_text_content(&format!("(E{}) {}", error.1 as i32, error.2));
+
+    // TODO: Remove unwrap
+    element.class_list().add(error_class).unwrap();
+
+    element
+}
 
 fn main() {
     stdweb::initialize();
@@ -27,10 +49,6 @@ fn main() {
                 .get_element_by_id("compiler-list")
                 .unwrap();
 
-        let error_element = document()
-            .create_element("li")
-            .unwrap();
-
         // Clear error nodes
         while compiler_list.has_child_nodes() {
             compiler_list
@@ -41,9 +59,10 @@ fn main() {
         let parse_result = parse(&lisp_input.as_str().unwrap());
 
         if parse_result.is_err() {
-            error_element
-                .set_text_content(
-                    &format!("{}", parse_result.err().unwrap()));
+            // TODO: Improve parser error
+            let error = Error(ErrorLevel::Error, ErrorKind::ParseError, "Parsing error");
+
+            let error_element = create_error_element(error);
 
             compiler_list.append_child(&error_element);
             
@@ -54,22 +73,27 @@ fn main() {
                 .borrow_mut()
                 .compile(&parse_result_unwrapped);
 
-            compiler
-                .errors.0
-                .iter()
-                .for_each(|error| {
-                    error_element
-                        .set_text_content(
-                            &format!("{}", error));
-                    compiler_list.append_child(&error_element);
-                });
+            if !compiler.errors.0.is_empty() {
+                compiler
+                    .errors.0
+                    .iter()
+                    .for_each(|error| {
+                        let error_element = create_error_element(*error); 
 
-            js! {
-                js_output.setValue(@{compiled});
+                        compiler_list.append_child(&error_element);
+                    });
 
-                var newWindow = window.open("", "_blank");
+                // Clear the error list
+                compiler.errors.0.clear();
 
-                //newWindow.document.write("<script type='text/javascript'>" + @{compiled} + "</script>");
+            } else {
+                js! {
+                    js_output.setValue(@{compiled});
+
+                    var newWindow = window.open("", "_blank");
+
+                    newWindow.document.write("<script type='text/javascript'>" + @{compiled} + "</script>");
+                }
             }
         }
     });
