@@ -50,7 +50,7 @@ impl ToJavaScript for Expression {
 
             Expression::FuncCall(ref name, ref args) => {
                 if let Some(func) = BUILTINS.get(name.as_str()) {
-                    func(args).or_else(|i| Err(i))
+                    func(name, args).or_else(|i| Err(i))
 
                 } else {
                     let args = args.into_iter()

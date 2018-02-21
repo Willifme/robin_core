@@ -6,6 +6,117 @@ mod eval_expr_tests {
     use robin_core::error::{Error, ErrorLevel, ErrorKind};
 
     #[test]
+    fn plus_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("+".to_string(),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("+50")));
+    }
+
+    #[test]
+    fn minus_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("-".to_string(),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("-50")));
+    }
+
+    #[test]
+    fn not_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("!".to_string(),
+                                        vec![Box::new(Expression::Boolean(true))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("!true")));
+    }
+
+    #[test]
+    fn increment_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("++".to_string(),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("++50")));
+    }
+
+    #[test]
+    fn bitwise_not_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("~".to_string(),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("~50")));
+    }
+
+    #[test]
+    fn typeof_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("typeof".to_string(),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("typeof 50")));
+    }
+
+    #[test]
+    fn delete_unary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("delete".to_string(),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("delete 50")));
+    }
+
+    #[test]
+    fn binary_op_with_more_than_two_exprs_shoudl_evaluate_correctly() {
+        let expr = Expression::FuncCall("+".to_string(),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("50+50+50")));
+    }
+
+    #[test]
+    fn plus_binary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("+".to_string(),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("50+50")));
+    }
+
+    #[test]
+    fn minus_binary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("-".to_string(),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("50-50")));
+    }
+
+    #[test]
+    fn times_binary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("*".to_string(),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("50*50")));
+    }
+
+    #[test]
+    fn divide_binary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("/".to_string(),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("50/50")));
+    }
+
+    #[test]
+    fn modulo_binary_op_should_evaluate_correctly() {
+        let expr = Expression::FuncCall("%".to_string(),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("50%50")));
+    }
+
+    #[test]
     fn if_with_no_args_should_return_an_err() {
         let expr = Expression::FuncCall("if".to_string(), vec![]);
 
