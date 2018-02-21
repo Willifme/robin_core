@@ -1,3 +1,5 @@
+use std::default::Default;
+
 use analysis::table::Table;
 use ast::Expression;
 use error::ErrorStack;
@@ -31,5 +33,11 @@ impl Compiler {
             })
             .collect::<Vec<String>>()
             .join(";")
+    }
+}
+
+impl Default for Compiler {
+    fn default() -> Self {
+        Self::new()
     }
 }

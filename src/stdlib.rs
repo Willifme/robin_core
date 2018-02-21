@@ -43,25 +43,25 @@ lazy_static! {
 }
 
 pub fn builtin_binop(name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
-    // Handle unary operations where appropriate (mostly plus and minus)
-    if args.len() == 1 {
-        builtin_unary(name, args)
+    match args.len() {
+        // This should never happen
+        0 => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "Too few Arguments applied for binary operation",
+        )),
+        1 => builtin_unary(name, args),
+        _ => {
+            let joined = args
+                .into_iter()
 
-    // Handle the most common case, two expressions together e.g. (+ 1 1)
-    } else if args.len() == 2 {
-        Ok(format!("{}{}{}", args[0].eval()?, name, args[1].eval()?))
+                // TODO: Remove unwrap
+                .map(|expr| expr.eval().unwrap())
+                .collect::<Vec<String>>()
+                .join(name);
 
-    // Handle the less common case of multiple expressions in one e.g. (+ 1 2 3 4 5)
-    } else {
-        let joined = args
-            .into_iter()
-
-            // MEGA TODO: Remove unwrap
-            .map(|expr| expr.eval().unwrap())
-            .collect::<Vec<String>>()
-            .join(name);
-
-        Ok(joined)
+            Ok(joined)
+        },
     }
 }
 
@@ -80,27 +80,27 @@ pub fn builtin_unary(name: &String, args: &Vec<Box<Expression>>) -> Result<Strin
 pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
     // TODO: Remove unwraps
     match args.len() {
-        0 => {
-            Err(Error(ErrorLevel::Error,
-                      ErrorKind::TooFewArguments,
-                      "Too few Arguments applied for if"))
-        }
-        1 => {
-            Err(Error(ErrorLevel::Error,
-                      ErrorKind::TooFewArguments,
-                      "No expression applied for condition"))
-        }
-        2 => {
-            Ok(format!("if ({}) {{ {} }}",
-                       args[0].eval().unwrap(),
-                       args[1].eval().unwrap()))
-        }
-        3 => {
-            Ok(format!("if ({}) {{ {} }} else {{ {} }}",
-                       args[0].eval().unwrap(),
-                       args[1].eval().unwrap(),
-                       args[2].eval().unwrap()))
-        }
+        0 => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "Too few Arguments applied for if",
+        )),
+        1 => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "No expression applied for condition",
+        )),
+        2 => Ok(format!(
+            "if ({}) {{ {} }}",
+            args[0].eval().unwrap(),
+            args[1].eval().unwrap()
+        )),
+        3 => Ok(format!(
+            "if ({}) {{ {} }} else {{ {} }}",
+            args[0].eval().unwrap(),
+            args[1].eval().unwrap(),
+            args[2].eval().unwrap()
+        )),
         _ => panic!("Unknown number of arguments supplied to if-statement"),
     }
 }

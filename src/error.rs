@@ -5,7 +5,8 @@ use ansi_term::Colour;
 pub enum ErrorKind {
     UndefinedVar = 0,
     TooFewArguments = 1,
-    InvalidExpression = 2,
+    InvalidExpression = 3,
+    ParseError = 4,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]

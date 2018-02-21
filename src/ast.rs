@@ -13,8 +13,8 @@ pub enum Expression {
     // String = Function Name, Vec<Box<String>> = Argument List, Box<Expression> = Body
     FuncLiteral(String, Vec<String>, Box<Expression>),
 
-    // String = Function Name, Vec<Box<Expression>> = Arguments
-    FuncCall(String, Vec<Box<Expression>>),
+    // Box<Expression> = Expression being called, Vec<Box<Expression>> = Arguments
+    FuncCall(Box<Expression>, Vec<Box<Expression>>),
 }
 
 impl ToJavaScript for Expression {
@@ -27,7 +27,7 @@ impl ToJavaScript for Expression {
 
             Expression::List(ref vals) => {
                 let vals = vals.into_iter()
-                    .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
+                    .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
 
@@ -43,22 +43,37 @@ impl ToJavaScript for Expression {
                             .collect::<Vec<String>>()
                             .join(",");
 
-                let body = body.eval().or_else(|i| Err(i)).unwrap();
+                let body = body.eval().or_else(|e| Err(e)).unwrap();
 
                 Ok(format!("(function {} ({}){{ {}; }})", name, args, body))
             }
 
             Expression::FuncCall(ref name, ref args) => {
-                if let Some(func) = BUILTINS.get(name.as_str()) {
-                    func(name, args).or_else(|i| Err(i))
+                // Debox the name from Box<Expression> to Expression
+                let &box ref expr_name = name;
 
-                } else {
-                    let args = args.into_iter()
-                        .map(|e| e.eval().or_else(|i| Err(i)).unwrap())
-                        .collect::<Vec<String>>()
-                        .join(",");
+                // TODO: Rethink this code
+                match *expr_name {
+                    Expression::Identifier(ref ident) => {
+                        // We unwrap, but it should be okay
+                        if let Some(func) = BUILTINS.get(ident as &str) {
+                            func(ident, args).or_else(|e| Err(e))
+                        } else {
+                            let args = args.into_iter()
+                                .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
+                                .collect::<Vec<String>>()
+                                .join(",");
 
-                    Ok(format!("({}({}))", name, args))
+                            // TODO: Remove unwrap()
+                            Ok(format!("({}({}))", name.eval().unwrap(), args))
+                        }
+                    }
+
+                    _ => {
+                        // TODO: Remove unwrap()
+                        // Otherwise, lazily just place brackets around
+                        Ok(format!("({})", name.eval().unwrap()))
+                    }
                 }
             }
         }
