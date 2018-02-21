@@ -108,6 +108,19 @@ mod eval_expr_tests {
     }
 
     #[test]
+    fn divide_binary_op_should_return_an_error() {
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("/".to_string())),
+                                        vec![Box::new(Expression::Number(50.0)),
+                                             Box::new(Expression::Number(0.0))]);
+
+        let err = Err(Error(ErrorLevel::Error,
+                    ErrorKind::InvalidExpression,
+                    "Divide by zero encountered on numeric literal binary operation"));
+
+        assert_eq!(expr.eval(), err);
+    }
+
+    #[test]
     fn modulo_binary_op_should_evaluate_correctly() {
         let expr = Expression::FuncCall(Box::new(Expression::Identifier("%".to_string())),
                                         vec![Box::new(Expression::Number(50.0)),

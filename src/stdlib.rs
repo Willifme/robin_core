@@ -123,8 +123,13 @@ fn precalculate_numbers(op: &String, left: f64, right: f64) -> Result<String, Er
         "+" => Ok(format!("{}", left + right)),
         "-" => Ok(format!("{}", left - right)),
         "*" => Ok(format!("{}", left * right)),
-        "/" => Ok(format!("{}", left / right)),
+        "/" if right != 0.0 => Ok(format!("{}", left / right)),
         "%" => Ok(format!("{}", left % right)),
+
+        // Assume divide by 0 here
+        "/" => Err(Error(ErrorLevel::Error,
+                    ErrorKind::InvalidExpression,
+                    "Divide by zero encountered on numeric literal binary operation")),
         _ => Err(Error(ErrorLevel::Error,
                     ErrorKind::InvalidExpression,
                     "Invalid operator given to numeric binary operation"))
