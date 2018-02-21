@@ -77,7 +77,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Number(50.0)),
                                              Box::new(Expression::Number(50.0))]);
 
-        assert_eq!(expr.eval(), Ok(String::from("50+50")));
+        assert_eq!(expr.eval(), Ok(String::from("100")));
     }
 
     #[test]
@@ -86,7 +86,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Number(50.0)),
                                              Box::new(Expression::Number(50.0))]);
 
-        assert_eq!(expr.eval(), Ok(String::from("50-50")));
+        assert_eq!(expr.eval(), Ok(String::from("0")));
     }
 
     #[test]
@@ -95,7 +95,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Number(50.0)),
                                              Box::new(Expression::Number(50.0))]);
 
-        assert_eq!(expr.eval(), Ok(String::from("50*50")));
+        assert_eq!(expr.eval(), Ok(String::from("2500")));
     }
 
     #[test]
@@ -104,7 +104,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Number(50.0)),
                                              Box::new(Expression::Number(50.0))]);
 
-        assert_eq!(expr.eval(), Ok(String::from("50/50")));
+        assert_eq!(expr.eval(), Ok(String::from("1")));
     }
 
     #[test]
@@ -113,7 +113,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Number(50.0)),
                                              Box::new(Expression::Number(50.0))]);
 
-        assert_eq!(expr.eval(), Ok(String::from("50%50")));
+        assert_eq!(expr.eval(), Ok(String::from("0")));
     }
 
     #[test]

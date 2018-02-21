@@ -27,6 +27,7 @@ impl ToJavaScript for Expression {
 
             Expression::List(ref vals) => {
                 let vals = vals.into_iter()
+                    // We can assume the unwrap is just a formality
                     .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
@@ -43,9 +44,7 @@ impl ToJavaScript for Expression {
                             .collect::<Vec<String>>()
                             .join(",");
 
-                let body = body.eval().or_else(|e| Err(e)).unwrap();
-
-                Ok(format!("(function {} ({}){{ {}; }})", name, args, body))
+                Ok(format!("(function {} ({}){{ {}; }})", name, args, body.eval()?))
             }
 
             Expression::FuncCall(ref name, ref args) => {
@@ -57,7 +56,7 @@ impl ToJavaScript for Expression {
                     Expression::Identifier(ref ident) => {
                         // We unwrap, but it should be okay
                         if let Some(func) = BUILTINS.get(ident as &str) {
-                            func(ident, args).or_else(|e| Err(e))
+                            func(ident, args)
                         } else {
                             let args = args.into_iter()
                                 .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
@@ -67,13 +66,9 @@ impl ToJavaScript for Expression {
                             // TODO: Remove unwrap()
                             Ok(format!("({}({}))", name.eval().unwrap(), args))
                         }
-                    }
+                    },
 
-                    _ => {
-                        // TODO: Remove unwrap()
-                        // Otherwise, lazily just place brackets around
-                        Ok(format!("({})", name.eval().unwrap()))
-                    }
+                    _ => unimplemented!(), 
                 }
             }
         }

@@ -42,35 +42,48 @@ lazy_static! {
     };
 }
 
-pub fn builtin_binop(name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
+pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
     match args.len() {
-        // This should never happen
         0 => Err(Error(
             ErrorLevel::Error,
             ErrorKind::TooFewArguments,
             "Too few Arguments applied for binary operation",
         )),
-        1 => builtin_unary(name, args),
+        1 => builtin_unary(op, args),
+        2 => {
+            // Debox and take from index
+            // This is messy _but_ it should make the match easier to understand
+            let &box ref left = &args[0];
+
+            let &box ref right = &args[1];
+
+            match (left, right) {
+                (&Expression::Number(l), &Expression::Number(r)) =>
+                    precalculate_numbers(op, l, r),
+
+                (_, _) => Ok(format!("{}{}{}", left.eval()?, op, right.eval()?)),
+            }
+        },
         _ => {
             let joined = args
                 .into_iter()
 
                 // TODO: Remove unwrap
-                .map(|expr| expr.eval().unwrap())
+                .map(|expr| expr.eval().or_else(|e| Err(e)).unwrap())
                 .collect::<Vec<String>>()
-                .join(name);
+                .join(op);
 
             Ok(joined)
         },
     }
 }
 
-pub fn builtin_unary(name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
-    match name.as_ref() {
-        "+" | "-" | "!" | "++" | "--" | "~" => Ok(format!("{}{}", name, args[0].eval()?)),
+pub fn builtin_unary(op: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
+    match op.as_ref() {
+        "+" | "-" | "!" | "++" | "--" | "~" => Ok(format!("{}{}", op, args[0].eval()?)),
 
         // Unary operators which are words next an extra space.
-        "typeof" | "delete" => Ok(format!("{} {}", name, args[0].eval()?)),
+        "typeof" | "delete" => Ok(format!("{} {}", op, args[0].eval()?)),
         _ => Err(Error(ErrorLevel::Error,
                     ErrorKind::TooFewArguments,
                     "Invalid operator applied to unary operator"))
@@ -92,15 +105,28 @@ pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String,
         )),
         2 => Ok(format!(
             "if ({}) {{ {} }}",
-            args[0].eval().unwrap(),
-            args[1].eval().unwrap()
+            args[0].eval()?,
+            args[1].eval()?
         )),
         3 => Ok(format!(
             "if ({}) {{ {} }} else {{ {} }}",
-            args[0].eval().unwrap(),
-            args[1].eval().unwrap(),
-            args[2].eval().unwrap()
+            args[0].eval()?,
+            args[1].eval()?,
+            args[2].eval()?
         )),
         _ => panic!("Unknown number of arguments supplied to if-statement"),
+    }
+}
+
+fn precalculate_numbers(op: &String, left: f64, right: f64) -> Result<String, Error> {
+    match op.as_ref() {
+        "+" => Ok(format!("{}", left + right)),
+        "-" => Ok(format!("{}", left - right)),
+        "*" => Ok(format!("{}", left * right)),
+        "/" => Ok(format!("{}", left / right)),
+        "%" => Ok(format!("{}", left % right)),
+        _ => Err(Error(ErrorLevel::Error,
+                    ErrorKind::InvalidExpression,
+                    "Invalid operator given to numeric binary operation"))
     }
 }
