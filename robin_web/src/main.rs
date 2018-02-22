@@ -55,7 +55,7 @@ fn main() {
 
         if parse_result.is_err() {
             // TODO: Improve parser error
-            let error = Error(ErrorLevel::Error, ErrorKind::ParseError, "Parsing error");
+            let error = Error(ErrorLevel::Error, ErrorKind::ParseError, "Parsing error".to_string());
 
             let error_element = create_error_element(error);
 
@@ -67,9 +67,7 @@ fn main() {
 
             if !compiler.errors.0.is_empty() {
                 compiler.errors.0.iter().for_each(|error| {
-                    let error_element = create_error_element(*error);
-
-                    compiler_list.append_child(&error_element);
+                    compiler_list.append_child(&create_error_element(error.clone()));
                 });
 
                 // Clear the error list
