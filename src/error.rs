@@ -21,6 +21,14 @@ pub enum ErrorLevel {
 pub struct Error(pub ErrorLevel, pub ErrorKind, pub String);
 
 impl Error {
+    pub fn undefined_var(name: &'static str) -> Error {
+        Error(
+            ErrorLevel::Error,
+            ErrorKind::UndefinedVar,
+            format!("Undefined var '{}'", name),
+        )
+    }
+
     pub fn too_few_arguments(construct: &'static str) -> Error {
         Error(
             ErrorLevel::Error,

@@ -1,20 +1,17 @@
 use std::default::Default;
 
-use analysis::table::Table;
 use ast::Expression;
 use error::ErrorStack;
 use to_javascript::ToJavaScript;
 
 #[derive(Debug)]
 pub struct Compiler {
-    pub global: Table<Expression>,
     pub errors: ErrorStack,
 }
 
 impl Compiler {
     pub fn new() -> Compiler {
         Compiler {
-            global: Table::new(None),
             errors: ErrorStack(vec![]),
         }
     }

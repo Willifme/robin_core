@@ -1,3 +1,4 @@
+use analysis::table::VARIABLE_TABLE;
 use to_javascript::ToJavaScript;
 use stdlib::BUILTINS;
 use error::Error;
@@ -21,7 +22,13 @@ impl ToJavaScript for Expression {
     fn eval(&self) -> Result<String, Error> {
         match *self {
             Expression::Number(ref val) => Ok(format!("{}", val)),
-            Expression::Identifier(ref val) => Ok(format!("{}", val)),
+            Expression::Identifier(ref val) =>
+                if let Some(_) = VARIABLE_TABLE.get(val as &str) {
+                    Ok(format!("{}", val))
+
+                } else {
+                    Err(Error::undefined_var("")) 
+                }
             Expression::Boolean(ref val) => Ok(format!("{}", val)),
             Expression::String(ref val) => Ok(val.clone()),
 

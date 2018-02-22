@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::boxed::Box;
 
-use to_javascript::ToJavaScript;
+use ast::Expression;
 
 /// Create a type alias for the table containing the symbols
 /// All items are acccessible via their name
@@ -11,15 +11,15 @@ pub type Container<T> = HashMap<&'static str, T>;
 /// This is the generic container for all symbol tables
 /// `T` must implement `ToJavaScript`
 #[derive(Debug)]
-pub struct Table<T: ToJavaScript> {
+pub struct Table<T> {
     /// This is the optional parent struct.
     /// The parent will most likely have a value unless the scope is global
     parent: Option<Box<Table<T>>>,
-    /// The container is the contents of th table
+    /// The container is the contents of the table
     container: Box<Container<T>>,
 }
 
-impl<T: ToJavaScript> Table<T> {
+impl<T> Table<T> {
     pub fn new(table: Option<Box<Table<T>>>) -> Table<T> {
         Table {
             parent: table,
@@ -35,11 +35,25 @@ impl<T: ToJavaScript> Table<T> {
     /// Attempt to get a value from the table
     /// If the value can't be found within this scope. try the parent.
     /// After descending through all the scopes, return an undefiend error
-    pub fn get(&self, key: &'static str) -> Option<&T> {
+    pub fn get(&self, key: &str) -> Option<&T> {
         // First we get from the local scope
         match self.container.get(key) {
             Some(value) => Some(value),
             None => self.parent.as_ref().and_then(|i| i.get(key)),
         }
     }
+}
+
+/// Create a global (ugh) table to hold all the expressions
+lazy_static! {
+    pub static ref EXPRESSION_TABLE: Table<Expression> = {
+        Table::new(None) 
+    };
+}
+
+/// Create a global (ugh) table to hold all the variables
+lazy_static! {
+    pub static ref VARIABLE_TABLE: Table<String> = {
+        Table::new(None)
+    };
 }
