@@ -3,7 +3,7 @@ extern crate robin_core;
 mod eval_expr_tests {
     use robin_core::ast::Expression;
     use robin_core::to_javascript::ToJavaScript;
-    use robin_core::error::{Error, ErrorKind, ErrorLevel};
+    use robin_core::error::Error;
 
     #[test]
     fn return_with_one_argument_should_evaluate_correctly() {
@@ -17,11 +17,7 @@ mod eval_expr_tests {
     fn return_with_no_arguments_should_return_an_error() {
         let expr = Expression::FuncCall(Box::new(Expression::Identifier("return".to_string())), vec![]);
 
-        let err =  Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "Too few arguments applied for return",
-        ));
+        let err = Err(Error::too_few_arguments("return"));
 
         assert_eq!(expr.eval(), err);
     }
@@ -31,11 +27,7 @@ mod eval_expr_tests {
         let expr = Expression::FuncCall(Box::new(Expression::Identifier("return".to_string())),
                                         vec![Box::new(Expression::Number(50.0)), Box::new(Expression::Number(50.0))]);
 
-        let err =  Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooManyArguments,
-            "Too many arguments applied for return",
-        ));
+        let err = Err(Error::too_many_arguments("return"));
 
         assert_eq!(expr.eval(), err);
     }
@@ -148,8 +140,7 @@ mod eval_expr_tests {
                                         vec![Box::new(Expression::Number(50.0)),
                                              Box::new(Expression::Number(0.0))]);
 
-        let err = Err(Error(ErrorLevel::Error,
-                    ErrorKind::InvalidExpression,
+        let err = Err(Error::invalid_expression(
                     "Divide by zero encountered on numeric literal binary operation"));
 
         assert_eq!(expr.eval(), err);
@@ -168,11 +159,7 @@ mod eval_expr_tests {
     fn if_with_no_args_should_return_an_err() {
         let expr = Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())), vec![]);
 
-        let err = Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "Too few arguments applied for if",
-        ));
+        let err = Err(Error::too_few_arguments("if statement"));
 
         assert_eq!(expr.eval(), err)
     }
@@ -184,11 +171,7 @@ mod eval_expr_tests {
             vec![Box::new(Expression::Boolean(true))],
         );
 
-        let err = Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "No expression applied for condition",
-        ));
+        let err = Err(Error::too_few_arguments("if statement condition"));
 
         assert_eq!(expr.eval(), err)
     }

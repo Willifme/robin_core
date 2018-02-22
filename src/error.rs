@@ -17,8 +17,31 @@ pub enum ErrorLevel {
     Error,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Error(pub ErrorLevel, pub ErrorKind, pub &'static str);
+#[derive(Debug, Clone, PartialEq)]
+pub struct Error(pub ErrorLevel, pub ErrorKind, pub String);
+
+impl Error {
+    pub fn too_few_arguments(construct: &'static str) -> Error {
+        Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments, 
+            format!("Too few arguments applied for {}", construct))
+    }
+
+    pub fn too_many_arguments(construct: &'static str) -> Error {
+        Error(
+            ErrorLevel::Error,
+            ErrorKind::TooManyArguments, 
+            format!("Too many arguments applied for {}", construct))
+    }
+    
+    pub fn invalid_expression(construct: &'static str) -> Error {
+        Error(
+            ErrorLevel::Error,
+            ErrorKind::InvalidExpression, 
+            format!("{}", construct))
+    }
+}
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

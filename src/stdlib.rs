@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use ast::Expression;
-use error::{Error, ErrorKind, ErrorLevel};
+use error::Error;
 use to_javascript::ToJavaScript;
 
 type BuiltinMap = HashMap<&'static str, fn(&String, &Vec<Box<Expression>>) -> Result<String, Error>>;
@@ -46,11 +46,7 @@ lazy_static! {
 
 pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
     match args.len() {
-        0 => Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "Too few arguments applied for binary operation",
-        )),
+        0 => Err(Error::too_few_arguments("binary operation")),
         1 => builtin_unary(op, args),
         2 => {
             // Debox and take from index
@@ -86,24 +82,14 @@ pub fn builtin_unary(op: &String, args: &Vec<Box<Expression>>) -> Result<String,
 
         // Unary operators which are words next an extra space.
         "typeof" | "delete" => Ok(format!("{} {}", op, args[0].eval()?)),
-        _ => Err(Error(ErrorLevel::Error,
-                    ErrorKind::TooFewArguments,
-                    "Invalid operator applied to unary operator"))
+        _ => Err(Error::too_few_arguments("unary operator")),
     }
 }
 
 pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
     match args.len() {
-        0 => Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "Too few arguments applied for if",
-        )),
-        1 => Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "No expression applied for condition",
-        )),
+        0 => Err(Error::too_few_arguments("if statement")),
+        1 => Err(Error::too_few_arguments("if statement condition")),
         2 => Ok(format!(
             "if ({}) {{ {} }}",
             args[0].eval()?,
@@ -122,17 +108,9 @@ pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String,
 
 pub fn builtin_return(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
     match args.len() {
-        0 => Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooFewArguments,
-            "Too few arguments applied for return",
-        )),
+        0 => Err(Error::too_few_arguments("return")),
         1 => Ok(format!("return {}", args[0].eval()?)),
-        _ => Err(Error(
-            ErrorLevel::Error,
-            ErrorKind::TooManyArguments,
-            "Too many arguments applied for return"
-            )),
+        _ => Err(Error::too_many_arguments("return")),
     }
 }
 
@@ -144,12 +122,9 @@ fn precalculate_numbers(op: &String, left: f64, right: f64) -> Result<String, Er
         "/" if right != 0.0 => Ok(format!("{}", left / right)),
         "%" => Ok(format!("{}", left % right)),
 
+        "/" => Err(Error::invalid_expression("Divide by zero encountered on numeric literal binary operation")),
+
         // Assume divide by 0 here
-        "/" => Err(Error(ErrorLevel::Error,
-                    ErrorKind::InvalidExpression,
-                    "Divide by zero encountered on numeric literal binary operation")),
-        _ => Err(Error(ErrorLevel::Error,
-                    ErrorKind::InvalidExpression,
-                    "Invalid operator given to numeric binary operation"))
+        _ => Err(Error::invalid_expression("Divide by zero encountered on numeric literal binary operation")),
     }
 }
