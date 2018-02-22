@@ -24,22 +24,25 @@ impl Error {
     pub fn too_few_arguments(construct: &'static str) -> Error {
         Error(
             ErrorLevel::Error,
-            ErrorKind::TooFewArguments, 
-            format!("Too few arguments applied for {}", construct))
+            ErrorKind::TooFewArguments,
+            format!("Too few arguments applied for {}", construct),
+        )
     }
 
     pub fn too_many_arguments(construct: &'static str) -> Error {
         Error(
             ErrorLevel::Error,
-            ErrorKind::TooManyArguments, 
-            format!("Too many arguments applied for {}", construct))
+            ErrorKind::TooManyArguments,
+            format!("Too many arguments applied for {}", construct),
+        )
     }
-    
+
     pub fn invalid_expression(construct: &'static str) -> Error {
         Error(
             ErrorLevel::Error,
-            ErrorKind::InvalidExpression, 
-            format!("{}", construct))
+            ErrorKind::InvalidExpression,
+            format!("{}", construct),
+        )
     }
 }
 

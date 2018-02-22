@@ -4,7 +4,8 @@ use ast::Expression;
 use error::Error;
 use to_javascript::ToJavaScript;
 
-type BuiltinMap = HashMap<&'static str, fn(&String, &Vec<Box<Expression>>) -> Result<String, Error>>;
+type BuiltinMap =
+    HashMap<&'static str, fn(&String, &Vec<Box<Expression>>) -> Result<String, Error>>;
 
 lazy_static! {
     pub static ref BUILTINS: BuiltinMap = {
@@ -56,12 +57,11 @@ pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>) -> Result<String,
             let &box ref right = &args[1];
 
             match (left, right) {
-                (&Expression::Number(l), &Expression::Number(r)) =>
-                    precalculate_numbers(op, l, r),
+                (&Expression::Number(l), &Expression::Number(r)) => precalculate_numbers(op, l, r),
 
                 (_, _) => Ok(format!("{}{}{}", left.eval()?, op, right.eval()?)),
             }
-        },
+        }
         _ => {
             let joined = args
                 .into_iter()
@@ -72,7 +72,7 @@ pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>) -> Result<String,
                 .join(op);
 
             Ok(joined)
-        },
+        }
     }
 }
 
@@ -122,9 +122,13 @@ fn precalculate_numbers(op: &String, left: f64, right: f64) -> Result<String, Er
         "/" if right != 0.0 => Ok(format!("{}", left / right)),
         "%" => Ok(format!("{}", left % right)),
 
-        "/" => Err(Error::invalid_expression("Divide by zero encountered on numeric literal binary operation")),
+        "/" => Err(Error::invalid_expression(
+            "Divide by zero encountered on numeric literal binary operation",
+        )),
 
         // Assume divide by 0 here
-        _ => Err(Error::invalid_expression("Divide by zero encountered on numeric literal binary operation")),
+        _ => Err(Error::invalid_expression(
+            "Divide by zero encountered on numeric literal binary operation",
+        )),
     }
 }

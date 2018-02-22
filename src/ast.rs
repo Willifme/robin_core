@@ -44,7 +44,12 @@ impl ToJavaScript for Expression {
                             .collect::<Vec<String>>()
                             .join(",");
 
-                Ok(format!("function {} ({}){{ {}; }}", name, args, body.eval()?))
+                Ok(format!(
+                    "function {} ({}){{ {}; }}",
+                    name,
+                    args,
+                    body.eval()?
+                ))
             }
 
             Expression::FuncCall(ref name, ref args) => {
@@ -66,9 +71,9 @@ impl ToJavaScript for Expression {
                             // TODO: Remove unwrap()
                             Ok(format!("({}({}))", name.eval().unwrap(), args))
                         }
-                    },
+                    }
 
-                    _ => unimplemented!(), 
+                    _ => unimplemented!(),
                 }
             }
         }
