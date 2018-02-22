@@ -6,6 +6,41 @@ mod eval_expr_tests {
     use robin_core::error::{Error, ErrorKind, ErrorLevel};
 
     #[test]
+    fn return_with_one_argument_should_evaluate_correctly() {
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("return".to_string())),
+                                        vec![Box::new(Expression::Number(50.0))]);
+
+        assert_eq!(expr.eval(), Ok(String::from("return 50")));
+    }
+
+    #[test]
+    fn return_with_no_arguments_should_return_an_error() {
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("return".to_string())), vec![]);
+
+        let err =  Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "Too few arguments applied for return",
+        ));
+
+        assert_eq!(expr.eval(), err);
+    }
+
+    #[test]
+    fn return_with_more_than_one_arguments_should_return_an_error() {
+        let expr = Expression::FuncCall(Box::new(Expression::Identifier("return".to_string())),
+                                        vec![Box::new(Expression::Number(50.0)), Box::new(Expression::Number(50.0))]);
+
+        let err =  Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooManyArguments,
+            "Too many arguments applied for return",
+        ));
+
+        assert_eq!(expr.eval(), err);
+    }
+
+    #[test]
     fn plus_unary_op_should_evaluate_correctly() {
         let expr = Expression::FuncCall(Box::new(Expression::Identifier("+".to_string())),
                                         vec![Box::new(Expression::Number(50.0))]);
@@ -136,7 +171,7 @@ mod eval_expr_tests {
         let err = Err(Error(
             ErrorLevel::Error,
             ErrorKind::TooFewArguments,
-            "Too few Arguments applied for if",
+            "Too few arguments applied for if",
         ));
 
         assert_eq!(expr.eval(), err)

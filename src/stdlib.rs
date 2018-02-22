@@ -13,6 +13,8 @@ lazy_static! {
 
         map.insert("if", builtin_if);
 
+        map.insert("return", builtin_return);
+
         // Plus and minus are both binary and unary
         // But I  have deemed binary to have a higher precedence, so binary goes first
         map.insert("+", builtin_binop);
@@ -47,7 +49,7 @@ pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>) -> Result<String,
         0 => Err(Error(
             ErrorLevel::Error,
             ErrorKind::TooFewArguments,
-            "Too few Arguments applied for binary operation",
+            "Too few arguments applied for binary operation",
         )),
         1 => builtin_unary(op, args),
         2 => {
@@ -91,12 +93,11 @@ pub fn builtin_unary(op: &String, args: &Vec<Box<Expression>>) -> Result<String,
 }
 
 pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
-    // TODO: Remove unwraps
     match args.len() {
         0 => Err(Error(
             ErrorLevel::Error,
             ErrorKind::TooFewArguments,
-            "Too few Arguments applied for if",
+            "Too few arguments applied for if",
         )),
         1 => Err(Error(
             ErrorLevel::Error,
@@ -114,7 +115,24 @@ pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String,
             args[1].eval()?,
             args[2].eval()?
         )),
+        // TODO: Add error message here
         _ => panic!("Unknown number of arguments supplied to if-statement"),
+    }
+}
+
+pub fn builtin_return(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
+    match args.len() {
+        0 => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooFewArguments,
+            "Too few arguments applied for return",
+        )),
+        1 => Ok(format!("return {}", args[0].eval()?)),
+        _ => Err(Error(
+            ErrorLevel::Error,
+            ErrorKind::TooManyArguments,
+            "Too many arguments applied for return"
+            )),
     }
 }
 
