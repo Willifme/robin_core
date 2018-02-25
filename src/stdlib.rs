@@ -16,6 +16,12 @@ lazy_static! {
 
         map.insert("return", builtin_return);
 
+        map.insert("const", builtin_binding);
+
+        map.insert("var", builtin_binding);
+
+        map.insert("left", builtin_binding);
+
         // Plus and minus are both binary and unary
         // But I  have deemed binary to have a higher precedence, so binary goes first
         map.insert("+", builtin_binop);
@@ -43,6 +49,43 @@ lazy_static! {
         // Don't delete this! The project will refuse to compile without it
         map
     };
+}
+
+pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
+    match args.len() {
+        0 => Err(Error::too_few_arguments("if statement")),
+        1 => Err(Error::too_few_arguments("if statement condition")),
+        2 => Ok(format!(
+            "if ({}) {{ {} }}",
+            args[0].eval()?,
+            args[1].eval()?
+        )),
+        3 => Ok(format!(
+            "if ({}) {{ {} }} else {{ {} }}",
+            args[0].eval()?,
+            args[1].eval()?,
+            args[2].eval()?
+        )),
+        // TODO: Add error message here
+        _ => panic!("Unknown number of arguments supplied to if-statement"),
+    }
+}
+
+pub fn builtin_return(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
+    match args.len() {
+        0 => Err(Error::too_few_arguments("return")),
+        1 => Ok(format!("return {}", args[0].eval()?)),
+        _ => Err(Error::too_many_arguments("return")),
+    }
+}
+
+pub fn builtin_binding(name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
+    // TODO: Add name to the error messages
+    match args.len() {
+        0 => Err(Error::too_few_arguments("binding")),
+        1 => Ok(format!("{} {}", name, args[0].eval()?)),
+        _ => Err(Error::too_many_arguments("binding")),
+    }
 }
 
 pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
@@ -83,34 +126,6 @@ pub fn builtin_unary(op: &String, args: &Vec<Box<Expression>>) -> Result<String,
         // Unary operators which are words next an extra space.
         "typeof" | "delete" => Ok(format!("{} {}", op, args[0].eval()?)),
         _ => Err(Error::too_few_arguments("unary operator")),
-    }
-}
-
-pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
-    match args.len() {
-        0 => Err(Error::too_few_arguments("if statement")),
-        1 => Err(Error::too_few_arguments("if statement condition")),
-        2 => Ok(format!(
-            "if ({}) {{ {} }}",
-            args[0].eval()?,
-            args[1].eval()?
-        )),
-        3 => Ok(format!(
-            "if ({}) {{ {} }} else {{ {} }}",
-            args[0].eval()?,
-            args[1].eval()?,
-            args[2].eval()?
-        )),
-        // TODO: Add error message here
-        _ => panic!("Unknown number of arguments supplied to if-statement"),
-    }
-}
-
-pub fn builtin_return(_name: &String, args: &Vec<Box<Expression>>) -> Result<String, Error> {
-    match args.len() {
-        0 => Err(Error::too_few_arguments("return")),
-        1 => Ok(format!("return {}", args[0].eval()?)),
-        _ => Err(Error::too_many_arguments("return")),
     }
 }
 
