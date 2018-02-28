@@ -1,4 +1,4 @@
-use analysis::table::VARIABLE_TABLE;
+use analysis::table::Table;
 use to_javascript::ToJavaScript;
 use stdlib::BUILTINS;
 use error::Error;
@@ -19,11 +19,11 @@ pub enum Expression {
 }
 
 impl ToJavaScript for Expression {
-    fn eval(&self) -> Result<String, Error> {
+    fn eval(&self, variable_table: &Table<String>) -> Result<String, Error> {
         match *self {
             Expression::Number(ref val) => Ok(format!("{}", val)),
             Expression::Identifier(ref val) =>
-                if let Some(_) = VARIABLE_TABLE.get(val as &str) {
+                if let Some(_) = variable_table.get(val) {
                     Ok(format!("{}", val))
 
                 } else {
@@ -35,7 +35,7 @@ impl ToJavaScript for Expression {
             Expression::List(ref vals) => {
                 let vals = vals.into_iter()
                     // We can assume the unwrap is just a formality
-                    .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
+                    .map(|e| e.eval(variable_table).or_else(|e| Err(e)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
 
@@ -43,6 +43,12 @@ impl ToJavaScript for Expression {
             }
 
             Expression::FuncLiteral(ref name, ref args, ref body) => {
+                let mut new_var_table = Table::new(Some(Box::new(variable_table)));
+
+                args
+                    .into_iter()
+                    .for_each(|arg| new_var_table.insert(arg, arg.to_string()));
+
                 let args = args
                             .into_iter()
                             // TODO: Remove clone
@@ -55,7 +61,7 @@ impl ToJavaScript for Expression {
                     "function {} ({}){{ {}; }}",
                     name,
                     args,
-                    body.eval()?
+                    body.eval(&new_var_table)?
                 ))
             }
 
@@ -67,16 +73,15 @@ impl ToJavaScript for Expression {
                 match *expr_name {
                     Expression::Identifier(ref ident) => {
                         // We unwrap, but it should be okay
-                        if let Some(func) = BUILTINS.get(ident as &str) {
-                            func(ident, args)
+                        if let Some(func) = BUILTINS.get(&ident.clone()) {
+                            func(ident, args, variable_table)
                         } else {
                             let args = args.into_iter()
-                                .map(|e| e.eval().or_else(|e| Err(e)).unwrap())
+                                .map(|e| e.eval(variable_table).or_else(|e| Err(e)).unwrap())
                                 .collect::<Vec<String>>()
                                 .join(",");
 
-                            // TODO: Remove unwrap()
-                            Ok(format!("({}({}))", name.eval().unwrap(), args))
+                            Ok(format!("({}({}))", name.eval(variable_table)?, args))
                         }
                     }
 
