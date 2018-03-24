@@ -1,12 +1,9 @@
-#![feature(box_patterns, box_syntax)]
+#![feature(box_patterns, box_syntax, match_default_bindings)]
 
 extern crate pest;
 
 #[macro_use]
 extern crate pest_derive;
-
-#[macro_use]
-extern crate lazy_static;
 
 extern crate ansi_term;
 

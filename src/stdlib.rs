@@ -5,98 +5,104 @@ use analysis::table::Table;
 use error::Error;
 use to_javascript::ToJavaScript;
 
-type BuiltinMap =
-    HashMap<String, fn(&String, &Vec<Box<Expression>>, &Table<String>) -> Result<String, Error>>;
 
-lazy_static! {
-    pub static ref BUILTINS: BuiltinMap = {
-        // The type definition is required to prevent compile errors
-        let mut map: BuiltinMap = HashMap::new();
+type Callback = fn(String, &mut Vec<Box<Expression>>, &mut Stdlib) -> Result<String, Error>;
 
-        map.insert("if".to_string(), builtin_if);
+type FunctionMap = HashMap<String, Callback>;
 
-        map.insert("return".to_string(), builtin_return);
+pub struct Stdlib<'a> {
+    pub function_table: FunctionMap,
+    pub variable_table: Table<'a, String>,
+}
 
-        map.insert("const".to_string(), builtin_binding);
+impl<'a> Stdlib<'a> {
+    pub fn new(variable_table: Table<'a, String>) -> Stdlib {
+        Stdlib{function_table: FunctionMap::new(), variable_table} 
+    }
 
-        map.insert("var".to_string(), builtin_binding);
+    pub fn populate(&mut self) {
+        self.function_table.insert("if".to_string(), builtin_if);
 
-        map.insert("left".to_string(), builtin_binding);
+        self.function_table.insert("return".to_string(), builtin_return);
+
+        self.function_table.insert("const".to_string(), builtin_binding);
+
+        self.function_table.insert("var".to_string(), builtin_binding);
+
+        self.function_table.insert("let".to_string(), builtin_binding);
 
         // Plus and minus are both binary and unary
         // But I  have deemed binary to have a higher precedence, so binary goes first
-        map.insert("+".to_string(), builtin_binop);
+        self.function_table.insert("+".to_string(), builtin_binop);
 
-        map.insert("-".to_string(), builtin_binop);
+        self.function_table.insert("-".to_string(), builtin_binop);
 
-        map.insert("*".to_string(), builtin_binop);
+        self.function_table.insert("*".to_string(), builtin_binop);
 
-        map.insert("/".to_string(), builtin_binop);
+        self.function_table.insert("/".to_string(), builtin_binop);
 
-        map.insert("%".to_string(), builtin_binop);
+        self.function_table.insert("%".to_string(), builtin_binop);
 
-        map.insert("!".to_string(), builtin_unary);
+        self.function_table.insert("!".to_string(), builtin_unary);
 
-        map.insert("++".to_string(), builtin_unary);
+        self.function_table.insert("++".to_string(), builtin_unary);
 
-        map.insert("--".to_string(), builtin_unary);
+        self.function_table.insert("--".to_string(), builtin_unary);
 
-        map.insert("~".to_string(), builtin_unary);
+        self.function_table.insert("~".to_string(), builtin_unary);
 
-        map.insert("typeof".to_string(), builtin_unary);
+        self.function_table.insert("typeof".to_string(), builtin_unary);
 
-        map.insert("delete".to_string(), builtin_unary);
-
-        // Don't delete this! The project will refuse to compile without it
-        map
-    };
+        self.function_table.insert("delete".to_string(), builtin_unary);
+    }
 }
 
-pub fn builtin_if(_name: &String, args: &Vec<Box<Expression>>, variable_table: &Table<String>) -> Result<String, Error> {
+fn builtin_if(_name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("if statement")),
         1 => Err(Error::too_few_arguments("if statement condition")),
         2 => Ok(format!(
             "if ({}) {{ {} }}",
-            args[0].eval(variable_table)?,
-            args[1].eval(variable_table)?
+            args[0].eval(stdlib)?,
+            args[1].eval(stdlib)?
         )),
         3 => Ok(format!(
             "if ({}) {{ {} }} else {{ {} }}",
-            args[0].eval(variable_table)?,
-            args[1].eval(variable_table)?,
-            args[2].eval(variable_table)?
+            args[0].eval(stdlib)?,
+            args[1].eval(stdlib)?,
+            args[2].eval(stdlib)?
         )),
         // TODO: Add error message here
         _ => panic!("Unknown number of arguments supplied to if statement"),
     }
 }
 
-pub fn builtin_return(_name: &String, args: &Vec<Box<Expression>>, variable_table: &Table<String>) -> Result<String, Error> {
+fn builtin_return(_name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("return")),
-        1 => Ok(format!("return {}", args[0].eval(variable_table)?)),
+        1 => Ok(format!("return {}", args[0].eval(stdlib)?)),
         _ => Err(Error::too_many_arguments("return")),
     }
 }
 
-pub fn builtin_binding(name: &String, args: &Vec<Box<Expression>>, variable_table: &Table<String>) -> Result<String, Error> {
+fn builtin_binding(name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
     // TODO: Add name to the error messages
     match args.len() {
-        0 => Err(Error::too_few_arguments("binding")),
-        1 => {
-            variable_table.insert(name, name.to_string());
+        0 | 1 => Err(Error::too_few_arguments("binding")),
+        2 => {
+            stdlib.variable_table.insert(name.clone(), name.to_string());
 
-            Ok(format!("{} {}", name, args[0].eval(variable_table)?))
+            // TODO: Determine a way to evalute the identifier but not use the table
+            Ok(format!("{} {} = {}", name, "something", args[1].eval(stdlib)?))
         }
         _ => Err(Error::too_many_arguments("binding")),
     }
 }
 
-pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>, variable_table: &Table<String>) -> Result<String, Error> {
+fn builtin_binop(op: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("binary operation")),
-        1 => builtin_unary(op, args, variable_table),
+        1 => builtin_unary(op, args, stdlib),
         2 => {
             // Debox and take from index
             // This is messy _but_ it should make the match easier to understand
@@ -105,9 +111,11 @@ pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>, variable_table: &
             let &box ref right = &args[1];
 
             match (left, right) {
-                (&Expression::Number(l), &Expression::Number(r)) => precalculate_numbers(op, l, r),
+                (Expression::Number(l), Expression::Number(r)) => precalculate_numbers(&op, *l, *r),
 
-                (_, _) => Ok(format!("{}{}{}", left.eval(variable_table)?, op, right.eval(variable_table)?)),
+                // TODO: Fix this
+                _ => unimplemented!(),
+                //(_, _) => Ok(format!("{}{}{}", left.eval(stdlib)?, op, right.eval(stdlib)?)),
             }
         }
         _ => {
@@ -115,21 +123,21 @@ pub fn builtin_binop(op: &String, args: &Vec<Box<Expression>>, variable_table: &
                 .into_iter()
 
                 // TODO: Remove unwrap
-                .map(|expr| expr.eval(variable_table).or_else(|e| Err(e)).unwrap())
+                .map(|expr| expr.eval(stdlib).or_else(|e| Err(e)).unwrap())
                 .collect::<Vec<String>>()
-                .join(op);
+                .join(&op);
 
             Ok(joined)
         }
     }
 }
 
-pub fn builtin_unary(op: &String, args: &Vec<Box<Expression>>, variable_table: &Table<String>) -> Result<String, Error> {
+fn builtin_unary(op: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
     match op.as_ref() {
-        "+" | "-" | "!" | "++" | "--" | "~" => Ok(format!("{}{}", op, args[0].eval(variable_table)?)),
+        "+" | "-" | "!" | "++" | "--" | "~" => Ok(format!("{}{}", op, args[0].eval(stdlib)?)),
 
         // Unary operators which are words next an extra space.
-        "typeof" | "delete" => Ok(format!("{} {}", op, args[0].eval(variable_table)?)),
+        "typeof" | "delete" => Ok(format!("{} {}", op, args[0].eval(stdlib)?)),
         _ => Err(Error::too_few_arguments("unary operator")),
     }
 }

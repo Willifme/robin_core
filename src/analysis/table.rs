@@ -4,7 +4,7 @@ use std::boxed::Box;
 /// Create a type alias for the table containing the symbols
 /// All items are acccessible via their name
 /// The `T` is the value inherited from `Table`
-pub type Container<'a, T: 'a> = HashMap<&'a String, T>;
+pub type Container<'a, T: 'a> = HashMap<String, T>;
 
 /// This is the generic container for all symbol tables
 /// `T` must implement `ToJavaScript`
@@ -26,7 +26,7 @@ impl<'a, T> Table<'a, T> {
     }
 
     /// Insert a value into the table
-    pub fn insert(&mut self, key: &'a String, value: T) {
+    pub fn insert(&mut self, key: String, value: T) {
         self.container.insert(key, value);
     }
 
@@ -41,16 +41,3 @@ impl<'a, T> Table<'a, T> {
         }
     }
 }
-
-// lazy_static! {
-//     pub static ref EXPRESSION_TABLE: Table<Expression> = {
-//         Table::new(None) 
-//     };
-// }
-
-// /// Create a global (ugh) table to hold all the variables
-// lazy_static! {
-//     pub static ref VARIABLE_TABLE: Table<String> = {
-//         Table::new(None)
-//     };
-// }

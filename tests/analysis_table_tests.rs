@@ -2,7 +2,6 @@ extern crate robin_core;
 
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::ast::Expression;
     use robin_core::analysis::table::Table;
 
     // Fix these tests, they are broken

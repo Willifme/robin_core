@@ -1,31 +1,34 @@
 use std::default::Default;
-use std::boxed::Box;
 
 use ast::Expression;
 use analysis::table::Table;
 use error::ErrorStack;
 use to_javascript::ToJavaScript;
+use stdlib::Stdlib;
 
-#[derive(Debug)]
 pub struct Compiler<'a> {
     pub errors: ErrorStack,
-    pub variable_table: Box<Table<'a, String>>
+    pub stdlib: Stdlib<'a>,
 }
 
 impl<'a> Compiler<'a> {
     pub fn new() -> Compiler<'a> {
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        stdlib.populate();
+
         Compiler {
             errors: ErrorStack(vec![]),
-            variable_table: Box::new(Table::new(None)),
+            stdlib: stdlib
         }
     }
 
-    pub fn compile(&mut self, tree: &[Expression]) -> String {
+    pub fn compile(&mut self, tree: &mut [Expression]) -> String {
         tree
-            .iter()
+            .into_iter()
             // TODO: Remove unwrap
             .filter_map(|expr| {
-                let result = expr.eval(&self.variable_table);
+                let result = expr.eval(&mut self.stdlib);
 
                 if result.is_err() {
                     self.errors.0.push(result.clone().unwrap_err());
@@ -33,13 +36,6 @@ impl<'a> Compiler<'a> {
 
                 result.ok()
             })
-            // .filter_map(|expr| {
-            //     if expr.is_err() {
-            //         self.errors.0.push(expr.clone().unwrap_err());
-            //     }
-
-            //     expr.ok()
-            // })
             .collect::<Vec<String>>()
             .join(";")
     }

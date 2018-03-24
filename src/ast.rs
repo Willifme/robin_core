@@ -1,6 +1,6 @@
 use analysis::table::Table;
 use to_javascript::ToJavaScript;
-use stdlib::BUILTINS;
+use stdlib::Stdlib;
 use error::Error;
 
 #[derive(Debug, PartialEq)]
@@ -19,35 +19,36 @@ pub enum Expression {
 }
 
 impl ToJavaScript for Expression {
-    fn eval(&self, variable_table: &Table<String>) -> Result<String, Error> {
+    fn eval(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
         match *self {
             Expression::Number(ref val) => Ok(format!("{}", val)),
             Expression::Identifier(ref val) =>
-                if let Some(_) = variable_table.get(val) {
+                if let Some(_) = stdlib.function_table.get(val) {
                     Ok(format!("{}", val))
 
                 } else {
-                    Err(Error::undefined_var("")) 
+                    Err(Error::undefined_var("something here")) 
                 }
             Expression::Boolean(ref val) => Ok(format!("{}", val)),
             Expression::String(ref val) => Ok(val.clone()),
 
-            Expression::List(ref vals) => {
+            Expression::List(ref mut vals) => {
                 let vals = vals.into_iter()
                     // We can assume the unwrap is just a formality
-                    .map(|e| e.eval(variable_table).or_else(|e| Err(e)).unwrap())
+                    .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
                     .collect::<Vec<String>>()
                     .join(",");
 
                 Ok(format!("[{}]", vals))
             }
 
-            Expression::FuncLiteral(ref name, ref args, ref body) => {
-                let mut new_var_table = Table::new(Some(Box::new(variable_table)));
+            Expression::FuncLiteral(ref name, ref args, ref mut body) => {
+                let mut stdlib = Stdlib::new(
+                    Table::new(Some(Box::new(&stdlib.variable_table))));
 
                 args
                     .into_iter()
-                    .for_each(|arg| new_var_table.insert(arg, arg.to_string()));
+                    .for_each(|arg| stdlib.variable_table.insert(arg.to_string(), arg.to_string()));
 
                 let args = args
                             .into_iter()
@@ -61,27 +62,28 @@ impl ToJavaScript for Expression {
                     "function {} ({}){{ {}; }}",
                     name,
                     args,
-                    body.eval(&new_var_table)?
+                    body.eval(&mut stdlib)?
                 ))
             }
 
-            Expression::FuncCall(ref name, ref args) => {
+            Expression::FuncCall(ref mut name, ref mut args) => {
                 // Debox the name from Box<Expression> to Expression
-                let &box ref expr_name = name;
+                let &mut box ref mut expr_name = name;
 
                 // TODO: Rethink this code
-                match *expr_name {
+                match expr_name {
                     Expression::Identifier(ref ident) => {
-                        // We unwrap, but it should be okay
-                        if let Some(func) = BUILTINS.get(&ident.clone()) {
-                            func(ident, args, variable_table)
-                        } else {
-                            let args = args.into_iter()
-                                .map(|e| e.eval(variable_table).or_else(|e| Err(e)).unwrap())
-                                .collect::<Vec<String>>()
-                                .join(",");
+                        // TODO: Remove clone
+                        match stdlib.function_table.clone().get(&ident.clone()) {
+                            Some(func) => func(ident.to_string(), args, stdlib),
+                            None =>  {
+                                let args = args.into_iter()
+                                    .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
+                                    .collect::<Vec<String>>()
+                                    .join(",");
 
-                            Ok(format!("({}({}))", name.eval(variable_table)?, args))
+                                Ok(format!("({}({}))", expr_name.eval(stdlib)?, args))
+                            }
                         }
                     }
 
