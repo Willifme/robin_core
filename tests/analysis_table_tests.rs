@@ -2,40 +2,42 @@ extern crate robin_core;
 
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::analysis::table::Table;
+    use robin_core::table::Table;
+    use robin_core::ast::Expression;
 
-    // Fix these tests, they are broken
-    // #[test]
-    // fn find_known_local_variable_without_parent<'a>() {
-    //     let mut table = Table::new(None);
+    #[test]
+    fn find_known_local_variable_without_parent() {
+        let mut table = Table::new(None);
 
-    //     table.insert(&"example".to_string(), Expression::Boolean(true));
+        table.insert("example".to_string(), Expression::Boolean(true));
 
-    //     assert_eq!(Some(&Expression::Boolean(true)), table.get(&"example".to_string()));
-    // }
+        assert_eq!(Some(&Expression::Boolean(true)), table.get(&"example".to_string()));
+    }
 
-    // #[test]
-    // fn find_known_local_variable_with_parent() {
-    //     let mut table = Table::new(Some(Box::new(&Table::new(None))));
+    #[test]
+    fn find_known_local_variable_with_parent() {
+        let parent = Table::new(None);
 
-    //     table.insert(&"example".to_string(), Expression::Boolean(true));
+        let mut table = Table::new(Some(Box::new(&parent)));
 
-    //     assert_eq!(Some(&Expression::Boolean(true)), table.get(&"example".to_string()));
-    // }
+        table.insert("example".to_string(), Expression::Boolean(true));
 
-    // #[test]
-    // fn find_unknown_local_variable_without_parent() {
-    //     let table = Table::<Expression>::new(None);
+        assert_eq!(Some(&Expression::Boolean(true)), table.get(&"example".to_string()));
+    }
 
-    //     assert_eq!(None, table.get(&"Example".to_string()));
-    // }
+    #[test]
+    fn find_unknown_local_variable_without_parent() {
+        let table = Table::<Expression>::new(None);
 
-    // #[test]
-    // fn find_unknown_local_variable_with_parent() {
-    //     let parent = Box::new(Table::new(None));
+        assert_eq!(None, table.get(&"example".to_string()));
+    }
 
-    //     let table = Table::<Expression>::new(Some(parent));
+    #[test]
+    fn find_unknown_local_variable_with_parent() {
+        let parent = Table::new(None);
 
-    //     assert_eq!(None, table.get(&"example".to_string()));
-    // }
+        let table = Table::<Expression>::new(Some(Box::new(&parent)));
+
+        assert_eq!(None, table.get(&"example".to_string()));
+    }
 }
