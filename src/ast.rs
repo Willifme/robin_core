@@ -22,13 +22,11 @@ impl ToJavaScript for Expression {
     fn eval(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
         match *self {
             Expression::Number(ref val) => Ok(format!("{}", val)),
-            Expression::Identifier(ref val) =>
-                if let Some(_) = stdlib.function_table.get(val) {
-                    Ok(format!("{}", val))
-
-                } else {
-                    Err(Error::undefined_var("Add undefined var here")) 
-                }
+            Expression::Identifier(ref val) => if let Some(_) = stdlib.function_table.get(val) {
+                Ok(format!("{}", val))
+            } else {
+                Err(Error::undefined_var("Add undefined var here"))
+            },
             Expression::Boolean(ref val) => Ok(format!("{}", val)),
             Expression::String(ref val) => Ok(val.clone()),
 
@@ -43,12 +41,13 @@ impl ToJavaScript for Expression {
             }
 
             Expression::FuncLiteral(ref name, ref args, ref mut body) => {
-                let mut stdlib = Stdlib::new(
-                    Table::new(Some(Box::new(&stdlib.variable_table))));
+                let mut stdlib = Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
 
-                args
-                    .into_iter()
-                    .for_each(|arg| stdlib.variable_table.insert(arg.to_string(), arg.to_string()));
+                args.into_iter().for_each(|arg| {
+                    stdlib
+                        .variable_table
+                        .insert(arg.to_string(), arg.to_string())
+                });
 
                 let args = args
                             .into_iter()
@@ -76,7 +75,7 @@ impl ToJavaScript for Expression {
                         // TODO: Remove clone
                         match stdlib.function_table.clone().get(&ident.clone()) {
                             Some(func) => func(ident.to_string(), args, stdlib),
-                            None =>  {
+                            None => {
                                 let args = args.into_iter()
                                     .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
                                     .collect::<Vec<String>>()

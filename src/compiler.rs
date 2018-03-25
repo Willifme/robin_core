@@ -19,7 +19,7 @@ impl<'a> Compiler<'a> {
 
         Compiler {
             errors: ErrorStack(vec![]),
-            stdlib: stdlib
+            stdlib: stdlib,
         }
     }
 

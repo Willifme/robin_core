@@ -18,11 +18,14 @@ mod eval_expr_tests {
             Box::new(Expression::Identifier("var".to_string())),
             vec![
                 Box::new(Expression::Identifier("something".to_string())),
-                Box::new(Expression::Number(50.0))
-            ]
+                Box::new(Expression::Number(50.0)),
+            ],
         );
 
-        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("var something = 50")));
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("var something = 50"))
+        );
     }
 
     #[test]
@@ -32,10 +35,8 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::FuncCall(
-            Box::new(Expression::Identifier("var".to_string())),
-            vec![]
-        );
+        let mut expr =
+            Expression::FuncCall(Box::new(Expression::Identifier("var".to_string())), vec![]);
 
         let err = Err(Error::too_few_arguments("binding"));
 
@@ -337,7 +338,8 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())), vec![]);
+        let mut expr =
+            Expression::FuncCall(Box::new(Expression::Identifier("if".to_string())), vec![]);
 
         let err = Err(Error::too_few_arguments("if statement"));
 
@@ -395,6 +397,9 @@ mod eval_expr_tests {
             ],
         );
 
-        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("if (true) { 1 } else { 1 }")))
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("if (true) { 1 } else { 1 }"))
+        )
     }
 }

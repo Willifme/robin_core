@@ -5,7 +5,6 @@ use table::Table;
 use error::Error;
 use to_javascript::ToJavaScript;
 
-
 type Callback = fn(String, &mut Vec<Box<Expression>>, &mut Stdlib) -> Result<String, Error>;
 
 type FunctionMap = HashMap<String, Callback>;
@@ -17,19 +16,26 @@ pub struct Stdlib<'a> {
 
 impl<'a> Stdlib<'a> {
     pub fn new(variable_table: Table<'a, String>) -> Stdlib {
-        Stdlib{function_table: FunctionMap::new(), variable_table} 
+        Stdlib {
+            function_table: FunctionMap::new(),
+            variable_table,
+        }
     }
 
     pub fn populate(&mut self) {
         self.function_table.insert("if".to_string(), builtin_if);
 
-        self.function_table.insert("return".to_string(), builtin_return);
+        self.function_table
+            .insert("return".to_string(), builtin_return);
 
-        self.function_table.insert("const".to_string(), builtin_binding);
+        self.function_table
+            .insert("const".to_string(), builtin_binding);
 
-        self.function_table.insert("var".to_string(), builtin_binding);
+        self.function_table
+            .insert("var".to_string(), builtin_binding);
 
-        self.function_table.insert("let".to_string(), builtin_binding);
+        self.function_table
+            .insert("let".to_string(), builtin_binding);
 
         // Plus and minus are both binary and unary
         // But I  have deemed binary to have a higher precedence, so binary goes first
@@ -51,13 +57,19 @@ impl<'a> Stdlib<'a> {
 
         self.function_table.insert("~".to_string(), builtin_unary);
 
-        self.function_table.insert("typeof".to_string(), builtin_unary);
+        self.function_table
+            .insert("typeof".to_string(), builtin_unary);
 
-        self.function_table.insert("delete".to_string(), builtin_unary);
+        self.function_table
+            .insert("delete".to_string(), builtin_unary);
     }
 }
 
-fn builtin_if(_name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
+fn builtin_if(
+    _name: String,
+    args: &mut Vec<Box<Expression>>,
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("if statement")),
         1 => Err(Error::too_few_arguments("if statement condition")),
@@ -77,7 +89,11 @@ fn builtin_if(_name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdli
     }
 }
 
-fn builtin_return(_name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
+fn builtin_return(
+    _name: String,
+    args: &mut Vec<Box<Expression>>,
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("return")),
         1 => Ok(format!("return {}", args[0].eval(stdlib)?)),
@@ -85,7 +101,11 @@ fn builtin_return(_name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut S
     }
 }
 
-fn builtin_binding(name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
+fn builtin_binding(
+    name: String,
+    args: &mut Vec<Box<Expression>>,
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
     // TODO: Add name to the error messages
     match args.len() {
         0 | 1 => Err(Error::too_few_arguments("binding")),
@@ -101,18 +121,28 @@ fn builtin_binding(name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut S
                     box Expression::Identifier(ref ident) => ident_string = ident.to_string(),
 
                     // TODO: Fix this
-                    _ => panic!("Non-identifier given to binding. HOpefully this shouldn't happen."),
+                    _ => {
+                        panic!("Non-identifier given to binding. HOpefully this shouldn't happen.")
+                    }
                 };
             }
 
-            Ok(format!("{} {} = {}", name, ident_string, box args[1].eval(stdlib)?))
-
+            Ok(format!(
+                "{} {} = {}",
+                name,
+                ident_string,
+                box args[1].eval(stdlib)?
+            ))
         }
         _ => Err(Error::too_many_arguments("binding")),
     }
 }
 
-fn builtin_binop(op: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
+fn builtin_binop(
+    op: String,
+    args: &mut Vec<Box<Expression>>,
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("binary operation")),
         1 => builtin_unary(op, args, stdlib),
@@ -145,7 +175,11 @@ fn builtin_binop(op: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdli
     }
 }
 
-fn builtin_unary(op: String, args: &mut Vec<Box<Expression>>, stdlib: &mut Stdlib) -> Result<String, Error> {
+fn builtin_unary(
+    op: String,
+    args: &mut Vec<Box<Expression>>,
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
     match op.as_ref() {
         "+" | "-" | "!" | "++" | "--" | "~" => Ok(format!("{}{}", op, args[0].eval(stdlib)?)),
 

@@ -11,7 +11,10 @@ mod parser_tests {
 
         table.insert("example".to_string(), Expression::Boolean(true));
 
-        assert_eq!(Some(&Expression::Boolean(true)), table.get(&"example".to_string()));
+        assert_eq!(
+            Some(&Expression::Boolean(true)),
+            table.get(&"example".to_string())
+        );
     }
 
     #[test]
@@ -22,7 +25,10 @@ mod parser_tests {
 
         table.insert("example".to_string(), Expression::Boolean(true));
 
-        assert_eq!(Some(&Expression::Boolean(true)), table.get(&"example".to_string()));
+        assert_eq!(
+            Some(&Expression::Boolean(true)),
+            table.get(&"example".to_string())
+        );
     }
 
     #[test]
