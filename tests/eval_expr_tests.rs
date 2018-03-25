@@ -2,7 +2,7 @@ extern crate robin_core;
 
 mod eval_expr_tests {
     use robin_core::ast::Expression;
-    use robin_core::analysis::table::Table;
+    use robin_core::table::Table;
     use robin_core::to_javascript::ToJavaScript;
     use robin_core::error::Error;
     use robin_core::stdlib::Stdlib;

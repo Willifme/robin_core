@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use ast::Expression;
-use analysis::table::Table;
+use table::Table;
 use error::Error;
 use to_javascript::ToJavaScript;
 

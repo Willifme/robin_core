@@ -1,7 +1,7 @@
 use std::default::Default;
 
 use ast::Expression;
-use analysis::table::Table;
+use table::Table;
 use error::ErrorStack;
 use to_javascript::ToJavaScript;
 use stdlib::Stdlib;

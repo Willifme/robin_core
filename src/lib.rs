@@ -10,7 +10,7 @@ extern crate ansi_term;
 #[macro_use]
 pub mod error;
 
-pub mod analysis;
+pub mod table;
 pub mod to_javascript;
 pub mod ast;
 pub mod parser;

@@ -1,4 +1,4 @@
-use analysis::table::Table;
+use table::Table;
 use to_javascript::ToJavaScript;
 use stdlib::Stdlib;
 use error::Error;
