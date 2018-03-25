@@ -27,7 +27,7 @@ impl ToJavaScript for Expression {
                     Ok(format!("{}", val))
 
                 } else {
-                    Err(Error::undefined_var("something here")) 
+                    Err(Error::undefined_var("Add undefined var here")) 
                 }
             Expression::Boolean(ref val) => Ok(format!("{}", val)),
             Expression::String(ref val) => Ok(val.clone()),
@@ -52,7 +52,7 @@ impl ToJavaScript for Expression {
 
                 let args = args
                             .into_iter()
-                            // TODO: Remove clone
+                            // TODO: Remove cloned
                             .cloned()
                             .map(|e| e)
                             .collect::<Vec<String>>()

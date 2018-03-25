@@ -92,8 +92,21 @@ fn builtin_binding(name: String, args: &mut Vec<Box<Expression>>, stdlib: &mut S
         2 => {
             stdlib.variable_table.insert(name.clone(), name.to_string());
 
-            // TODO: Determine a way to evalute the identifier but not use the table
-            Ok(format!("{} {} = {}", name, "something", args[1].eval(stdlib)?))
+            // TODO: Revise this code
+            let ident_string: String;
+
+            // Open a new scope to limit borrows
+            {
+                match args[0] {
+                    box Expression::Identifier(ref ident) => ident_string = ident.to_string(),
+
+                    // TODO: Fix this
+                    _ => panic!("Non-identifier given to binding. HOpefully this shouldn't happen."),
+                };
+            }
+
+            Ok(format!("{} {} = {}", name, ident_string, box args[1].eval(stdlib)?))
+
         }
         _ => Err(Error::too_many_arguments("binding")),
     }
