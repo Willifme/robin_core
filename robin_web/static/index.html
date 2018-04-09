@@ -1,66 +1,68 @@
 <!DOCTYPE html>
 <html>
-    <body>
-      <style text="text/css" media="screen">
-	.container {
-	  display: flex;
-	  height: 80vh;
-	}
 
-	.editor {
-	  flex: 1;
-	  height: 100%;
-	}
+<body>
+	<style text="text/css" media="screen">
+		.container {
+			display: flex;
+			height: 80vh;
+		}
 
-	#compiler-list {
-	  list-style: none;
-	  padding-left: 2px;
-	}
+		.editor {
+			flex: 1;
+			height: 100%;
+		}
 
-	.list-item {
-	  border-top: 2px;
-	  padding-bottom: 2px;
-	  border-bottom: 2px solid gray;
-	}
+		#compiler-list {
+			list-style: none;
+			padding-left: 2px;
+		}
 
-	.error {
-	  background-color: #E86464;
-	}
+		.list-item {
+			border-top: 2px;
+			padding-bottom: 2px;
+			border-bottom: 2px solid gray;
+		}
 
-	.warning {
-	  background-color: #F49542;
-	}
+		.error {
+			background-color: #E86464;
+		}
 
-	.info {
-	  background-color: #90EE90;
-	}
-      </style>
+		.warning {
+			background-color: #F49542;
+		}
 
-      <button id="run" type="button">Run!</button>
+		.info {
+			background-color: #90EE90;
+		}
+	</style>
 
-      <div class="container">
-	<div id="lisp-input" class="editor"></div>
+	<button id="run" type="button">Run!</button>
 
-	<div id="js-output" class="editor"></div>
-      </div>
+	<div class="container">
+		<div id="lisp-input" class="editor"></div>
 
-      <div>
-	<ul id="compiler-list">
-	</ul>
-      </div>
+		<div id="js-output" class="editor"></div>
+	</div>
 
-      <script type="text/javascript" src="ace.js"></script>
+	<div>
+		<ul id="compiler-list">
+		</ul>
+	</div>
 
-      <script type="text/javascript">
-	var lisp_input = ace.edit("lisp-input");
+	<script type="text/javascript" src="ace.js"></script>
 
-	lisp_input.session.setMode("ace/mode/lisp");
+	<script type="text/javascript">
+		var lisp_input = ace.edit("lisp-input");
 
-	var js_output = ace.edit("js-output");
+		lisp_input.session.setMode("ace/mode/lisp");
 
-	js_output.session.setMode("ace/mode/javascript");
-      </script>
+		var js_output = ace.edit("js-output");
 
-      <script type="text/javascript" src="js/app.js"></script>
-    </body>
+		js_output.session.setMode("ace/mode/javascript");
+	</script>
+
+	<script type="text/javascript" src="js/app.js"></script>
+</body>
+
 </html>
