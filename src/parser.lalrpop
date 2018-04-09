@@ -1,0 +1,57 @@
+use std::f64;
+use std::str::FromStr;
+use ast::{Expression, NumberExpression, StringExpression, BooleanExpression, IdentifierExpression, ListExpression};
+
+grammar;
+
+pub Exprs: Vec<Expression> = Expr* => <>; 
+
+Expr: Expression = {
+    Number,
+    Boolean,
+    String,
+    List,
+    Identifier,
+};
+
+List: Expression = {
+    "'" "(" <exprs:Boxed_Expr*> ")" => Expression::List(ListExpression::new_quoted(exprs)),
+    "(" <exprs:Boxed_Expr*> ")" => Expression::List(ListExpression::new_unquoted(exprs)),
+};
+
+Boxed_Expr: Box<Expression> = Expr => Box::new(<>);
+
+Identifier : Expression = r"[a-zA-Z.;,<>=!+\-&*|^~?:/][a-zA-Z;,<>=!+\-&*|^~?:/0-9]*" =>
+    Expression::Identifier(IdentifierExpression::new(<>.to_string()));
+
+Number: Expression = {
+    Decimal,
+    HexDigit,
+    OctDigit,
+    BinaryDigit,
+};
+
+Boolean: Expression = {
+    "true" => Expression::Boolean(BooleanExpression::new(true)),
+    "false" => Expression::Boolean(BooleanExpression::new(false)),
+};
+
+String: Expression = r#""[^"]*""# => Expression::String(StringExpression::new(<>.to_string()));
+
+BinaryDigit: Expression = r"0(b|B)[0..1]*" =>
+    Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&<>[2..], 2).unwrap())));
+
+OctDigit: Expression = r"0[oO][0-7]*" =>
+    Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&<>[2..], 8).unwrap())));
+
+HexDigit: Expression = r"0[xX][0-9A-F]*" => 
+    Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&<>[2..], 16).unwrap())));
+
+Decimal: Expression = {
+    Decimal_Digit => Expression::Number(NumberExpression::new(f64::from_str(&<>).unwrap())),
+    ExponentPart => Expression::Number(NumberExpression::new(f64::from_str(&<>).unwrap())),
+};
+
+ExponentPart: String = r"[0-9]+([eE][0-9]+)" => <>.to_string();
+
+Decimal_Digit: String = r"[0-9]+" => <>.to_string();

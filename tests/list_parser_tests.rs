@@ -1,75 +1,70 @@
 extern crate robin_core;
 
-#[macro_use]
-extern crate pest;
-
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::parser::{ExpressionParser, Rule};
+    use robin_core::parser::ExprsParser;
+    use robin_core::ast::{Expression, ListExpression, IdentifierExpression, BooleanExpression, NumberExpression};
 
     #[test]
     fn parse_an_empty_list() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "[]",
-            rule: Rule::list_literal,
-            tokens: [
-                list_literal(0, 2)
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("()"), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_list_with_one_value() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "[hello]",
-            rule: Rule::list_literal,
-            tokens: [
-                list_literal(0, 7, [identifier_literal(1, 6)])
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("hello".to_string())
+            ))
+        ]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(hello)"), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_list_with_multiple_values() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "[hello true]",
-            rule: Rule::list_literal,
-            tokens: [
-                list_literal(0, 12, [identifier_literal(1, 6), boolean_literal(7, 11)])
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("hello".to_string()))),
+            Box::new(Expression::Boolean(BooleanExpression::new(true))),
+        ]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(hello true)"), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_list_with_symbols() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "[+]",
-            rule: Rule::list_literal,
-            tokens: [
-                list_literal(0, 3, [identifier_literal(1, 2)])
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("+".to_string())))
+        ]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(+)"), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_list_with_multiple_symbols() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "[+ 1 1]",
-            rule: Rule::list_literal,
-            tokens: [
-                list_literal(0, 7,
-                    [
-                        identifier_literal(1, 2),
-                        decimal_digits_literal(3, 4),
-                        decimal_digits_literal(5, 6)
-                    ]
-                )
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("+".to_string()))),
+            Box::new(Expression::Number(
+                NumberExpression::new(1 as f64))),
+            Box::new(Expression::Number(
+                NumberExpression::new(1 as f64))),
+        ]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(+ 1 1)"), Ok(vec![expr]));
     }
 }

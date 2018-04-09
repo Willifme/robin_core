@@ -1,49 +1,46 @@
 extern crate robin_core;
 
-#[macro_use]
-extern crate pest;
-
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::parser::{ExpressionParser, Rule};
+    use robin_core::parser::ExprsParser;
+    use robin_core::ast::{Expression, ListExpression, IdentifierExpression, NumberExpression};
 
     #[test]
     fn parses_a_function_call_with_no_arguments() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "(hello)",
-            rule: Rule::function_call_literal,
-            tokens: [
-                function_call_literal(0, 7, [identifier_literal(1, 6)])
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("hello".to_string()))),
+        ]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(hello)"), Ok(vec![expr]));
     }
 
     #[test]
     fn parses_a_function_call_with_one_argument() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "(hello [1])",
-            rule: Rule::function_call_literal,
-            tokens: [
-                function_call_literal(0, 11,
-                    [identifier_literal(1, 6), list_literal(7, 10,
-                        [decimal_digits_literal(8, 9)])])
-            ]
-        )
-    }
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("hello".to_string()))),
+            Box::new(Expression::Number(
+                NumberExpression::new(1.0)))
+        ]));
 
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(hello 1)"), Ok(vec![expr]));
+    }
     #[test]
     fn parses_a_function_call_with_two_arguments() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: "(hello [1 2])",
-            rule: Rule::function_call_literal,
-            tokens: [
-                function_call_literal(0, 13,
-                    [identifier_literal(1, 6), list_literal(7, 12,
-                        [decimal_digits_literal(8, 9), decimal_digits_literal(10, 11)])])
-            ]
-        )
+        let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(
+                IdentifierExpression::new("hello".to_string()))),
+            Box::new(Expression::Number(NumberExpression::new(1.0))),
+            Box::new(Expression::Number(NumberExpression::new(2.0))),
+        ]));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse("(hello 1 2)"), Ok(vec![expr]));
     }
 }

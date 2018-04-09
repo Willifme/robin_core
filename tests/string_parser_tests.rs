@@ -1,117 +1,89 @@
 extern crate robin_core;
 
-#[macro_use]
-extern crate pest;
-
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::parser::{ExpressionParser, Rule};
+    use robin_core::parser::ExprsParser;
+    use robin_core::ast::{Expression, StringExpression};
 
     #[test]
     fn parse_an_empty_string() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 2)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""""#), Ok(vec![expr]));
     }
+
 
     #[test]
     fn parse_a_string_with_content() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""hello, world!""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 15)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""hello, world!""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""hello, world!""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_backspace() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\b""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\b""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\b""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_form() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\f""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\f""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\f""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_newline() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\n""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\n""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\n""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_carriage() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\r""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\r""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\r""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_horizontal_tab() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\t""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\t""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\t""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_vertical_tab() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\v""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\v""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\v""#), Ok(vec![expr]));
     }
 
     #[test]
     fn parse_a_string_with_a_null_char() {
-        parses_to!(
-            parser: ExpressionParser,
-            input: r#""\0""#,
-            rule: Rule::string_literal,
-            tokens: [
-                string_literal(0, 4)
-            ]
-        )
+        let expr = Expression::String(StringExpression::new(r#""\0""#.to_string()));
+
+        let parser = ExprsParser::new();
+
+        assert_eq!(parser.parse(r#""\0""#), Ok(vec![expr]));
     }
 }

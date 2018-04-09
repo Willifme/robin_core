@@ -6,8 +6,13 @@ description = "A simple (custom) Lisp to JavaScript source-to-source compiler"
 license = "Apache-2.0"
 repository = "https://github.com/willifme/robin_core"
 
+[build-dependencies]
+lalrpop = "0.15.1"
+
 [dependencies]
 pest = "^1.0.3"
 pest_derive = "^1.0.3"
 ansi_term = "0.9"
 lazy_static = "1.0"
+lalrpop-util = "0.15.1"
+regex = "0.2.1"
