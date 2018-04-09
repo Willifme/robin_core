@@ -5,11 +5,11 @@ extern crate robin_core;
 
 use std::borrow::BorrowMut;
 
-use stdweb::web::{document, Element, IElement, IEventTarget, INode};
+use stdweb::web::{document, Element, IElement, IEventTarget, INonElementParentNode, INode};
 use stdweb::web::event::ClickEvent;
 
 use robin_core::compiler::Compiler;
-use robin_core::parser::parse;
+use robin_core::parser::ExprsParser;
 use robin_core::error::{Error, ErrorKind, ErrorLevel};
 
 fn create_error_element(error: Error) -> Element {
@@ -51,7 +51,7 @@ fn main() {
                 .unwrap();
         }
 
-        let parse_result = parse(&lisp_input.as_str().unwrap());
+        let parse_result = ExprsParser::new().parse(&lisp_input.as_str().unwrap());
 
         if parse_result.is_err() {
             // TODO: Improve parser error
@@ -61,9 +61,9 @@ fn main() {
 
             compiler_list.append_child(&error_element);
         } else {
-            let parse_result_unwrapped = parse_result.unwrap();
+            let mut parse_result_unwrapped = parse_result.unwrap();
 
-            let compiled = &compiler.borrow_mut().compile(&parse_result_unwrapped);
+            let compiled = &compiler.borrow_mut().compile(&mut parse_result_unwrapped);
 
             if !compiler.errors.0.is_empty() {
                 compiler.errors.0.iter().for_each(|error| {
