@@ -130,18 +130,12 @@ fn builtin_binop(
         0 => Err(Error::too_few_arguments("binary operation".to_string())),
         1 => builtin_unary(op, args, stdlib),
         2 => {
-            // Debox and take from index
             // This is messy _but_ it should make the match easier to understand
-            let box ref left = args[0];
-
-            let box ref right = args[1];
-
-            match (left, right) {
-                (Expression::Number(l), Expression::Number(r)) => precalculate_numbers(op, l.value, r.value),
+            match (&args[0], &args[1]) {
+                (box Expression::Number(l), box Expression::Number(r)) => precalculate_numbers(op, l.value, r.value),
 
                 // TODO: Fix this
-                _ => unimplemented!(),
-                //(_, _) => Ok(format!("{}{}{}", left.eval(stdlib)?, op, right.eval(stdlib)?)),
+                (_, _) => Ok(format!("{}{}{}", args[0].eval(stdlib)?, op, args[1].eval(stdlib)?)),
             }
         }
         _ => {
