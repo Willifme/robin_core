@@ -2,8 +2,8 @@ extern crate robin_core;
 
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::parser::ExprsParser;
     use robin_core::ast::{Expression, StringExpression};
+    use robin_core::parser::ExprsParser;
 
     #[test]
     fn parse_an_empty_string() {
@@ -13,7 +13,6 @@ mod parser_tests {
 
         assert_eq!(parser.parse(r#""""#), Ok(vec![expr]));
     }
-
 
     #[test]
     fn parse_a_string_with_content() {

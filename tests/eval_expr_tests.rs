@@ -1,11 +1,12 @@
 extern crate robin_core;
 
 mod eval_expr_tests {
-    use robin_core::ast::{Expression, ListExpression, IdentifierExpression, NumberExpression, BooleanExpression};
-    use robin_core::table::Table;
-    use robin_core::to_javascript::ToJavaScript;
+    use robin_core::ast::{BooleanExpression, Expression, IdentifierExpression, ListExpression,
+                          NumberExpression};
     use robin_core::error::Error;
     use robin_core::stdlib::Stdlib;
+    use robin_core::table::Table;
+    use robin_core::to_javascript::ToJavaScript;
 
     #[test]
     fn binding_with_one_argument_should_evaluate_correctly() {
@@ -14,19 +15,15 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("var".to_string()))
-                ),
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("something".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "var".to_string(),
+            ))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "something".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(
             expr.eval(&mut stdlib),
@@ -41,13 +38,11 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("var".to_string()))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "var".to_string(),
+            ))),
+        ]));
 
         let err = Err(Error::too_few_arguments("binding".to_string()));
 
@@ -61,16 +56,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("return".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "return".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("return 50")));
     }
@@ -82,13 +73,11 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("return".to_string()))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "return".to_string(),
+            ))),
+        ]));
 
         let err = Err(Error::too_few_arguments("return".to_string()));
 
@@ -102,19 +91,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("return".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "return".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         let err = Err(Error::too_many_arguments("return".to_string()));
 
@@ -128,16 +111,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("+".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "+".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("+50")));
     }
@@ -149,16 +128,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("-".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "-".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("-50")));
     }
@@ -170,16 +145,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("!".to_string()))
-                ),
-                Box::new(
-                    Expression::Boolean(BooleanExpression::new(true))
-                ),
-            ]
-        )); 
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "!".to_string(),
+            ))),
+            Box::new(Expression::Boolean(BooleanExpression::new(true))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("!true")));
     }
@@ -191,16 +162,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("++".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "++".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("++50")));
     }
@@ -212,16 +179,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("~".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "~".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("~50")));
     }
@@ -233,16 +196,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("typeof".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "typeof".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("typeof 50")));
     }
@@ -254,16 +213,12 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("delete".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "delete".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("delete 50")));
     }
@@ -275,22 +230,14 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("+".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "+".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("50+50+50")));
     }
@@ -302,19 +249,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("+".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "+".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("100")));
     }
@@ -326,19 +267,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("-".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "-".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("0")));
     }
@@ -350,19 +285,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("*".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "*".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("2500")));
     }
@@ -374,19 +303,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("/".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "/".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("1")));
     }
@@ -398,19 +321,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("/".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(0.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "/".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(0.0))),
+        ]));
 
         let err = Err(Error::invalid_expression(
             "Divide by zero encountered on numeric literal binary operation".to_string(),
@@ -426,19 +343,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("%".to_string()))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(50.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "%".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("0")));
     }
@@ -450,13 +361,11 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("if".to_string()))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "if".to_string(),
+            ))),
+        ]));
 
         let err = Err(Error::too_few_arguments("if statement".to_string()));
 
@@ -470,18 +379,16 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("if".to_string()))
-                ),
-                Box::new(
-                    Expression::Boolean(BooleanExpression::new(true))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "if".to_string(),
+            ))),
+            Box::new(Expression::Boolean(BooleanExpression::new(true))),
+        ]));
 
-        let err = Err(Error::too_few_arguments("if statement condition".to_string()));
+        let err = Err(Error::too_few_arguments(
+            "if statement condition".to_string(),
+        ));
 
         assert_eq!(expr.eval(&mut stdlib), err)
     }
@@ -493,19 +400,13 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("if".to_string()))
-                ),
-                Box::new(
-                    Expression::Boolean(BooleanExpression::new(true))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(1.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "if".to_string(),
+            ))),
+            Box::new(Expression::Boolean(BooleanExpression::new(true))),
+            Box::new(Expression::Number(NumberExpression::new(1.0))),
+        ]));
 
         assert_eq!(expr.eval(&mut stdlib), Ok(String::from("if (true) { 1 }")))
     }
@@ -517,22 +418,14 @@ mod eval_expr_tests {
 
         stdlib.populate();
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(
-            vec![
-                Box::new(
-                    Expression::Identifier(IdentifierExpression::new("if".to_string()))
-                ),
-                Box::new(
-                    Expression::Boolean(BooleanExpression::new(true))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(1.0))
-                ),
-                Box::new(
-                    Expression::Number(NumberExpression::new(1.0))
-                ),
-            ]
-        ));
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "if".to_string(),
+            ))),
+            Box::new(Expression::Boolean(BooleanExpression::new(true))),
+            Box::new(Expression::Number(NumberExpression::new(1.0))),
+            Box::new(Expression::Number(NumberExpression::new(1.0))),
+        ]));
 
         assert_eq!(
             expr.eval(&mut stdlib),

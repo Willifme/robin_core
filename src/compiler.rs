@@ -1,10 +1,10 @@
 use std::default::Default;
 
 use ast::Expression;
-use table::Table;
 use error::ErrorStack;
-use to_javascript::ToJavaScript;
 use stdlib::Stdlib;
+use table::Table;
+use to_javascript::ToJavaScript;
 
 pub struct Compiler<'a> {
     pub errors: ErrorStack,

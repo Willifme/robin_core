@@ -1,6 +1,6 @@
-use to_javascript::ToJavaScript;
-use stdlib::Stdlib;
 use error::Error;
+use stdlib::Stdlib;
+use to_javascript::ToJavaScript;
 
 #[derive(Debug, PartialEq)]
 pub struct NumberExpression {
@@ -9,7 +9,7 @@ pub struct NumberExpression {
 
 impl NumberExpression {
     pub fn new(value: f64) -> NumberExpression {
-        NumberExpression{value}
+        NumberExpression { value }
     }
 }
 
@@ -26,7 +26,7 @@ pub struct IdentifierExpression {
 
 impl IdentifierExpression {
     pub fn new(value: String) -> IdentifierExpression {
-        IdentifierExpression{value}
+        IdentifierExpression { value }
     }
 }
 
@@ -35,10 +35,8 @@ impl ToJavaScript for IdentifierExpression {
         if let Some(_) = stdlib.variable_table.get(&self.value) {
             // TODO: Remove clone here
             Ok(self.value.clone())
-
         } else if let Some(_) = stdlib.function_table.get(&self.value) {
             Ok(self.value.clone())
-
         } else {
             // TODO: Remove clone here
             Err(Error::undefined_var(self.value.clone()))
@@ -53,7 +51,7 @@ pub struct BooleanExpression {
 
 impl BooleanExpression {
     pub fn new(value: bool) -> BooleanExpression {
-        BooleanExpression{value}
+        BooleanExpression { value }
     }
 }
 
@@ -70,7 +68,7 @@ pub struct StringExpression {
 
 impl StringExpression {
     pub fn new(value: String) -> StringExpression {
-        StringExpression{value}
+        StringExpression { value }
     }
 }
 
@@ -89,15 +87,21 @@ pub struct ListExpression {
 
 impl ListExpression {
     pub fn new(qouted: bool, value: Vec<Box<Expression>>) -> ListExpression {
-        ListExpression{qouted, value}
+        ListExpression { qouted, value }
     }
 
     pub fn new_quoted(value: Vec<Box<Expression>>) -> ListExpression {
-        ListExpression{qouted: true, value}
+        ListExpression {
+            qouted: true,
+            value,
+        }
     }
 
     pub fn new_unquoted(value: Vec<Box<Expression>>) -> ListExpression {
-        ListExpression{qouted: false, value}
+        ListExpression {
+            qouted: false,
+            value,
+        }
     }
 }
 
@@ -110,7 +114,6 @@ impl ToJavaScript for ListExpression {
 
         if self.qouted {
             stdlib.function_table.get("quote").unwrap()("quote".to_string(), args, stdlib)
-
         } else {
             match stdlib.function_table.clone().get::<str>(&expr_name) {
                 Some(func) => func(expr_name, args, stdlib),
@@ -122,7 +125,7 @@ impl ToJavaScript for ListExpression {
 
                     Ok(format!("({}({}))", expr_name, args))
                 }
-            }    
+            }
 
             // TODO: Revise this code
             /*match args[1] {
@@ -151,8 +154,7 @@ impl ToJavaScript for ListExpression {
 
                     Ok(format!("({}({}))", expr_name, args))
                 }
-            }*/
-        }
+            }*/        }
     }
 }
 

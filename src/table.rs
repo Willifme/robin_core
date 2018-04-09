@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use std::boxed::Box;
+use std::collections::HashMap;
 
 /// Create a type alias for the table containing the symbols
 /// All items are acccessible via their name

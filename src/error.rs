@@ -1,5 +1,5 @@
-use std::fmt;
 use ansi_term::Colour;
+use std::fmt;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum ErrorKind {

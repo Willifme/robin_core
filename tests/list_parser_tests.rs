@@ -2,8 +2,9 @@ extern crate robin_core;
 
 #[cfg(test)]
 mod parser_tests {
+    use robin_core::ast::{BooleanExpression, Expression, IdentifierExpression, ListExpression,
+                          NumberExpression};
     use robin_core::parser::ExprsParser;
-    use robin_core::ast::{Expression, ListExpression, IdentifierExpression, BooleanExpression, NumberExpression};
 
     #[test]
     fn parse_an_empty_list() {
@@ -17,9 +18,9 @@ mod parser_tests {
     #[test]
     fn parse_a_list_with_one_value() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(Expression::Identifier(
-                IdentifierExpression::new("hello".to_string())
-            ))
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "hello".to_string(),
+            ))),
         ]));
 
         let parser = ExprsParser::new();
@@ -30,8 +31,9 @@ mod parser_tests {
     #[test]
     fn parse_a_list_with_multiple_values() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(Expression::Identifier(
-                IdentifierExpression::new("hello".to_string()))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "hello".to_string(),
+            ))),
             Box::new(Expression::Boolean(BooleanExpression::new(true))),
         ]));
 
@@ -43,8 +45,9 @@ mod parser_tests {
     #[test]
     fn parse_a_list_with_symbols() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(Expression::Identifier(
-                IdentifierExpression::new("+".to_string())))
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "+".to_string(),
+            ))),
         ]));
 
         let parser = ExprsParser::new();
@@ -55,12 +58,11 @@ mod parser_tests {
     #[test]
     fn parse_a_list_with_multiple_symbols() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(Expression::Identifier(
-                IdentifierExpression::new("+".to_string()))),
-            Box::new(Expression::Number(
-                NumberExpression::new(1 as f64))),
-            Box::new(Expression::Number(
-                NumberExpression::new(1 as f64))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "+".to_string(),
+            ))),
+            Box::new(Expression::Number(NumberExpression::new(1 as f64))),
+            Box::new(Expression::Number(NumberExpression::new(1 as f64))),
         ]));
 
         let parser = ExprsParser::new();

@@ -2,8 +2,8 @@ extern crate robin_core;
 
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::parser::ExprsParser;
     use robin_core::ast::{Expression, IdentifierExpression};
+    use robin_core::parser::ExprsParser;
 
     #[test]
     fn parse_a_fullstop() {

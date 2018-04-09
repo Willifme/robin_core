@@ -2,8 +2,8 @@ extern crate robin_core;
 
 #[cfg(test)]
 mod parser_tests {
-    use robin_core::parser::ExprsParser;
     use robin_core::ast::{Expression, NumberExpression};
+    use robin_core::parser::ExprsParser;
 
     #[test]
     fn parse_a_single_hex_digit() {
@@ -22,7 +22,6 @@ mod parser_tests {
 
         assert_eq!(parser.parse("0x1AB"), Ok(vec![expr]));
     }
-
 
     #[test]
     fn parse_a_single_oct_digit() {
@@ -51,7 +50,6 @@ mod parser_tests {
         assert_eq!(parser.parse("0b1"), Ok(vec![expr]));
     }
 
-
     #[test]
     fn parse_multiple_binary_digits() {
         let expr = Expression::Number(NumberExpression::new(0b011 as f64));
@@ -60,7 +58,6 @@ mod parser_tests {
 
         assert_eq!(parser.parse("0b011"), Ok(vec![expr]));
     }
-
 
     #[test]
     fn parse_a_single_decimal_digit() {

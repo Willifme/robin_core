@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use ast::Expression;
-use table::Table;
 use error::Error;
+use table::Table;
 use to_javascript::ToJavaScript;
 
 type Callback = fn(String, &mut [Box<Expression>], &mut Stdlib) -> Result<String, Error>;
@@ -25,13 +25,17 @@ impl<'a> Stdlib<'a> {
     pub fn populate(&mut self) {
         self.function_table.insert("if".to_string(), builtin_if);
 
-        self.function_table.insert("return".to_string(), builtin_return);
+        self.function_table
+            .insert("return".to_string(), builtin_return);
 
-        self.function_table.insert("const".to_string(), builtin_binding);
+        self.function_table
+            .insert("const".to_string(), builtin_binding);
 
-        self.function_table.insert("var".to_string(), builtin_binding);
+        self.function_table
+            .insert("var".to_string(), builtin_binding);
 
-        self.function_table.insert("let".to_string(), builtin_binding);
+        self.function_table
+            .insert("let".to_string(), builtin_binding);
 
         // Plus and minus are both binary and unary
         // But I  have deemed binary to have a higher precedence, so binary goes first
@@ -53,9 +57,11 @@ impl<'a> Stdlib<'a> {
 
         self.function_table.insert("~".to_string(), builtin_unary);
 
-        self.function_table.insert("typeof".to_string(), builtin_unary);
+        self.function_table
+            .insert("typeof".to_string(), builtin_unary);
 
-        self.function_table.insert("delete".to_string(), builtin_unary);
+        self.function_table
+            .insert("delete".to_string(), builtin_unary);
     }
 }
 
@@ -66,7 +72,9 @@ fn builtin_if(
 ) -> Result<String, Error> {
     match args.len() {
         0 => Err(Error::too_few_arguments("if statement".to_string())),
-        1 => Err(Error::too_few_arguments("if statement condition".to_string())),
+        1 => Err(Error::too_few_arguments(
+            "if statement condition".to_string(),
+        )),
         2 => Ok(format!(
             "if ({}) {{ {} }}",
             args[0].eval(stdlib)?,
@@ -109,14 +117,23 @@ fn builtin_binding(
             match ident {
                 box Expression::Identifier(ref mut ident) => {
                     // TODO: Remove clones
-                    stdlib.variable_table.insert(ident.value.clone(), ident.value.clone());
+                    stdlib
+                        .variable_table
+                        .insert(ident.value.clone(), ident.value.clone());
 
-                    Ok(format!("{} {} = {}", name, ident.value.clone(), value[0].eval(stdlib)?))
-                },
+                    Ok(format!(
+                        "{} {} = {}",
+                        name,
+                        ident.value.clone(),
+                        value[0].eval(stdlib)?
+                    ))
+                }
 
-                _ => Err(Error::invalid_expression("non-identifier given to binding".to_string())),
+                _ => Err(Error::invalid_expression(
+                    "non-identifier given to binding".to_string(),
+                )),
             }
-        },
+        }
         _ => Err(Error::too_many_arguments("binding".to_string())),
     }
 }
@@ -132,10 +149,17 @@ fn builtin_binop(
         2 => {
             // This is messy _but_ it should make the match easier to understand
             match (&args[0], &args[1]) {
-                (box Expression::Number(l), box Expression::Number(r)) => precalculate_numbers(op, l.value, r.value),
+                (box Expression::Number(l), box Expression::Number(r)) => {
+                    precalculate_numbers(op, l.value, r.value)
+                }
 
                 // TODO: Fix this
-                (_, _) => Ok(format!("{}{}{}", args[0].eval(stdlib)?, op, args[1].eval(stdlib)?)),
+                (_, _) => Ok(format!(
+                    "{}{}{}",
+                    args[0].eval(stdlib)?,
+                    op,
+                    args[1].eval(stdlib)?
+                )),
             }
         }
         _ => {
