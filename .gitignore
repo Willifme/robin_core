@@ -2,3 +2,4 @@
 **/*.rs.bk
 Cargo.lock
 /robin_web/target/
+.DS_Store
