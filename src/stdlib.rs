@@ -14,11 +14,9 @@ static MATHS_BINOPS: &'static [&'static str] = &["+", "-", "*", "/", "%"];
 static LOGIC_BINOPS: &'static [&'static str] =
     &["==", "===", "!=", "!==", ">", "<", ">=", "<=", "&&", "||"];
 
-static UNARY_OPS: &'static [&'static str] =
-    &["!", "++", "--", "~", "typeof", "delete"];
+static UNARY_OPS: &'static [&'static str] = &["!", "++", "--", "~", "typeof", "delete"];
 
-static GENERIC_FUNCTION: &'static [&'static str] =
-    &["console.log", "alert"];
+static GENERIC_FUNCTION: &'static [&'static str] = &["console.log", "alert"];
 
 pub struct Stdlib<'a> {
     pub function_table: FunctionMap,
@@ -53,10 +51,11 @@ impl<'a> Stdlib<'a> {
             .insert("let".to_string(), builtin_binding);
 
         self.function_table
-            .insert("function".to_string(), builtin_function_definition); 
+            .insert("function".to_string(), builtin_function_definition);
 
         for generic in GENERIC_FUNCTION {
-            self.function_table.insert(generic.to_string(), builtin_generic_function);
+            self.function_table
+                .insert(generic.to_string(), builtin_generic_function);
         }
 
         for binop in MATHS_BINOPS {
@@ -97,7 +96,9 @@ fn builtin_if(
             args[2].eval(stdlib)?
         )),
         // TODO: Add error message here
-        _ => Err(Error::too_many_arguments("unknown number of arguments supplied to if statement".to_string())),
+        _ => Err(Error::too_many_arguments(
+            "unknown number of arguments supplied to if statement".to_string(),
+        )),
     }
 }
 
@@ -152,8 +153,7 @@ fn builtin_generic_function(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    let args_fmt = args
-        .into_iter()
+    let args_fmt = args.into_iter()
         .map(|expr| expr.eval(stdlib).or_else(|e| Err(e)).unwrap())
         .collect::<Vec<String>>()
         .join(",");
@@ -175,13 +175,15 @@ fn builtin_function_definition(
 
             match (args, name) {
                 (box Expression::List(args_expr), box Expression::Identifier(func_name)) => {
-
                     // TODO: Remove clone
                     // Add the funciton to the parent variable table
-                    stdlib.variable_table.insert(func_name.value.clone(), func_name.value.clone());
+                    stdlib
+                        .variable_table
+                        .insert(func_name.value.clone(), func_name.value.clone());
 
                     // Create a new child stdlib
-                    let mut stdlib = Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
+                    let mut stdlib =
+                        Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
 
                     let args_fmt = args_expr
                                 .value
@@ -194,7 +196,8 @@ fn builtin_function_definition(
                                     let expr_name = identifier_to_string(expr.clone()).unwrap();
 
                                     // TODO: Remove clones
-                                    stdlib.variable_table.insert(expr_name.clone(), expr_name.clone());
+                                    stdlib.variable_table.insert(expr_name.clone(),
+                                        expr_name.clone());
 
                                     expr.eval(&mut stdlib).or_else(|e| Err(e)).unwrap()
                                 })
@@ -207,10 +210,12 @@ fn builtin_function_definition(
                         args_fmt,
                         body[0].eval(&mut stdlib)?
                     ))
-                }, 
-                (_, _) => Err(Error::invalid_expression("non list given to function binding".to_string())) 
+                }
+                (_, _) => Err(Error::invalid_expression(
+                    "non list given to function binding".to_string(),
+                )),
             }
-        },
+        }
         _ => Err(Error::too_many_arguments("function definition".to_string())),
     }
 }
@@ -227,7 +232,9 @@ fn builtin_binop(
             // This is messy _but_ it should make the match easier to understand
             match (&args[0], &args[1]) {
                 // Pre-calcuate if op an maths operation
-                (box Expression::Number(l), box Expression::Number(r)) if MATHS_BINOPS.contains(&&*op) => {
+                (box Expression::Number(l), box Expression::Number(r))
+                    if MATHS_BINOPS.contains(&&*op) =>
+                {
                     precalculate_numbers(op, l.value, r.value)
                 }
 
@@ -270,7 +277,7 @@ fn builtin_unary(
 fn identifier_to_string(expr: Box<Expression>) -> Option<String> {
     match expr {
         box Expression::Identifier(ident) => Some(ident.value),
-        _ => None
+        _ => None,
     }
 }
 

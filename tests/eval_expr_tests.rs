@@ -68,9 +68,9 @@ mod eval_expr_tests {
                 "hello".to_string(),
             ))),
             Box::new(Expression::List(ListExpression::new_unquoted(vec![
-                Box::new(Expression::Identifier(
-                    IdentifierExpression::new("x".to_string())
-                ))
+                Box::new(Expression::Identifier(IdentifierExpression::new(
+                    "x".to_string(),
+                ))),
             ]))),
             Box::new(Expression::Number(NumberExpression::new(50.0))),
         ]));
@@ -94,12 +94,12 @@ mod eval_expr_tests {
                 "hello".to_string(),
             ))),
             Box::new(Expression::List(ListExpression::new_unquoted(vec![
-                Box::new(Expression::Identifier(
-                    IdentifierExpression::new("x".to_string())
-                )),
-                Box::new(Expression::Identifier(
-                    IdentifierExpression::new("y".to_string())
-                )),
+                Box::new(Expression::Identifier(IdentifierExpression::new(
+                    "x".to_string(),
+                ))),
+                Box::new(Expression::Identifier(IdentifierExpression::new(
+                    "y".to_string(),
+                ))),
             ]))),
             Box::new(Expression::Number(NumberExpression::new(50.0))),
         ]));
