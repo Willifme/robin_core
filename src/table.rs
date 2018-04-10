@@ -4,7 +4,7 @@ use std::collections::HashMap;
 /// Create a type alias for the table containing the symbols
 /// All items are acccessible via their name
 /// The `T` is the value inherited from `Table`
-pub type Container<'a, T: 'a> = HashMap<String, T>;
+pub type Container<'a, T> = HashMap<String, T>;
 
 /// This is the generic container for all symbol tables
 /// `T` must implement `ToJavaScript`
