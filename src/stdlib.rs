@@ -16,7 +16,7 @@ static LOGIC_BINOPS: &'static [&'static str] =
 
 static UNARY_OPS: &'static [&'static str] = &["!", "++", "--", "~", "typeof", "delete"];
 
-static GENERIC_FUNCTION: &'static [&'static str] = &["console.log", "alert"];
+static GENERIC_FUNCTION: &'static [&'static str] = &["console.log", "alert", "eval"];
 
 pub struct Stdlib<'a> {
     pub function_table: FunctionMap,
@@ -52,6 +52,9 @@ impl<'a> Stdlib<'a> {
 
         self.function_table
             .insert("function".to_string(), builtin_function_definition);
+
+        self.function_table
+            .insert("quote".to_string(), builtin_quote);
 
         for generic in GENERIC_FUNCTION {
             self.function_table
@@ -220,6 +223,21 @@ fn builtin_function_definition(
     }
 }
 
+fn builtin_quote(
+    _name: String,
+    args: &mut [Box<Expression>],
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
+    let args_fmt = args
+        .into_iter()
+        // TODO: Remove clone
+        .map(|arg| arg.clone().to_string_stdlib(stdlib))
+        .collect::<Vec<String>>()
+        .join(" ");
+
+    Ok(format!("\"({})\"", args_fmt))
+}
+
 fn builtin_binop(
     op: String,
     args: &mut [Box<Expression>],
@@ -281,6 +299,7 @@ fn identifier_to_string(expr: Box<Expression>) -> Option<String> {
     }
 }
 
+/// Use to convert expressions contained within qoutes to a string without evaluating it
 fn precalculate_numbers(op: String, left: f64, right: f64) -> Result<String, Error> {
     match op.as_ref() {
         "+" => Ok(format!("{}", left + right)),

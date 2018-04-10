@@ -107,14 +107,16 @@ impl ListExpression {
 
 impl ToJavaScript for ListExpression {
     fn eval(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
-        // TODO: Remove unwrap here
-        let (name, args) = self.value.split_first_mut().unwrap();
-
-        let expr_name = name.eval(stdlib)?;
-
+        // The expression is quoted automatically if the ' is used
+        // We send all the arguments when evaluating
         if self.qouted {
-            stdlib.function_table.get("quote").unwrap()("quote".to_string(), args, stdlib)
+            stdlib.function_table.get("quote").unwrap()("quote".to_string(), self.value.as_mut_slice(), stdlib)
         } else {
+            // TODO: Remove unwrap here
+            let (name, args) = self.value.split_first_mut().unwrap();
+
+            let expr_name = name.eval(stdlib)?;
+
             match stdlib.function_table.clone().get::<str>(&expr_name) {
                 Some(func) => func(expr_name, args, stdlib),
                 None => {
@@ -137,6 +139,30 @@ pub enum Expression {
     Boolean(BooleanExpression),
     String(StringExpression),
     List(ListExpression),
+}
+
+impl Expression {
+    /// Used to convert expressions to string
+    pub fn to_string_stdlib(self, stdlib: &mut Stdlib) -> String {
+        match self {
+            // TODO: Clean this code up
+            Expression::Number(expr) => expr.value.to_string(),
+            Expression::Identifier(expr) => expr.value,
+            Expression::Boolean(expr) => expr.value.to_string(),
+            Expression::String(expr) => expr.value,
+            Expression::List(ref list_expr) => {
+                let list_fmt = list_expr
+                    .value
+                    .clone()
+                    .into_iter()
+                    .map(|expr| expr.to_string_stdlib(stdlib))
+                    .collect::<Vec<String>>()
+                    .join(" ");
+
+                format!("({})", list_fmt)
+            }
+        }
+    }
 }
 
 impl ToJavaScript for Expression {

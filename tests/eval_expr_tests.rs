@@ -9,6 +9,52 @@ mod eval_expr_tests {
     use robin_core::to_javascript::ToJavaScript;
 
     #[test]
+    fn quote_with_no_args_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_quoted(vec![
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("\"()\""))
+        );
+    }
+
+    #[test]
+    fn quote_with_one_args_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_quoted(vec![
+            Box::new(Expression::Number(NumberExpression::new(50.0)))
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("\"(50)\""))
+        );
+    }
+
+    #[test]
+    fn quote_with_a_list_expr_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_quoted(vec![
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Number(NumberExpression::new(50.0)))
+            ]))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("\"((50))\""))
+        );
+    }
+
+    #[test]
     fn function_literal_with_too_few_args_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
