@@ -13,9 +13,7 @@ pub struct Compiler<'a> {
 
 impl<'a> Compiler<'a> {
     pub fn new() -> Compiler<'a> {
-        let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
+        let stdlib = Stdlib::new(Table::new(None));
 
         Compiler {
             errors: ErrorStack(vec![]),
