@@ -2,7 +2,7 @@ use error::Error;
 use stdlib::Stdlib;
 use to_javascript::ToJavaScript;
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct NumberExpression {
     pub value: f64,
 }
@@ -19,7 +19,7 @@ impl ToJavaScript for NumberExpression {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct IdentifierExpression {
     pub value: String,
 }
@@ -44,7 +44,7 @@ impl ToJavaScript for IdentifierExpression {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct BooleanExpression {
     pub value: bool,
 }
@@ -61,7 +61,7 @@ impl ToJavaScript for BooleanExpression {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct StringExpression {
     pub value: String,
 }
@@ -79,7 +79,7 @@ impl ToJavaScript for StringExpression {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ListExpression {
     pub value: Vec<Box<Expression>>,
     qouted: bool,
@@ -126,39 +126,11 @@ impl ToJavaScript for ListExpression {
                     Ok(format!("({}({}))", expr_name, args))
                 }
             }
-
-            // TODO: Revise this code
-            /*match args[1] {
-                box Expression::Identifier(ref mut ident) =>
-                    if let Some(func) = stdlib.function_table.clone().get::<str>(&ident.value) {
-                        func(expr_name, args, stdlib)
-                    },
-
-                _ => {
-                        let args = args.into_iter()
-                            .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                            .collect::<Vec<String>>()
-                            .join(",");
-
-                        Ok(format!("({}({}))", expr_name, args))
-                    },
-            }*/
-            // TODO: Remove to_string
-            /*match (stdlib.function_table.clone().get::<str>(args[1]), box args[1]) {
-                (Some(func), Expression::Identifier(ident)) => func(expr_name.clone(), args, stdlib),
-                (_, _) => {
-                    let args = args.into_iter()
-                        .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                        .collect::<Vec<String>>()
-                        .join(",");
-
-                    Ok(format!("({}({}))", expr_name, args))
-                }
-            }*/        }
+        }
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Expression {
     Number(NumberExpression),
     Identifier(IdentifierExpression),
@@ -178,95 +150,3 @@ impl ToJavaScript for Expression {
         }
     }
 }
-
-/*
-#[derive(Debug, PartialEq)]
-pub enum Expression {
-    Number(f64),
-    Identifier(String),
-    Boolean(bool),
-    String(String),
-    List(Vec<Box<Expression>>),
-
-    // String = Function Name, Vec<Box<String>> = Argument List, Box<Expression> = Body
-    FuncLiteral(String, Vec<String>, Box<Expression>),
-
-    // Box<Expression> = Expression being called, Vec<Box<Expression>> = Arguments
-    FuncCall(Box<Expression>, Vec<Box<Expression>>),
-}
-
-impl ToJavaScript for Expression {
-    fn eval(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
-        match *self {
-            Expression::Number(ref val) => Ok(format!("{}", val)),
-            Expression::Identifier(ref val) => if let Some(_) = stdlib.function_table.get(val) {
-                Ok(format!("{}", val))
-            } else {
-                Err(Error::undefined_var("Add undefined var here"))
-            },
-            Expression::Boolean(ref val) => Ok(format!("{}", val)),
-            Expression::String(ref val) => Ok(val.clone()),
-
-            Expression::List(ref mut vals) => {
-                let vals = vals.into_iter()
-                    // We can assume the unwrap is just a formality
-                    .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                    .collect::<Vec<String>>()
-                    .join(",");
-
-                Ok(format!("[{}]", vals))
-            }
-
-            Expression::FuncLiteral(ref name, ref args, ref mut body) => {
-                let mut stdlib = Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
-
-                args.into_iter().for_each(|arg| {
-                    stdlib
-                        .variable_table
-                        .insert(arg.to_string(), arg.to_string())
-                });
-
-                let args = args
-                            .into_iter()
-                            // TODO: Remove cloned
-                            .cloned()
-                            .map(|e| e)
-                            .collect::<Vec<String>>()
-                            .join(",");
-
-                Ok(format!(
-                    "function {} ({}){{ {}; }}",
-                    name,
-                    args,
-                    body.eval(&mut stdlib)?
-                ))
-            }
-
-            Expression::FuncCall(ref mut name, ref mut args) => {
-                // Debox the name from Box<Expression> to Expression
-                let &mut box ref mut expr_name = name;
-
-                // TODO: Rethink this code
-                match expr_name {
-                    Expression::Identifier(ref ident) => {
-                        // TODO: Remove clone
-                        match stdlib.function_table.clone().get(&ident.clone()) {
-                            Some(func) => func(ident.to_string(), args, stdlib),
-                            None => {
-                                let args = args.into_iter()
-                                    .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                                    .collect::<Vec<String>>()
-                                    .join(",");
-
-                                Ok(format!("({}({}))", expr_name.eval(stdlib)?, args))
-                            }
-                        }
-                    }
-
-                    _ => unimplemented!(),
-                }
-            }
-        }
-    }
-}
-*/
