@@ -9,11 +9,111 @@ mod eval_expr_tests {
     use robin_core::to_javascript::ToJavaScript;
 
     #[test]
-    fn binding_with_one_argument_should_evaluate_correctly() {
+    fn function_literal_with_too_few_args_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![]))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Err(Error::too_few_arguments("function definition".to_string()))
+        );
+    }
+
+    #[test]
+    fn function_literal_with_no_args_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "hello".to_string(),
+            ))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![]))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new(
+                    "+".to_string(),
+                ))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+            ]))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("function hello(){ 100; }"))
+        );
+    }
+
+    #[test]
+    fn function_literal_with_one_arg_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "hello".to_string(),
+            ))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(
+                    IdentifierExpression::new("x".to_string())
+                ))
+            ]))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("function hello(x){ 50; }"))
+        );
+    }
+
+    #[test]
+    fn function_literal_with_multiple_arg_should_return_an_error() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "hello".to_string(),
+            ))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(
+                    IdentifierExpression::new("x".to_string())
+                )),
+                Box::new(Expression::Identifier(
+                    IdentifierExpression::new("y".to_string())
+                )),
+            ]))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("function hello(x,y){ 50; }"))
+        );
+    }
+
+    #[test]
+    fn binding_with_one_argument_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -36,8 +136,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "var".to_string(),
@@ -54,8 +152,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "return".to_string(),
@@ -70,8 +166,6 @@ mod eval_expr_tests {
     fn return_with_no_arguments_should_return_an_error() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -88,8 +182,6 @@ mod eval_expr_tests {
     fn return_with_more_than_one_arguments_should_return_an_error() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -109,8 +201,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "+".to_string(),
@@ -125,8 +215,6 @@ mod eval_expr_tests {
     fn minus_unary_op_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -143,8 +231,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "!".to_string(),
@@ -159,8 +245,6 @@ mod eval_expr_tests {
     fn increment_unary_op_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -177,8 +261,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "~".to_string(),
@@ -193,8 +275,6 @@ mod eval_expr_tests {
     fn typeof_unary_op_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -211,8 +291,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "delete".to_string(),
@@ -227,8 +305,6 @@ mod eval_expr_tests {
     fn binary_op_with_more_than_two_exprs_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -247,8 +323,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "+".to_string(),
@@ -264,8 +338,6 @@ mod eval_expr_tests {
     fn minus_binary_op_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -283,8 +355,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "*".to_string(),
@@ -301,8 +371,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "/".to_string(),
@@ -318,8 +386,6 @@ mod eval_expr_tests {
     fn divide_binary_op_should_return_an_error() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -341,8 +407,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "%".to_string(),
@@ -359,8 +423,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "if".to_string(),
@@ -376,8 +438,6 @@ mod eval_expr_tests {
     fn if_with_no_expression_after_condition_should_return_an_err() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
@@ -398,8 +458,6 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        stdlib.populate();
-
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "if".to_string(),
@@ -415,8 +473,6 @@ mod eval_expr_tests {
     fn if_with_else_branch_should_return_a_func() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
-
-        stdlib.populate();
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(

@@ -9,6 +9,9 @@ mod parser_tests {
     fn parses_a_function_with_no_arguments() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
             Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
+            Box::new(Expression::Identifier(IdentifierExpression::new(
                 "hello".to_string(),
             ))),
             Box::new(Expression::List(ListExpression::new_unquoted(vec![]))),
@@ -17,12 +20,15 @@ mod parser_tests {
 
         let parser = ExprsParser::new();
 
-        assert_eq!(parser.parse("(hello () ())"), Ok(vec![expr]));
+        assert_eq!(parser.parse("(function hello () ())"), Ok(vec![expr]));
     }
 
     #[test]
     fn parses_a_function_with_one_argument() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "hello".to_string(),
             ))),
@@ -36,12 +42,15 @@ mod parser_tests {
 
         let parser = ExprsParser::new();
 
-        assert_eq!(parser.parse("(hello (x) ())"), Ok(vec![expr]));
+        assert_eq!(parser.parse("(function hello (x) ())"), Ok(vec![expr]));
     }
 
     #[test]
     fn parses_a_function_with_multiple_arguments() {
         let expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new(
+                "function".to_string(),
+            ))),
             Box::new(Expression::Identifier(IdentifierExpression::new(
                 "hello".to_string(),
             ))),
@@ -58,6 +67,6 @@ mod parser_tests {
 
         let parser = ExprsParser::new();
 
-        assert_eq!(parser.parse("(hello (x y) ())"), Ok(vec![expr]));
+        assert_eq!(parser.parse("(function hello (x y) ())"), Ok(vec![expr]));
     }
 }
