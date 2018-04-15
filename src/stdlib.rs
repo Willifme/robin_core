@@ -56,6 +56,9 @@ impl<'a> Stdlib<'a> {
         self.function_table
             .insert("quote".to_string(), builtin_quote);
 
+        self.function_table
+            .insert("lambda".to_string(), builtin_lambda);
+
         for generic in GENERIC_FUNCTION {
             self.function_table
                 .insert(generic.to_string(), builtin_generic_function);
@@ -236,6 +239,71 @@ fn builtin_quote(
         .join(" ");
 
     Ok(format!("\"({})\"", args_fmt))
+}
+
+fn builtin_lambda(
+    _name: String,
+    args: &mut [Box<Expression>],
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
+    match args.len() {
+        0 | 1  => Err(Error::too_few_arguments("lambda".to_string())),
+        _ => {
+            // TODO: Remove unwrap
+            let (args, exprs) = args.split_first_mut().unwrap();
+
+            // Create a new child stdlib
+            let mut stdlib =
+                Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
+
+            match args {
+                box Expression::List(list) => {
+                    list
+                        .value
+                        .clone()
+                        .into_iter()
+                        .for_each(|expr| {
+                            // TODO: Remove unwrap
+                            let expr_name = identifier_to_string(expr.clone()).unwrap();
+
+                            stdlib.variable_table.insert(expr_name.clone(), expr_name.clone());
+                        });
+
+                    let args_fmt = list
+                        .value
+                        .clone()
+                        .into_iter()
+                        .map(|arg| arg.to_string_stdlib(&mut stdlib))
+                        .collect::<Vec<String>>()
+                        .join(",");
+
+                    let exprs_fmt = exprs 
+                        .into_iter()
+                        .map(|expr| expr.eval(&mut stdlib).or_else(|e| Err(e)).unwrap())
+                        .collect::<Vec<String>>()
+                        .join(", ");
+
+                    Ok(format!("(({}) => {{ {} }})", args_fmt, exprs_fmt))
+                },
+                _ => Err(Error::invalid_expression("non-list given to lambda expression".to_string())),
+            }
+
+            // TODO: Remove clone
+//            stdlib.variable_table.insert(args_str.clone(), args_str.clone());
+
+//            panic!("{:?}", stdlib.variable_table);
+
+/*
+            let exprs_fmt = exprs 
+                .into_iter()
+                .map(|expr| expr.eval(&mut stdlib).or_else(|e| Err(e)).unwrap())
+                .collect::<Vec<String>>()
+                .join(", ");
+
+            Ok(format!("(({}) => {{ {} }})", args.eval(&mut stdlib)?, exprs_fmt))
+            */
+        }
+    }
 }
 
 fn builtin_binop(

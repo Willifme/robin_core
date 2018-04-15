@@ -9,6 +9,122 @@ mod eval_expr_tests {
     use robin_core::to_javascript::ToJavaScript;
 
     #[test]
+    fn lambda_with_multiple_args_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new("lambda".to_string()))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new("x".to_string()))),
+                Box::new(Expression::Identifier(IdentifierExpression::new("y".to_string()))),
+            ]))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new("+".to_string()))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+            ]))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("((x,y) => { 100 })"))
+        );
+    }
+
+    #[test]
+    fn lambda_with_one_arg_should_evalute_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new("lambda".to_string()))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new("x".to_string()))),
+            ]))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new("+".to_string()))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+            ]))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("((x) => { 100 })"))
+        );
+    }
+
+    #[test]
+    fn lambda_with_no_args_should_evalute_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new("lambda".to_string()))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![]))),
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new("+".to_string()))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+                Box::new(Expression::Number(NumberExpression::new(50.0))),
+            ]))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("(() => { 100 })"))
+        );
+    }
+
+    #[test]
+    fn lambda_with_multiple_args_and_no_body_should_return_an_error() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new("lambda".to_string()))),
+            Box::new(Expression::Identifier(IdentifierExpression::new("x".to_string()))),
+            Box::new(Expression::Identifier(IdentifierExpression::new("y".to_string()))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Err(Error::invalid_expression("non-list given to lambda expression".to_string()))
+        );
+    }
+
+    #[test]
+    fn lambda_with_one_arg_and_no_body_should_return_an_error() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new("lambda".to_string()))),
+            Box::new(Expression::Identifier(IdentifierExpression::new("x".to_string()))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Err(Error::too_few_arguments("lambda".to_string()))
+        );
+    }
+
+    #[test]
+    fn lambda_with_no_args_and_no_body_should_return_an_error() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Identifier(IdentifierExpression::new("lambda".to_string())))
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Err(Error::too_few_arguments("lambda".to_string()))
+        );
+    }
+
+    #[test]
     fn quote_with_no_args_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
