@@ -1,22 +1,16 @@
+mod stdlib_names;
+
 use std::collections::HashMap;
 
 use ast::Expression;
 use error::Error;
 use table::Table;
 use to_javascript::ToJavaScript;
+use stdlib::stdlib_names::*;
 
 type Callback = fn(String, &mut [Box<Expression>], &mut Stdlib) -> Result<String, Error>;
 
 type FunctionMap = HashMap<String, Callback>;
-
-static MATHS_BINOPS: &'static [&'static str] = &["+", "-", "*", "/", "%"];
-
-static LOGIC_BINOPS: &'static [&'static str] =
-    &["==", "===", "!=", "!==", ">", "<", ">=", "<=", "&&", "||"];
-
-static UNARY_OPS: &'static [&'static str] = &["!", "++", "--", "~", "typeof", "delete"];
-
-static GENERIC_FUNCTION: &'static [&'static str] = &["console.log", "alert", "eval"];
 
 pub struct Stdlib<'a> {
     pub function_table: FunctionMap,
@@ -287,21 +281,6 @@ fn builtin_lambda(
                 },
                 _ => Err(Error::invalid_expression("non-list given to lambda expression".to_string())),
             }
-
-            // TODO: Remove clone
-//            stdlib.variable_table.insert(args_str.clone(), args_str.clone());
-
-//            panic!("{:?}", stdlib.variable_table);
-
-/*
-            let exprs_fmt = exprs 
-                .into_iter()
-                .map(|expr| expr.eval(&mut stdlib).or_else(|e| Err(e)).unwrap())
-                .collect::<Vec<String>>()
-                .join(", ");
-
-            Ok(format!("(({}) => {{ {} }})", args.eval(&mut stdlib)?, exprs_fmt))
-            */
         }
     }
 }
@@ -316,9 +295,9 @@ fn builtin_binop(
         1 => builtin_unary(op, args, stdlib),
         2 => {
             // This is messy _but_ it should make the match easier to understand
-            match (&args[0], &args[1]) {
+            match (args[0].clone(), args[1].clone()) {
                 // Pre-calcuate if op an maths operation
-                (box Expression::Number(l), box Expression::Number(r))
+                (box Expression::Number(ref l), box Expression::Number(ref r))
                     if MATHS_BINOPS.contains(&&*op) =>
                 {
                     precalculate_numbers(op, l.value, r.value)
