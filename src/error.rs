@@ -4,10 +4,11 @@ use std::fmt;
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum ErrorKind {
     UndefinedVar = 0,
-    TooFewArguments = 1,
-    TooManyArguments = 2,
-    InvalidExpression = 3,
-    ParseError = 4,
+    UndefinedFunc = 1,
+    TooFewArguments = 2,
+    TooManyArguments = 3,
+    InvalidExpression = 4,
+    ParseError = 5,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -26,6 +27,14 @@ impl Error {
             ErrorLevel::Error,
             ErrorKind::UndefinedVar,
             format!("Undefined var '{}'", name),
+        )
+    }
+
+    pub fn undefined_func(name: String) -> Error {
+        Error(
+            ErrorLevel::Error,
+            ErrorKind::UndefinedFunc,
+            format!("Undefined func '{}'", name),
         )
     }
 
