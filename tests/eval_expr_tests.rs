@@ -9,6 +9,22 @@ mod eval_expr_tests {
     use robin_core::to_javascript::ToJavaScript;
 
     #[test]
+    fn array_literal_should_evaluate_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::Number(NumberExpression::new(60.0))),
+            Box::new(Expression::Number(NumberExpression::new(50.0))),
+        ]));
+
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("[60,50]"))
+        );
+    }
+
+    #[test]
     fn lambda_with_multiple_args_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));

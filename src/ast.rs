@@ -111,21 +111,39 @@ impl ToJavaScript for ListExpression {
         // We send all the arguments when evaluating
         if self.qouted {
             stdlib.function_table.get("quote").unwrap()("quote".to_string(), self.value.as_mut_slice(), stdlib)
+
         } else {
+            // Create a copy of the function args for later formatting
+            let mut function_args = self.value.clone();
+
             // TODO: Remove unwrap here
-            let (name, args) = self.value.split_first_mut().unwrap();
+            let (name, args) = function_args.split_first_mut().unwrap();
 
             let expr_name = name.eval(stdlib)?;
 
-            match stdlib.function_table.clone().get::<str>(&expr_name) {
-                Some(func) => func(expr_name, args, stdlib),
-                None => {
+            match (name, stdlib.function_table.clone().get::<str>(&expr_name)) {
+                (box Expression::Identifier(_), Some(func)) => 
+                    func(expr_name, args, stdlib),
+
+                // Lambdas are a special case which we must handle
+                (box Expression::List(_), None) if expr_name == "lambda" => {
+
                     let args = args.into_iter()
                         .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
                         .collect::<Vec<String>>()
                         .join(",");
 
+                    // With lambda we have to call the function
                     Ok(format!("({}({}))", expr_name, args))
+                }
+                _ => {
+                    // TODO: Remove clone
+                    let args = self.value.clone().into_iter()
+                        .map(|mut e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
+                        .collect::<Vec<String>>()
+                        .join(",");
+
+                    Ok(format!("[{}]", args))
                 }
             }
         }
