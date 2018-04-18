@@ -39,6 +39,16 @@
 
 	<input id="run" type="submit" value="Run!"></input>
 
+	<select id="examples" onchange="changeExample(this)">
+		<option selected disabled hidden>Choose an example</option>
+		<option>Maths</option>
+		<option>Hello, world!</option>
+		<option>Logic</option>
+		<option>Variables</option>
+		<option>Unknown Variables</option>
+		<option>Custom Function</option>
+	</select>
+
 	<div class="container">
 		<div id="lisp-input" class="editor"></div>
 
@@ -60,6 +70,92 @@
 		var js_output = ace.edit("js-output");
 
 		js_output.session.setMode("ace/mode/javascript");
+
+		const MATHS_EXAMPLES = 
+`
+(+ 1 1)
+
+(/ 1 1)
+
+(* 2 2)
+
+(- 3 3)
+
+(+ 1 (/ 3 4))
+`;
+
+		const HELLO_WORLD = 
+`
+(console.log "Hello, world!")
+`;
+
+		const LOGIC = 
+`
+(if true (alert "This is true!") (alert "This is false!"))
+(if (! true) (alert "This is true!") (alert "This is false!"))
+(if (! (! true)) (alert "This is true!"))
+`;
+
+		const VARIABLES =
+`
+(const name "John") 
+
+(alert name)
+`;
+
+		const UNKNOWN_VARIABLES =
+`
+(const hellos "I'm not used!")
+
+(alert hellof)
+`;
+
+		const CUSTOM_FUNCTION =
+`
+(function hello (name)
+	(console.log name))
+
+(hello "John")
+`;
+
+		function changeExample(elem) {
+			let id = elem.selectedIndex; 
+
+			switch (id) {
+			case 1:
+				lisp_input.setValue(MATHS_EXAMPLES, -1);
+
+				break;
+
+			case 2:
+				lisp_input.setValue(HELLO_WORLD, -1);
+
+				break;
+
+			case 3:
+				lisp_input.setValue(LOGIC, -1);
+
+				break;
+
+			case 4:
+				lisp_input.setValue(VARIABLES, -1);
+
+				break;
+
+			case 5:
+				lisp_input.setValue(UNKNOWN_VARIABLES, -1);
+
+				break;
+
+			case 6:
+				lisp_input.setValue(CUSTOM_FUNCTION, -1);
+
+				break;
+
+			default:
+				break;
+			}
+		}
 	</script>
 
 	<script type="text/javascript" src="js/app.js"></script>
