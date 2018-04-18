@@ -1,6 +1,7 @@
 mod stdlib_names;
 
 use std::collections::HashMap;
+use itertools::{Itertools, join};
 
 use ast::Expression;
 use error::Error;
@@ -153,10 +154,13 @@ fn builtin_generic_function(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    let args_fmt = args.into_iter()
-        .map(|expr| expr.eval(stdlib).or_else(|e| Err(e)).unwrap())
-        .collect::<Vec<String>>()
-        .join(",");
+    let args_fmt = join(args.into_iter()
+        .map(|expr| expr.eval(stdlib))
+        .fold_results(vec![], |mut i, expr| {
+            i.push(expr);
+
+            i
+        })?, ",");
 
     Ok(format!("{}({})", name, args_fmt))
 }
@@ -185,7 +189,7 @@ fn builtin_function_definition(
                     let mut stdlib =
                         Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
 
-                    let args_fmt = args_expr
+                    let args_fmt = join(args_expr
                                 .value
                                 // TODO: Remove .clone
                                 .clone()
@@ -199,10 +203,13 @@ fn builtin_function_definition(
                                     stdlib.variable_table.insert(expr_name.clone(),
                                         expr_name.clone());
 
-                                    expr.eval(&mut stdlib).or_else(|e| Err(e)).unwrap()
+                                    expr.eval(&mut stdlib)
                                 })
-                                .collect::<Vec<String>>()
-                                .join(",");
+                                .fold_results(vec![], |mut i, expr| {
+                                    i.push(expr);
+
+                                    i
+                                })?, ",");
 
                     Ok(format!(
                         "function {}({}){{ {}; }}",
@@ -225,14 +232,17 @@ fn builtin_quote(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    let args_fmt = args
+    let args_fmt = join(args
         .into_iter()
         // TODO: Remove clone
-        .map(|arg| arg.clone().to_string_stdlib(stdlib))
-        .collect::<Vec<String>>()
-        .join(" ");
+        .map(|expr| expr.eval(stdlib))
+        .fold_results(vec![], |mut i, expr| {
+            i.push(expr);
 
-    Ok(format!("\"({})\"", args_fmt))
+            i
+        })?, ",");
+
+    Ok(format!("\"[{}]\"", args_fmt))
 }
 
 fn builtin_lambda(
@@ -271,11 +281,14 @@ fn builtin_lambda(
                         .collect::<Vec<String>>()
                         .join(",");
 
-                    let exprs_fmt = exprs 
+                    let exprs_fmt = join(exprs 
                         .into_iter()
-                        .map(|expr| expr.eval(&mut stdlib).or_else(|e| Err(e)).unwrap())
-                        .collect::<Vec<String>>()
-                        .join(", ");
+                        .map(|expr| expr.eval(&mut stdlib))
+                        .fold_results(vec![], |mut i, expr| {
+                            i.push(expr);
+
+                            i
+                        })?, ",");
 
                     Ok(format!("(({}) => {{ {} }})", args_fmt, exprs_fmt))
                 },
@@ -313,12 +326,14 @@ fn builtin_binop(
             }
         }
         _ => {
-            let joined = args
+            let joined = join(args
                 .into_iter()
-                // TODO: Remove unwrap
-                .map(|expr| expr.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                .collect::<Vec<String>>()
-                .join(&op);
+                .map(|expr| expr.eval(stdlib))
+                .fold_results(vec![], |mut i, expr| {
+                    i.push(expr);
+
+                    i
+                })?, &op);
 
             Ok(joined)
         }

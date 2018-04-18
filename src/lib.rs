@@ -2,6 +2,8 @@
 
 extern crate ansi_term;
 
+extern crate itertools;
+
 #[macro_use]
 pub mod error;
 

@@ -1,3 +1,5 @@
+use itertools::{Itertools, join};
+
 use error::Error;
 use stdlib::Stdlib;
 use to_javascript::ToJavaScript;
@@ -125,23 +127,26 @@ impl ToJavaScript for ListExpression {
                 (box Expression::Identifier(_), Some(func)) => 
                     func(expr_name, args, stdlib),
 
-                // Lambdas are a special case which we must handle
-                (box Expression::List(_), None) if expr_name == "lambda" => {
+                (box Expression::Identifier(_), _)  => {
+                    let args = join(args.into_iter()
+                        .map(|e| e.eval(stdlib))
+                        .fold_results(vec![], |mut i, expr| {
+                            i.push(expr);
 
-                    let args = args.into_iter()
-                        .map(|e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                        .collect::<Vec<String>>()
-                        .join(",");
+                            i
+                        })?, ",");
 
-                    // With lambda we have to call the function
                     Ok(format!("({}({}))", expr_name, args))
                 }
                 _ => {
                     // TODO: Remove clone
-                    let args = self.value.clone().into_iter()
-                        .map(|mut e| e.eval(stdlib).or_else(|e| Err(e)).unwrap())
-                        .collect::<Vec<String>>()
-                        .join(",");
+                    let args = join(self.value.clone().into_iter()
+                        .map(|mut e| e.eval(stdlib))
+                        .fold_results(vec![], |mut i, expr| {
+                            i.push(expr);
+
+                            i
+                        })?, ",");
 
                     Ok(format!("[{}]", args))
                 }
@@ -175,9 +180,9 @@ impl Expression {
                     .into_iter()
                     .map(|expr| expr.to_string_stdlib(stdlib))
                     .collect::<Vec<String>>()
-                    .join(" ");
+                    .join(",");
 
-                format!("({})", list_fmt)
+                format!("[{}]", list_fmt)
             }
         }
     }
