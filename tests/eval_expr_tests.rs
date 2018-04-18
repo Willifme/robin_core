@@ -141,7 +141,7 @@ mod eval_expr_tests {
     }
 
     #[test]
-    fn quote_with_no_args_should_evaluate_correctly() {
+    fn quote_with_no_arg_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
@@ -150,12 +150,12 @@ mod eval_expr_tests {
 
         assert_eq!(
             expr.eval(&mut stdlib),
-            Ok(String::from("\"()\""))
+            Ok(String::from("\"[]\""))
         );
     }
 
     #[test]
-    fn quote_with_one_args_should_evaluate_correctly() {
+    fn quote_with_one_arg_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
@@ -165,7 +165,7 @@ mod eval_expr_tests {
 
         assert_eq!(
             expr.eval(&mut stdlib),
-            Ok(String::from("\"(50)\""))
+            Ok(String::from("\"[50]\""))
         );
     }
 
@@ -182,7 +182,7 @@ mod eval_expr_tests {
 
         assert_eq!(
             expr.eval(&mut stdlib),
-            Ok(String::from("\"((50))\""))
+            Ok(String::from("\"[[50]]\""))
         );
     }
 
