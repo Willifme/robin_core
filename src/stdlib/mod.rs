@@ -1,13 +1,13 @@
 mod stdlib_names;
 
+use itertools::{join, Itertools};
 use std::collections::HashMap;
-use itertools::{Itertools, join};
 
 use ast::Expression;
 use error::Error;
+use stdlib::stdlib_names::*;
 use table::Table;
 use to_javascript::ToJavaScript;
-use stdlib::stdlib_names::*;
 
 type Callback = fn(String, &mut [Box<Expression>], &mut Stdlib) -> Result<String, Error>;
 
@@ -154,13 +154,16 @@ fn builtin_generic_function(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    let args_fmt = join(args.into_iter()
-        .map(|expr| expr.eval(stdlib))
-        .fold_results(vec![], |mut i, expr| {
-            i.push(expr);
+    let args_fmt = join(
+        args.into_iter()
+            .map(|expr| expr.eval(stdlib))
+            .fold_results(vec![], |mut i, expr| {
+                i.push(expr);
 
-            i
-        })?, ",");
+                i
+            })?,
+        ",",
+    );
 
     Ok(format!("{}({})", name, args_fmt))
 }
@@ -189,7 +192,8 @@ fn builtin_function_definition(
                     let mut stdlib =
                         Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
 
-                    let args_fmt = join(args_expr
+                    let args_fmt = join(
+                        args_expr
                                 .value
                                 // TODO: Remove .clone
                                 .clone()
@@ -209,7 +213,9 @@ fn builtin_function_definition(
                                     i.push(expr);
 
                                     i
-                                })?, ",");
+                                })?,
+                        ",",
+                    );
 
                     Ok(format!(
                         "function {}({}){{ {}; }}",
@@ -232,7 +238,8 @@ fn builtin_quote(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    let args_fmt = join(args
+    let args_fmt = join(
+        args
         .into_iter()
         // TODO: Remove clone
         .map(|expr| expr.eval(stdlib))
@@ -240,7 +247,9 @@ fn builtin_quote(
             i.push(expr);
 
             i
-        })?, ",");
+        })?,
+        ",",
+    );
 
     Ok(format!("\"[{}]\"", args_fmt))
 }
@@ -251,48 +260,49 @@ fn builtin_lambda(
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 | 1  => Err(Error::too_few_arguments("lambda".to_string())),
+        0 | 1 => Err(Error::too_few_arguments("lambda".to_string())),
         _ => {
             // TODO: Remove unwrap
             let (args, exprs) = args.split_first_mut().unwrap();
 
             // Create a new child stdlib
-            let mut stdlib =
-                Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
+            let mut stdlib = Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
 
             match args {
                 box Expression::List(list) => {
-                    list
-                        .value
-                        .clone()
-                        .into_iter()
-                        .for_each(|expr| {
-                            // TODO: Remove unwrap
-                            let expr_name = identifier_to_string(expr.clone()).unwrap();
+                    list.value.clone().into_iter().for_each(|expr| {
+                        // TODO: Remove unwrap
+                        let expr_name = identifier_to_string(expr.clone()).unwrap();
 
-                            stdlib.variable_table.insert(expr_name.clone(), expr_name.clone());
-                        });
+                        stdlib
+                            .variable_table
+                            .insert(expr_name.clone(), expr_name.clone());
+                    });
 
-                    let args_fmt = list
-                        .value
+                    let args_fmt = list.value
                         .clone()
                         .into_iter()
                         .map(|arg| arg.to_string_stdlib(&mut stdlib))
                         .collect::<Vec<String>>()
                         .join(",");
 
-                    let exprs_fmt = join(exprs 
-                        .into_iter()
-                        .map(|expr| expr.eval(&mut stdlib))
-                        .fold_results(vec![], |mut i, expr| {
-                            i.push(expr);
+                    let exprs_fmt = join(
+                        exprs
+                            .into_iter()
+                            .map(|expr| expr.eval(&mut stdlib))
+                            .fold_results(vec![], |mut i, expr| {
+                                i.push(expr);
 
-                            i
-                        })?, ",");
+                                i
+                            })?,
+                        ",",
+                    );
 
                     Ok(format!("(({}) => {{ {} }})", args_fmt, exprs_fmt))
-                },
-                _ => Err(Error::invalid_expression("non-list given to lambda expression".to_string())),
+                }
+                _ => Err(Error::invalid_expression(
+                    "non-list given to lambda expression".to_string(),
+                )),
             }
         }
     }
@@ -326,14 +336,16 @@ fn builtin_binop(
             }
         }
         _ => {
-            let joined = join(args
-                .into_iter()
-                .map(|expr| expr.eval(stdlib))
-                .fold_results(vec![], |mut i, expr| {
-                    i.push(expr);
+            let joined = join(
+                args.into_iter()
+                    .map(|expr| expr.eval(stdlib))
+                    .fold_results(vec![], |mut i, expr| {
+                        i.push(expr);
 
-                    i
-                })?, &op);
+                        i
+                    })?,
+                &op,
+            );
 
             Ok(joined)
         }

@@ -7,11 +7,9 @@ mod parser_tests {
 
     #[test]
     fn parses_a_function_call_with_no_arguments() {
-        let expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(Expression::Identifier(IdentifierExpression::new(
-                "hello".to_string(),
-            ))),
-        ]));
+        let expr = Expression::List(ListExpression::new_unquoted(vec![Box::new(
+            Expression::Identifier(IdentifierExpression::new("hello".to_string())),
+        )]));
 
         let parser = ExprsParser::new();
 

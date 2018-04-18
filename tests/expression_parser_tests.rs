@@ -34,9 +34,9 @@ mod parser_tests {
 
         assert_eq!(
             parser.parse("truedog"),
-            Ok(vec![
-                Expression::Identifier(IdentifierExpression::new("truedog".to_string())),
-            ])
+            Ok(vec![Expression::Identifier(IdentifierExpression::new(
+                "truedog".to_string(),
+            ))])
         )
     }
 
@@ -46,9 +46,9 @@ mod parser_tests {
 
         assert_eq!(
             parser.parse("hello"),
-            Ok(vec![
-                Expression::Identifier(IdentifierExpression::new("hello".to_string())),
-            ])
+            Ok(vec![Expression::Identifier(IdentifierExpression::new(
+                "hello".to_string(),
+            ))])
         )
     }
 
@@ -104,9 +104,9 @@ mod parser_tests {
 
     #[test]
     fn list_should_return_a_list_node() {
-        let expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(Expression::Boolean(BooleanExpression::new(true))),
-        ]));
+        let expr = Expression::List(ListExpression::new_unquoted(vec![Box::new(
+            Expression::Boolean(BooleanExpression::new(true)),
+        )]));
 
         let parser = ExprsParser::new();
 

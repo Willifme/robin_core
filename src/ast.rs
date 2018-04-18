@@ -1,4 +1,4 @@
-use itertools::{Itertools, join};
+use itertools::{join, Itertools};
 
 use error::Error;
 use stdlib::Stdlib;
@@ -112,8 +112,11 @@ impl ToJavaScript for ListExpression {
         // The expression is quoted automatically if the ' is used
         // We send all the arguments when evaluating
         if self.qouted {
-            stdlib.function_table.get("quote").unwrap()("quote".to_string(), self.value.as_mut_slice(), stdlib)
-
+            stdlib.function_table.get("quote").unwrap()(
+                "quote".to_string(),
+                self.value.as_mut_slice(),
+                stdlib,
+            )
         } else {
             // Create a copy of the function args for later formatting
             let mut function_args = self.value.clone();
@@ -124,29 +127,37 @@ impl ToJavaScript for ListExpression {
             let expr_name = name.eval(stdlib)?;
 
             match (name, stdlib.function_table.clone().get::<str>(&expr_name)) {
-                (box Expression::Identifier(_), Some(func)) => 
-                    func(expr_name, args, stdlib),
+                (box Expression::Identifier(_), Some(func)) => func(expr_name, args, stdlib),
 
-                (box Expression::Identifier(_), _)  => {
-                    let args = join(args.into_iter()
-                        .map(|e| e.eval(stdlib))
-                        .fold_results(vec![], |mut i, expr| {
-                            i.push(expr);
+                (box Expression::Identifier(_), _) => {
+                    let args = join(
+                        args.into_iter().map(|e| e.eval(stdlib)).fold_results(
+                            vec![],
+                            |mut i, expr| {
+                                i.push(expr);
 
-                            i
-                        })?, ",");
+                                i
+                            },
+                        )?,
+                        ",",
+                    );
 
                     Ok(format!("({}({}))", expr_name, args))
                 }
                 _ => {
                     // TODO: Remove clone
-                    let args = join(self.value.clone().into_iter()
-                        .map(|mut e| e.eval(stdlib))
-                        .fold_results(vec![], |mut i, expr| {
-                            i.push(expr);
+                    let args = join(
+                        self.value
+                            .clone()
+                            .into_iter()
+                            .map(|mut e| e.eval(stdlib))
+                            .fold_results(vec![], |mut i, expr| {
+                                i.push(expr);
 
-                            i
-                        })?, ",");
+                                i
+                            })?,
+                        ",",
+                    );
 
                     Ok(format!("[{}]", args))
                 }
