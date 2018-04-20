@@ -54,6 +54,9 @@ impl<'a> Stdlib<'a> {
         self.function_table
             .insert("lambda".to_string(), builtin_lambda);
 
+        self.function_table
+            .insert("js".to_string(), builtin_raw_js);
+
         for generic in GENERIC_FUNCTION {
             self.function_table
                 .insert(generic.to_string(), builtin_generic_function);
@@ -320,6 +323,31 @@ fn builtin_lambda(
                     "non-list given to lambda expression".to_string(),
                 )),
             }
+        }
+    }
+}
+
+fn builtin_raw_js(
+    _name: String,
+    args: &mut [Box<Expression>],
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
+    match args.len() {
+        0 => Err(Error::too_few_arguments("raw javascript".to_string())),
+        _ => {
+            let js_fmt = join(
+                args
+                    .into_iter()
+                    .map(|expr| expr.eval(stdlib))
+                    .fold_results(vec![], |mut i, expr| {
+                        i.push(expr);
+
+                        i
+                    })?,
+                ";",
+            );
+
+            Ok(format!("eval({})", js_fmt))
         }
     }
 }
