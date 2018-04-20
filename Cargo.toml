@@ -10,8 +10,6 @@ repository = "https://github.com/willifme/robin_core"
 lalrpop = "0.15.1"
 
 [dependencies]
-pest = "^1.0.3"
-pest_derive = "^1.0.3"
 ansi_term = "0.9"
 lazy_static = "1.0"
 lalrpop-util = "0.15.1"
