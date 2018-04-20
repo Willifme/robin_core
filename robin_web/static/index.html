@@ -47,6 +47,7 @@
 		<option>Variables</option>
 		<option>Unknown Variables</option>
 		<option>Custom Function</option>
+		<option>Fibonacci</option>
 	</select>
 
 	<div class="container">
@@ -118,6 +119,19 @@
 (hello "John")
 `;
 
+		const FIBNOACCI =
+`
+(function fib (n)
+    (if (|| (== n 1) (== n 2))
+        (return 1)
+        (return
+            (+
+                (fib (- n 1))
+				(fib (- n 2))))))
+
+(alert (fib 7))
+`;
+
 		function changeExample(elem) {
 			let id = elem.selectedIndex; 
 
@@ -149,6 +163,11 @@
 
 			case 6:
 				lisp_input.setValue(CUSTOM_FUNCTION, -1);
+
+				break;
+
+			case 7:
+				lisp_input.setValue(FIBNOACCI, -1);
 
 				break;
 
