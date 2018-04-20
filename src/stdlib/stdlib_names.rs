@@ -26,6 +26,18 @@ lazy_static! {
 
         m.insert("filter", "Array.prototype.filter.call");
 
+        m.insert("define", "const");
+
+        m.insert("defun", "function");
+
+        m.insert("not", "!");
+
+        m.insert("and", "&&");
+
+        m.insert("or", "||");
+
+        m.insert("=", "===");
+
         m
     };
 }
