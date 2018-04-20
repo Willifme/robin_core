@@ -105,6 +105,66 @@ impl ListExpression {
             value,
         }
     }
+
+    fn format_list(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
+        // TODO: Remove clone
+        let args = join(
+            self.value
+                .clone()
+                .into_iter()
+                .map(|mut e| e.eval(stdlib))
+                .fold_results(vec![], |mut i, expr| {
+                    i.push(expr);
+
+                    i
+                })?,
+            ",",
+        );
+
+        Ok(format!("[{}]", args))
+    }
+
+    fn eval_lambda_call(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
+        // TODO: Remove clone
+        match self.value[0].clone() {
+            box Expression::List(mut inner_list) => Ok(format!("({})()", inner_list.eval(stdlib)?)),
+
+            // TODO: See if this is correct
+            _ => self.eval_function(stdlib),
+        }
+    }
+
+    fn eval_function(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
+        // Create a copy of the function args for later formatting
+        let mut function_args = self.value.clone();
+
+        // TODO: Remove unwrap here
+        let (name, args) = function_args.split_first_mut().unwrap();
+
+        let expr_name = name.eval(stdlib)?;
+
+        match (name, stdlib.function_table.clone().get::<str>(&expr_name)) {
+            (box Expression::Identifier(_), Some(func)) => func(expr_name, args, stdlib),
+
+            (box Expression::Identifier(_), _) => {
+                let args = join(
+                    args.into_iter().map(|e| e.eval(stdlib)).fold_results(
+                        vec![],
+                        |mut i, expr| {
+                            i.push(expr);
+
+                            i
+                        },
+                    )?,
+                    ",",
+                );
+
+                Ok(format!("({}({}))", expr_name, args))
+            },
+
+            _ => self.format_list(stdlib), 
+        }
+    }
 }
 
 impl ToJavaScript for ListExpression {
@@ -117,51 +177,13 @@ impl ToJavaScript for ListExpression {
                 self.value.as_mut_slice(),
                 stdlib,
             )
+        } else if !self.qouted && self.value.len() == 1 {
+            //panic!("{:#?}", self.value);
+
+            self.eval_lambda_call(stdlib)
+
         } else {
-            // Create a copy of the function args for later formatting
-            let mut function_args = self.value.clone();
-
-            // TODO: Remove unwrap here
-            let (name, args) = function_args.split_first_mut().unwrap();
-
-            let expr_name = name.eval(stdlib)?;
-
-            match (name, stdlib.function_table.clone().get::<str>(&expr_name)) {
-                (box Expression::Identifier(_), Some(func)) => func(expr_name, args, stdlib),
-
-                (box Expression::Identifier(_), _) => {
-                    let args = join(
-                        args.into_iter().map(|e| e.eval(stdlib)).fold_results(
-                            vec![],
-                            |mut i, expr| {
-                                i.push(expr);
-
-                                i
-                            },
-                        )?,
-                        ",",
-                    );
-
-                    Ok(format!("({}({}))", expr_name, args))
-                }
-                _ => {
-                    // TODO: Remove clone
-                    let args = join(
-                        self.value
-                            .clone()
-                            .into_iter()
-                            .map(|mut e| e.eval(stdlib))
-                            .fold_results(vec![], |mut i, expr| {
-                                i.push(expr);
-
-                                i
-                            })?,
-                        ",",
-                    );
-
-                    Ok(format!("[{}]", args))
-                }
-            }
+            self.eval_function(stdlib)
         }
     }
 }

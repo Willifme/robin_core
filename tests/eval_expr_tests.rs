@@ -22,6 +22,35 @@ mod eval_expr_tests {
     }
 
     #[test]
+    fn lambda_call_evalute_correctly() {
+        // The global variable table
+        let mut stdlib = Stdlib::new(Table::new(None));
+
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(
+                Expression::List(ListExpression::new_unquoted(vec![
+                    Box::new(Expression::Identifier(IdentifierExpression::new(
+                        "lambda".to_string(),
+                    ))),
+                    Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                        Box::new(Expression::Identifier(IdentifierExpression::new(
+                            "x".to_string(),
+                        ))),
+                    ]))),
+                    Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                        Box::new(Expression::Identifier(IdentifierExpression::new(
+                            "+".to_string(),
+                        ))),
+                        Box::new(Expression::Number(NumberExpression::new(50.0))),
+                        Box::new(Expression::Number(NumberExpression::new(50.0))),
+                    ]))),
+                ]))
+        )]));
+
+        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("((x) => { 100 })()")));
+    }
+
+    #[test]
     fn lambda_with_multiple_args_should_evaluate_correctly() {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
@@ -49,7 +78,7 @@ mod eval_expr_tests {
 
         assert_eq!(
             expr.eval(&mut stdlib),
-            Ok(String::from("((x,y) => { 100 })"))
+            Ok(String::from("(x,y) => { 100 }"))
         );
     }
 
@@ -76,7 +105,7 @@ mod eval_expr_tests {
             ]))),
         ]));
 
-        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("((x) => { 100 })")));
+        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("(x) => { 100 }")));
     }
 
     #[test]
@@ -98,7 +127,7 @@ mod eval_expr_tests {
             ]))),
         ]));
 
-        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("(() => { 100 })")));
+        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("() => { 100 }")));
     }
 
     #[test]
