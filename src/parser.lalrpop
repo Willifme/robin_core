@@ -36,7 +36,10 @@ Boolean: Expression = {
     "false" => Expression::Boolean(BooleanExpression::new(false)),
 };
 
-String: Expression = r#""[^"]*""# => Expression::String(StringExpression::new(<>.to_string()));
+String: Expression = {
+    r#""[^"]*""# => Expression::String(StringExpression::new(<>.to_string())),
+    r#"`[^"]*`"# => Expression::String(StringExpression::new(<>.to_string())),
+};
 
 BinaryDigit: Expression = r"0(b|B)[0..1]*" =>
     Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&<>[2..], 2).unwrap())));
