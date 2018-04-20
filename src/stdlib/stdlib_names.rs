@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub static MATHS_BINOPS: &'static [&'static str] = &["+", "-", "*", "/", "%"];
 
 pub static LOGIC_BINOPS: &'static [&'static str] =
@@ -13,3 +15,17 @@ pub static GENERIC_FUNCTION: &'static [&'static str] = &[
     "Array.prototype.forEach.call",
     "Array.prototype.filter.call",
 ];
+
+lazy_static! {
+    pub static ref FUNCTION_ALIAS_MAP: HashMap<&'static str, &'static str> = {
+        let mut m = HashMap::new();
+
+        m.insert("map", "Array.prototype.map.call");
+
+        m.insert("forEach", "Array.prototype.forEach.call");
+
+        m.insert("filter", "Array.prototype.filter.call");
+
+        m
+    };
+}

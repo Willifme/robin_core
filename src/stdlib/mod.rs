@@ -59,12 +59,16 @@ impl<'a> Stdlib<'a> {
                 .insert(generic.to_string(), builtin_generic_function);
         }
 
+        for (builtin, _) in FUNCTION_ALIAS_MAP.iter() {
+            self.function_table.insert(builtin.to_string(), builtin_alias);
+        }
+
         for binop in MATHS_BINOPS {
             self.function_table.insert(binop.to_string(), builtin_binop);
         }
 
         // Plus and minus are both binary and unary
-        // But I  have deemed binary to have a higher precedence, so binary goes first
+        // But I have deemed binary to have a higher precedence, so binary goes first
         for logic in LOGIC_BINOPS {
             self.function_table.insert(logic.to_string(), builtin_binop);
         }
@@ -166,6 +170,18 @@ fn builtin_generic_function(
     );
 
     Ok(format!("{}({})", name, args_fmt))
+}
+
+fn builtin_alias(
+    name: String,
+    args: &mut [Box<Expression>],
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
+    match FUNCTION_ALIAS_MAP.get::<str>(&name) {
+        Some(name) => stdlib.function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib),
+
+        _ => Err(Error::undefined_func(name))
+    }
 }
 
 fn builtin_function_definition(
@@ -298,7 +314,7 @@ fn builtin_lambda(
                         ",",
                     );
 
-                    Ok(format!("(({}) => {{ {} }})", args_fmt, exprs_fmt))
+                    Ok(format!("({}) => {{ {} }}", args_fmt, exprs_fmt))
                 }
                 _ => Err(Error::invalid_expression(
                     "non-list given to lambda expression".to_string(),
