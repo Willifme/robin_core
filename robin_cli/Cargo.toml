@@ -1,0 +1,8 @@
+[package]
+name = "robin_cli"
+version = "0.1.0"
+authors = ["William Collier <coll01502449@scc.ac.uk>"]
+
+[dependencies]
+rustyline = "1.0.0"
+robin_core = { path = "../" }

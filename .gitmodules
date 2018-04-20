@@ -1,0 +1,3 @@
+[submodule "robin_cli"]
+	path = robin_cli
+	url = ./robin_cli/
