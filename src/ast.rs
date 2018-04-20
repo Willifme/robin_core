@@ -125,9 +125,31 @@ impl ListExpression {
     }
 
     fn eval_lambda_call(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
+        let mut function_args = self.value.clone();
+
+        let (lambda, args) = function_args.split_first_mut().unwrap();
+
+        //panic!("Lambda: {:#?}, Args: {:#?}", lambda, args);
+
         // TODO: Remove clone
-        match self.value[0].clone() {
-            box Expression::List(mut inner_list) => Ok(format!("({})()", inner_list.eval(stdlib)?)),
+        match lambda {
+            box Expression::List(inner_list) 
+                if inner_list.value[0].clone().to_string_stdlib() == "lambda" => {
+
+                let args = join(
+                    args.into_iter().map(|e| e.eval(stdlib)).fold_results(
+                        vec![],
+                        |mut i, expr| {
+                            i.push(expr);
+
+                            i
+                        },
+                    )?,
+                    ",",
+                );
+
+                Ok(format!("({})({})", lambda.eval(stdlib)?, args))
+            },
 
             // TODO: See if this is correct
             _ => self.eval_function(stdlib),
@@ -171,19 +193,18 @@ impl ToJavaScript for ListExpression {
     fn eval(&mut self, stdlib: &mut Stdlib) -> Result<String, Error> {
         // The expression is quoted automatically if the ' is used
         // We send all the arguments when evaluating
-        if self.qouted {
-            stdlib.function_table.get("quote").unwrap()(
-                "quote".to_string(),
-                self.value.as_mut_slice(),
-                stdlib,
-            )
-        } else if !self.qouted && self.value.len() == 1 {
-            //panic!("{:#?}", self.value);
+        match (self.qouted, self.value.get(0)) {
+            (true, _) => {
+                stdlib.function_table.get("quote").unwrap()(
+                    "quote".to_string(),
+                    self.value.as_mut_slice(),
+                    stdlib,
+                )
+            },
 
-            self.eval_lambda_call(stdlib)
+            (false, Some(box Expression::List(_))) => self.eval_lambda_call(stdlib), 
 
-        } else {
-            self.eval_function(stdlib)
+            (false, _) => self.eval_function(stdlib),
         }
     }
 }
@@ -199,7 +220,7 @@ pub enum Expression {
 
 impl Expression {
     /// Used to convert expressions to string
-    pub fn to_string_stdlib(self, stdlib: &mut Stdlib) -> String {
+    pub fn to_string_stdlib(self) -> String {
         match self {
             // TODO: Clean this code up
             Expression::Number(expr) => expr.value.to_string(),
@@ -211,7 +232,7 @@ impl Expression {
                     .value
                     .clone()
                     .into_iter()
-                    .map(|expr| expr.to_string_stdlib(stdlib))
+                    .map(|expr| expr.to_string_stdlib())
                     .collect::<Vec<String>>()
                     .join(",");
 

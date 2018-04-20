@@ -298,7 +298,7 @@ fn builtin_lambda(
                     let args_fmt = list.value
                         .clone()
                         .into_iter()
-                        .map(|arg| arg.to_string_stdlib(&mut stdlib))
+                        .map(|arg| arg.to_string_stdlib())
                         .collect::<Vec<String>>()
                         .join(",");
 
