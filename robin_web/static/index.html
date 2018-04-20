@@ -93,13 +93,13 @@
 		const LOGIC = 
 `
 (if true (alert "This is true!") (alert "This is false!"))
-(if (! true) (alert "This is true!") (alert "This is false!"))
-(if (! (! true)) (alert "This is true!"))
+(if (not true) (alert "This is true!") (alert "This is false!"))
+(if (not (not true)) (alert "This is true!"))
 `;
 
 		const VARIABLES =
 `
-(const name "John") 
+(var name "John") 
 
 (alert name)
 `;
@@ -113,7 +113,7 @@
 
 		const CUSTOM_FUNCTION =
 `
-(function hello (name)
+(defun hello (name)
 	(console.log name))
 
 (hello "John")
@@ -121,8 +121,8 @@
 
 		const FIBNOACCI =
 `
-(function fib (n)
-    (if (|| (== n 1) (== n 2))
+(defun fib (n)
+    (if (or (= n 1) (= n 2))
         (return 1)
         (return
             (+
