@@ -27,29 +27,30 @@ mod eval_expr_tests {
         let mut stdlib = Stdlib::new(Table::new(None));
 
         let mut expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(
-                Expression::List(ListExpression::new_unquoted(vec![
+            Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new(
+                    "lambda".to_string(),
+                ))),
+                Box::new(Expression::List(ListExpression::new_unquoted(vec![
                     Box::new(Expression::Identifier(IdentifierExpression::new(
-                        "lambda".to_string(),
+                        "x".to_string(),
                     ))),
-                    Box::new(Expression::List(ListExpression::new_unquoted(vec![
-                        Box::new(Expression::Identifier(IdentifierExpression::new(
-                            "x".to_string(),
-                        ))),
-                    ]))),
-                    Box::new(Expression::List(ListExpression::new_unquoted(vec![
-                        Box::new(Expression::Identifier(IdentifierExpression::new(
-                            "+".to_string(),
-                        ))),
-                        Box::new(Expression::Number(NumberExpression::new(50.0))),
-                        Box::new(Expression::Number(NumberExpression::new(50.0))),
-                    ]))),
-                ]))
-            ),
-            Box::new(Expression::Boolean(BooleanExpression::new(true)))
+                ]))),
+                Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                    Box::new(Expression::Identifier(IdentifierExpression::new(
+                        "+".to_string(),
+                    ))),
+                    Box::new(Expression::Number(NumberExpression::new(50.0))),
+                    Box::new(Expression::Number(NumberExpression::new(50.0))),
+                ]))),
+            ]))),
+            Box::new(Expression::Boolean(BooleanExpression::new(true))),
         ]));
 
-        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("((x) => { 100 })(true)")));
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("((x) => { 100 })(true)"))
+        );
     }
 
     #[test]
@@ -57,28 +58,30 @@ mod eval_expr_tests {
         // The global variable table
         let mut stdlib = Stdlib::new(Table::new(None));
 
-        let mut expr = Expression::List(ListExpression::new_unquoted(vec![
-            Box::new(
-                Expression::List(ListExpression::new_unquoted(vec![
+        let mut expr = Expression::List(ListExpression::new_unquoted(vec![Box::new(
+            Expression::List(ListExpression::new_unquoted(vec![
+                Box::new(Expression::Identifier(IdentifierExpression::new(
+                    "lambda".to_string(),
+                ))),
+                Box::new(Expression::List(ListExpression::new_unquoted(vec![
                     Box::new(Expression::Identifier(IdentifierExpression::new(
-                        "lambda".to_string(),
+                        "x".to_string(),
                     ))),
-                    Box::new(Expression::List(ListExpression::new_unquoted(vec![
-                        Box::new(Expression::Identifier(IdentifierExpression::new(
-                            "x".to_string(),
-                        ))),
-                    ]))),
-                    Box::new(Expression::List(ListExpression::new_unquoted(vec![
-                        Box::new(Expression::Identifier(IdentifierExpression::new(
-                            "+".to_string(),
-                        ))),
-                        Box::new(Expression::Number(NumberExpression::new(50.0))),
-                        Box::new(Expression::Number(NumberExpression::new(50.0))),
-                    ]))),
-                ]))
+                ]))),
+                Box::new(Expression::List(ListExpression::new_unquoted(vec![
+                    Box::new(Expression::Identifier(IdentifierExpression::new(
+                        "+".to_string(),
+                    ))),
+                    Box::new(Expression::Number(NumberExpression::new(50.0))),
+                    Box::new(Expression::Number(NumberExpression::new(50.0))),
+                ]))),
+            ])),
         )]));
 
-        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("((x) => { 100 })()")));
+        assert_eq!(
+            expr.eval(&mut stdlib),
+            Ok(String::from("((x) => { 100 })()"))
+        );
     }
 
     #[test]
@@ -107,10 +110,7 @@ mod eval_expr_tests {
             ]))),
         ]));
 
-        assert_eq!(
-            expr.eval(&mut stdlib),
-            Ok(String::from("(x,y) => { 100 }"))
-        );
+        assert_eq!(expr.eval(&mut stdlib), Ok(String::from("(x,y) => { 100 }")));
     }
 
     #[test]

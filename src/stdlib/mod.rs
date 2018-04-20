@@ -54,8 +54,7 @@ impl<'a> Stdlib<'a> {
         self.function_table
             .insert("lambda".to_string(), builtin_lambda);
 
-        self.function_table
-            .insert("js".to_string(), builtin_raw_js);
+        self.function_table.insert("js".to_string(), builtin_raw_js);
 
         for generic in GENERIC_FUNCTION {
             self.function_table
@@ -63,7 +62,8 @@ impl<'a> Stdlib<'a> {
         }
 
         for (builtin, _) in FUNCTION_ALIAS_MAP.iter() {
-            self.function_table.insert(builtin.to_string(), builtin_alias);
+            self.function_table
+                .insert(builtin.to_string(), builtin_alias);
         }
 
         for binop in MATHS_BINOPS {
@@ -181,9 +181,11 @@ fn builtin_alias(
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match FUNCTION_ALIAS_MAP.get::<str>(&name) {
-        Some(name) => stdlib.function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib),
+        Some(name) => {
+            stdlib.function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib)
+        }
 
-        _ => Err(Error::undefined_func(name))
+        _ => Err(Error::undefined_func(name)),
     }
 }
 
@@ -336,8 +338,7 @@ fn builtin_raw_js(
         0 => Err(Error::too_few_arguments("raw javascript".to_string())),
         _ => {
             let js_fmt = join(
-                args
-                    .into_iter()
+                args.into_iter()
                     .map(|expr| expr.eval(stdlib))
                     .fold_results(vec![], |mut i, expr| {
                         i.push(expr);

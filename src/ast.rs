@@ -130,7 +130,7 @@ impl ListExpression {
         let (lambda, args) = function_args.split_first_mut().unwrap();
 
         match lambda {
-            box Expression::List(inner_list) 
+            box Expression::List(inner_list)
                 // TODO: Remove clone
                 if inner_list.value[0].clone().to_string_stdlib() == "lambda" => {
 
@@ -180,9 +180,9 @@ impl ListExpression {
                 );
 
                 Ok(format!("({}({}))", expr_name, args))
-            },
+            }
 
-            _ => self.format_list(stdlib), 
+            _ => self.format_list(stdlib),
         }
     }
 }
@@ -192,15 +192,13 @@ impl ToJavaScript for ListExpression {
         // The expression is quoted automatically if the ' is used
         // We send all the arguments when evaluating
         match (self.qouted, self.value.get(0)) {
-            (true, _) => {
-                stdlib.function_table.get("quote").unwrap()(
-                    "quote".to_string(),
-                    self.value.as_mut_slice(),
-                    stdlib,
-                )
-            },
+            (true, _) => stdlib.function_table.get("quote").unwrap()(
+                "quote".to_string(),
+                self.value.as_mut_slice(),
+                stdlib,
+            ),
 
-            (false, Some(box Expression::List(_))) => self.eval_lambda_call(stdlib), 
+            (false, Some(box Expression::List(_))) => self.eval_lambda_call(stdlib),
 
             (false, _) => self.eval_function(stdlib),
         }
