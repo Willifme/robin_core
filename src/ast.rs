@@ -129,11 +129,9 @@ impl ListExpression {
 
         let (lambda, args) = function_args.split_first_mut().unwrap();
 
-        //panic!("Lambda: {:#?}, Args: {:#?}", lambda, args);
-
-        // TODO: Remove clone
         match lambda {
             box Expression::List(inner_list) 
+                // TODO: Remove clone
                 if inner_list.value[0].clone().to_string_stdlib() == "lambda" => {
 
                 let args = join(
