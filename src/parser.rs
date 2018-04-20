@@ -1,8 +1,7 @@
 // auto-generated: "lalrpop 0.15.1"
-use ast::{BooleanExpression, Expression, IdentifierExpression, ListExpression, NumberExpression,
-          StringExpression};
 use std::f64;
 use std::str::FromStr;
+use ast::{Expression, NumberExpression, StringExpression, BooleanExpression, IdentifierExpression, ListExpression};
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
 
@@ -1051,327 +1050,539 @@ mod __intern_token {
 pub use self::__intern_token::Token;
 
 #[allow(unused_variables)]
-fn __action0<'input>(
+fn __action0<
+    'input,
+>(
     input: &'input str,
     (_, __0, _): (usize, Vec<Expression>, usize),
-) -> Vec<Expression> {
+) -> Vec<Expression>
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action1<'input>(
+fn __action1<
+    'input,
+>(
     input: &'input str,
     (_, __0, _): (usize, ::std::vec::Vec<Expression>, usize),
-) -> Vec<Expression> {
+) -> Vec<Expression>
+{
     __0
 }
 
 #[allow(unused_variables)]
-fn __action2<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action2<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action3<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action3<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action4<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action4<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action5<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action5<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action6<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action6<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action7<'input>(
+fn __action7<
+    'input,
+>(
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
     (_, _, _): (usize, &'input str, usize),
     (_, exprs, _): (usize, ::std::vec::Vec<Box<Expression>>, usize),
     (_, _, _): (usize, &'input str, usize),
-) -> Expression {
+) -> Expression
+{
     Expression::List(ListExpression::new_quoted(exprs))
 }
 
 #[allow(unused_variables)]
-fn __action8<'input>(
+fn __action8<
+    'input,
+>(
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
     (_, exprs, _): (usize, ::std::vec::Vec<Box<Expression>>, usize),
     (_, _, _): (usize, &'input str, usize),
-) -> Expression {
+) -> Expression
+{
     Expression::List(ListExpression::new_unquoted(exprs))
 }
 
 #[allow(unused_variables)]
-fn __action9<'input>(
+fn __action9<
+    'input,
+>(
     input: &'input str,
     (_, __0, _): (usize, Expression, usize),
-) -> Box<Expression> {
+) -> Box<Expression>
+{
     Box::new(__0)
 }
 
 #[allow(unused_variables)]
-fn __action10<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
+fn __action10<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
     Expression::Identifier(IdentifierExpression::new(__0.to_string()))
 }
 
 #[allow(unused_variables)]
-fn __action11<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action11<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action12<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action12<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action13<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action13<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action14<'input>(input: &'input str, (_, __0, _): (usize, Expression, usize)) -> Expression {
+fn __action14<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
+{
     (__0)
 }
 
 #[allow(unused_variables)]
-fn __action15<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
+fn __action15<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
     Expression::Boolean(BooleanExpression::new(true))
 }
 
 #[allow(unused_variables)]
-fn __action16<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
+fn __action16<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
     Expression::Boolean(BooleanExpression::new(false))
 }
 
 #[allow(unused_variables)]
-fn __action17<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
+fn __action17<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
     Expression::String(StringExpression::new(__0.to_string()))
 }
 
 #[allow(unused_variables)]
-fn __action18<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
-    Expression::Number(NumberExpression::new(f64::from(
-        i32::from_str_radix(&__0[2..], 2).unwrap(),
-    )))
+fn __action18<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
+    Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&__0[2..], 2).unwrap())))
 }
 
 #[allow(unused_variables)]
-fn __action19<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
-    Expression::Number(NumberExpression::new(f64::from(
-        i32::from_str_radix(&__0[2..], 8).unwrap(),
-    )))
+fn __action19<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
+    Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&__0[2..], 8).unwrap())))
 }
 
 #[allow(unused_variables)]
-fn __action20<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> Expression {
-    Expression::Number(NumberExpression::new(f64::from(
-        i32::from_str_radix(&__0[2..], 16).unwrap(),
-    )))
+fn __action20<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
+{
+    Expression::Number(NumberExpression::new(f64::from(i32::from_str_radix(&__0[2..], 16).unwrap())))
 }
 
 #[allow(unused_variables)]
-fn __action21<'input>(input: &'input str, (_, __0, _): (usize, String, usize)) -> Expression {
+fn __action21<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, String, usize),
+) -> Expression
+{
     Expression::Number(NumberExpression::new(f64::from_str(&__0).unwrap()))
 }
 
 #[allow(unused_variables)]
-fn __action22<'input>(input: &'input str, (_, __0, _): (usize, String, usize)) -> Expression {
+fn __action22<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, String, usize),
+) -> Expression
+{
     Expression::Number(NumberExpression::new(f64::from_str(&__0).unwrap()))
 }
 
 #[allow(unused_variables)]
-fn __action23<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> String {
+fn __action23<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> String
+{
     __0.to_string()
 }
 
 #[allow(unused_variables)]
-fn __action24<'input>(input: &'input str, (_, __0, _): (usize, &'input str, usize)) -> String {
+fn __action24<
+    'input,
+>(
+    input: &'input str,
+    (_, __0, _): (usize, &'input str, usize),
+) -> String
+{
     __0.to_string()
 }
 
 #[allow(unused_variables)]
-fn __action25<'input>(
+fn __action25<
+    'input,
+>(
     input: &'input str,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> ::std::vec::Vec<Box<Expression>> {
+) -> ::std::vec::Vec<Box<Expression>>
+{
     vec![]
 }
 
 #[allow(unused_variables)]
-fn __action26<'input>(
+fn __action26<
+    'input,
+>(
     input: &'input str,
     (_, v, _): (usize, ::std::vec::Vec<Box<Expression>>, usize),
-) -> ::std::vec::Vec<Box<Expression>> {
+) -> ::std::vec::Vec<Box<Expression>>
+{
     v
 }
 
 #[allow(unused_variables)]
-fn __action27<'input>(
+fn __action27<
+    'input,
+>(
     input: &'input str,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> ::std::vec::Vec<Expression> {
+) -> ::std::vec::Vec<Expression>
+{
     vec![]
 }
 
 #[allow(unused_variables)]
-fn __action28<'input>(
+fn __action28<
+    'input,
+>(
     input: &'input str,
     (_, v, _): (usize, ::std::vec::Vec<Expression>, usize),
-) -> ::std::vec::Vec<Expression> {
+) -> ::std::vec::Vec<Expression>
+{
     v
 }
 
 #[allow(unused_variables)]
-fn __action29<'input>(
+fn __action29<
+    'input,
+>(
     input: &'input str,
     (_, __0, _): (usize, Expression, usize),
-) -> ::std::vec::Vec<Expression> {
+) -> ::std::vec::Vec<Expression>
+{
     vec![__0]
 }
 
 #[allow(unused_variables)]
-fn __action30<'input>(
+fn __action30<
+    'input,
+>(
     input: &'input str,
     (_, v, _): (usize, ::std::vec::Vec<Expression>, usize),
     (_, e, _): (usize, Expression, usize),
-) -> ::std::vec::Vec<Expression> {
-    {
-        let mut v = v;
-        v.push(e);
-        v
-    }
+) -> ::std::vec::Vec<Expression>
+{
+    { let mut v = v; v.push(e); v }
 }
 
 #[allow(unused_variables)]
-fn __action31<'input>(
+fn __action31<
+    'input,
+>(
     input: &'input str,
     (_, __0, _): (usize, Box<Expression>, usize),
-) -> ::std::vec::Vec<Box<Expression>> {
+) -> ::std::vec::Vec<Box<Expression>>
+{
     vec![__0]
 }
 
 #[allow(unused_variables)]
-fn __action32<'input>(
+fn __action32<
+    'input,
+>(
     input: &'input str,
     (_, v, _): (usize, ::std::vec::Vec<Box<Expression>>, usize),
     (_, e, _): (usize, Box<Expression>, usize),
-) -> ::std::vec::Vec<Box<Expression>> {
-    {
-        let mut v = v;
-        v.push(e);
-        v
-    }
+) -> ::std::vec::Vec<Box<Expression>>
+{
+    { let mut v = v; v.push(e); v }
 }
 
 #[allow(unused_variables)]
-fn __action33<'input>(
+fn __action33<
+    'input,
+>(
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, &'input str, usize),
     __2: (usize, &'input str, usize),
-) -> Expression {
+) -> Expression
+{
     let __start0 = __1.2.clone();
     let __end0 = __2.0.clone();
-    let __temp0 = __action25(input, &__start0, &__end0);
+    let __temp0 = __action25(
+        input,
+        &__start0,
+        &__end0,
+    );
     let __temp0 = (__start0, __temp0, __end0);
-    __action7(input, __0, __1, __temp0, __2)
+    __action7(
+        input,
+        __0,
+        __1,
+        __temp0,
+        __2,
+    )
 }
 
 #[allow(unused_variables)]
-fn __action34<'input>(
+fn __action34<
+    'input,
+>(
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, &'input str, usize),
     __2: (usize, ::std::vec::Vec<Box<Expression>>, usize),
     __3: (usize, &'input str, usize),
-) -> Expression {
+) -> Expression
+{
     let __start0 = __2.0.clone();
     let __end0 = __2.2.clone();
-    let __temp0 = __action26(input, __2);
+    let __temp0 = __action26(
+        input,
+        __2,
+    );
     let __temp0 = (__start0, __temp0, __end0);
-    __action7(input, __0, __1, __temp0, __3)
+    __action7(
+        input,
+        __0,
+        __1,
+        __temp0,
+        __3,
+    )
 }
 
 #[allow(unused_variables)]
-fn __action35<'input>(
+fn __action35<
+    'input,
+>(
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, &'input str, usize),
-) -> Expression {
+) -> Expression
+{
     let __start0 = __0.2.clone();
     let __end0 = __1.0.clone();
-    let __temp0 = __action25(input, &__start0, &__end0);
+    let __temp0 = __action25(
+        input,
+        &__start0,
+        &__end0,
+    );
     let __temp0 = (__start0, __temp0, __end0);
-    __action8(input, __0, __temp0, __1)
+    __action8(
+        input,
+        __0,
+        __temp0,
+        __1,
+    )
 }
 
 #[allow(unused_variables)]
-fn __action36<'input>(
+fn __action36<
+    'input,
+>(
     input: &'input str,
     __0: (usize, &'input str, usize),
     __1: (usize, ::std::vec::Vec<Box<Expression>>, usize),
     __2: (usize, &'input str, usize),
-) -> Expression {
+) -> Expression
+{
     let __start0 = __1.0.clone();
     let __end0 = __1.2.clone();
-    let __temp0 = __action26(input, __1);
+    let __temp0 = __action26(
+        input,
+        __1,
+    );
     let __temp0 = (__start0, __temp0, __end0);
-    __action8(input, __0, __temp0, __2)
+    __action8(
+        input,
+        __0,
+        __temp0,
+        __2,
+    )
 }
 
 #[allow(unused_variables)]
-fn __action37<'input>(
+fn __action37<
+    'input,
+>(
     input: &'input str,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> Vec<Expression> {
+) -> Vec<Expression>
+{
     let __start0 = __lookbehind.clone();
     let __end0 = __lookahead.clone();
-    let __temp0 = __action27(input, &__start0, &__end0);
+    let __temp0 = __action27(
+        input,
+        &__start0,
+        &__end0,
+    );
     let __temp0 = (__start0, __temp0, __end0);
-    __action1(input, __temp0)
+    __action1(
+        input,
+        __temp0,
+    )
 }
 
 #[allow(unused_variables)]
-fn __action38<'input>(
+fn __action38<
+    'input,
+>(
     input: &'input str,
     __0: (usize, ::std::vec::Vec<Expression>, usize),
-) -> Vec<Expression> {
+) -> Vec<Expression>
+{
     let __start0 = __0.0.clone();
     let __end0 = __0.2.clone();
-    let __temp0 = __action28(input, __0);
+    let __temp0 = __action28(
+        input,
+        __0,
+    );
     let __temp0 = (__start0, __temp0, __end0);
-    __action1(input, __temp0)
+    __action1(
+        input,
+        __temp0,
+    )
 }
 
-pub trait __ToTriple<'input> {
+pub trait __ToTriple<'input, > {
     type Error;
-    fn to_triple(value: Self) -> Result<(usize, Token<'input>, usize), Self::Error>;
+    fn to_triple(value: Self) -> Result<(usize,Token<'input>,usize),Self::Error>;
 }
 
-impl<'input> __ToTriple<'input> for (usize, Token<'input>, usize) {
+impl<'input, > __ToTriple<'input, > for (usize, Token<'input>, usize) {
     type Error = &'static str;
-    fn to_triple(value: Self) -> Result<(usize, Token<'input>, usize), &'static str> {
+    fn to_triple(value: Self) -> Result<(usize,Token<'input>,usize),&'static str> {
         Ok(value)
     }
 }
-impl<'input> __ToTriple<'input> for Result<(usize, Token<'input>, usize), &'static str> {
+impl<'input, > __ToTriple<'input, > for Result<(usize, Token<'input>, usize),&'static str> {
     type Error = &'static str;
-    fn to_triple(value: Self) -> Result<(usize, Token<'input>, usize), &'static str> {
+    fn to_triple(value: Self) -> Result<(usize,Token<'input>,usize),&'static str> {
         value
     }
 }
