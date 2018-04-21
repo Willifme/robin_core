@@ -6,3 +6,5 @@ authors = ["William Collier <coll01502449@scc.ac.uk>"]
 [dependencies]
 rustyline = "1.0.0"
 robin_core = { path = "../" }
+clap = "2.31.2"
+itertools = "0.7.8"
