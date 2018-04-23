@@ -73,8 +73,7 @@
 		js_output.session.setMode("ace/mode/javascript");
 
 		const MATHS_EXAMPLES = 
-`
-(+ 1 1)
+`(+ 1 1)
 
 (/ 1 1)
 
@@ -82,46 +81,33 @@
 
 (- 3 3)
 
-(+ 1 (/ 3 4))
-`;
+(+ 1 (/ 3 4))`;
 
-		const HELLO_WORLD = 
-`
-(console.log "Hello, world!")
-`;
+		const HELLO_WORLD =  `(console.log "Hello, world!")`;
 
 		const LOGIC = 
-`
-(if true (alert "This is true!") (alert "This is false!"))
+`(if true (alert "This is true!") (alert "This is false!"))
 (if (not true) (alert "This is true!") (alert "This is false!"))
-(if (not (not true)) (alert "This is true!"))
-`;
+(if (not (not true)) (alert "This is true!"))`;
 
 		const VARIABLES =
-`
-(var name "John") 
+`(var name "John") 
 
-(alert name)
-`;
+(alert name)`;
 
 		const UNKNOWN_VARIABLES =
-`
-(const hellos "I'm not used!")
+`(const hellos "I'm not used!")
 
-(alert hellof)
-`;
+(alert hellof)`;
 
 		const CUSTOM_FUNCTION =
-`
-(defun hello (name)
+`(defun hello (name)
 	(console.log name))
 
-(hello "John")
-`;
+(hello "John")`;
 
 		const FIBNOACCI =
-`
-(defun fib (n)
+`(defun fib (n)
     (if (or (= n 1) (= n 2))
         (return 1)
         (return
@@ -129,8 +115,7 @@
                 (fib (- n 1))
 				(fib (- n 2))))))
 
-(alert (fib 7))
-`;
+(alert (fib 7))`;
 
 		function changeExample(elem) {
 			let id = elem.selectedIndex; 
