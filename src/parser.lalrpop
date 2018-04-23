@@ -21,7 +21,7 @@ List: Expression = {
 
 Boxed_Expr: Box<Expression> = Expr => Box::new(<>);
 
-Identifier : Expression = r"[a-zA-Z.;,<>=!+\-&*|^~?:/][a-zA-Z.;,<>=!+\-&*|^~?:/0-9]*" =>
+Identifier : Expression = r"[a-zA-Z.;,<>=!+\-&*|^~?:/_][a-zA-Z.;,<>=!+\-&*|^~?:/_0-9]*" =>
     Expression::Identifier(IdentifierExpression::new(<>.to_string()));
 
 Number: Expression = {
