@@ -201,7 +201,9 @@ impl ToJavaScript for ListExpression {
 
             (false, Some(box Expression::List(_))) => self.eval_lambda_call(stdlib),
 
-            (false, _) => self.eval_function(stdlib),
+            (false, Some(_)) => self.eval_function(stdlib),
+
+            (false, _) => Ok(String::from("[]")),
         }
     }
 }
