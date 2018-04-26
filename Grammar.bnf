@@ -1,19 +1,27 @@
 // A temporary (out of date) grammar file
 
-Grammar   ::= Expr*
-Expr            ::= Boolean 
-                    | Func 
-                    | Vector 
-                    | List 
-                    | Ident
-                    | Dictionary 
-                    | StringLiteral 
-                    | FuncCall
-Boolean     ::= "true" | "false"
-Func           ::= "(" Vector Expr ")"
-Vector        ::= "[" Expr+ "]"
-List             ::= "(" Expr+ ")"
-Ident          ::= [a-zA-Z]
-FuncCall    ::= "(" Ident* ")"
-Dictionary ::= "{" (Ident+ ":" Expr ","+)+ "}"
+Grammar ::= Expr*
+
+Expr ::= Boolean | List | Ident | StringLiteral | Number
+
+List ::= "'"? "(" Expr* ")"
+
+Ident ::= [a-zA-Z.;,<>=!+\-&*|^~?:/_][a-zA-Z.;,<>=!+\-&*|^~?:/_0-9]*
+
 StringLiteral ::= '"' [^"]* '"' | "'" [^']* "'"
+
+Boolean ::= "true" | "false"
+
+Number ::= Decimal | HexDigit | OctDigit | BinaryDigit
+
+BinaryDigit ::= 0(b|B)[0..1]*
+
+OctDigit ::= 0[oO][0-7]*
+
+HexDigit ::= 0[xX][0-9A-F]*
+
+Decimal ::= Decimal_Digit | ExponentPart
+
+ExponentPart ::= [0-9]+([eE][0-9]+)
+
+Decimal_Digit ::= [0-9]+
