@@ -14,7 +14,7 @@ pub struct Table<'a, T: 'a> {
     /// The parent will most likely have a value unless the scope is global
     parent: Option<Box<&'a Table<'a, T>>>,
     /// The container is the contents of the table
-    container: Box<Container<'a, T>>,
+    pub container: Box<Container<'a, T>>,
 }
 
 impl<'a, T> Table<'a, T> {
@@ -36,6 +36,16 @@ impl<'a, T> Table<'a, T> {
     pub fn get(&self, key: &'a String) -> Option<&T> {
         // First we get from the local scope
         match self.container.get(key) {
+            Some(value) => Some(value),
+            None => self.parent.as_ref().and_then(|i| i.get(key)),
+        }
+    }
+    /// Attempt to get a value from the table
+    /// If the value can't be found within this scope. try the parent.
+    /// After descending through all the scopes, return an undefiend error
+    pub fn get_mut(&mut self, key: &'a String) -> Option<&T> {
+        // First we get from the local scope
+        match self.container.get_mut(key) {
             Some(value) => Some(value),
             None => self.parent.as_ref().and_then(|i| i.get(key)),
         }
