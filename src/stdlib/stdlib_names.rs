@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 pub static MATHS_BINOPS: &'static [&'static str] = &["+", "-", "*", "/", "%"];
 
 pub static LOGIC_BINOPS: &'static [&'static str] =

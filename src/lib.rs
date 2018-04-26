@@ -7,9 +7,6 @@ extern crate itertools;
 extern crate lalrpop_util;
 
 #[macro_use]
-extern crate lazy_static;
-
-#[macro_use]
 pub mod error;
 
 pub mod ast;
