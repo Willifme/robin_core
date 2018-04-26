@@ -15,29 +15,3 @@ pub static GENERIC_FUNCTION: &'static [&'static str] = &[
     "Array.prototype.forEach.call",
     "Array.prototype.filter.call",
 ];
-
-lazy_static! {
-    pub static ref FUNCTION_ALIAS_MAP: HashMap<&'static str, &'static str> = {
-        let mut m = HashMap::new();
-
-        m.insert("map", "Array.prototype.map.call");
-
-        m.insert("forEach", "Array.prototype.forEach.call");
-
-        m.insert("filter", "Array.prototype.filter.call");
-
-        m.insert("define", "const");
-
-        m.insert("defun", "function");
-
-        m.insert("not", "!");
-
-        m.insert("and", "&&");
-
-        m.insert("or", "||");
-
-        m.insert("=", "===");
-
-        m
-    };
-}

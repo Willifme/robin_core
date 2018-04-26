@@ -57,29 +57,46 @@ impl<'a> Stdlib<'a> {
         self.function_table
             .insert(String::from("lambda"), builtin_lambda);
 
-        self.function_table.insert(String::from("js"), builtin_raw_js);
+        self.function_table
+            .insert(String::from("js"), builtin_raw_js);
 
         self.function_table.insert(String::from("nth"), builtin_nth);
 
-        self.function_table.insert(String::from("defalias"), builtin_def_alias);
+        self.function_table
+            .insert(String::from("defalias"), builtin_def_alias);
 
-        self.alias_map.insert(String::from("map"), String::from("Array.prototype.map.call"));
+        self.alias_map.insert(
+            String::from("map"),
+            String::from("Array.prototype.map.call"),
+        );
 
-        self.alias_map.insert(String::from("forEach"), String::from("Array.prototype.forEach.call"));
+        self.alias_map.insert(
+            String::from("forEach"),
+            String::from("Array.prototype.forEach.call"),
+        );
 
-        self.alias_map.insert(String::from("filter"), String::from("Array.prototype.filter.call"));
+        self.alias_map.insert(
+            String::from("filter"),
+            String::from("Array.prototype.filter.call"),
+        );
 
-        self.alias_map.insert(String::from("define"), String::from("const"));
+        self.alias_map
+            .insert(String::from("define"), String::from("const"));
 
-        self.alias_map.insert(String::from("defun"), String::from("function"));
+        self.alias_map
+            .insert(String::from("defun"), String::from("function"));
 
-        self.alias_map.insert(String::from("not"), String::from("!"));
+        self.alias_map
+            .insert(String::from("not"), String::from("!"));
 
-        self.alias_map.insert(String::from("and"), String::from("&&"));
+        self.alias_map
+            .insert(String::from("and"), String::from("&&"));
 
-        self.alias_map.insert(String::from("or"), String::from("||"));
+        self.alias_map
+            .insert(String::from("or"), String::from("||"));
 
-        self.alias_map.insert(String::from("="), String::from("==="));
+        self.alias_map
+            .insert(String::from("="), String::from("==="));
 
         for generic in GENERIC_FUNCTION {
             self.function_table
@@ -206,8 +223,9 @@ fn builtin_alias(
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match stdlib.alias_map.clone().get_mut::<str>(&name) {
-        Some(name) =>
-            stdlib.clone().function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib),
+        Some(name) => {
+            stdlib.clone().function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib)
+        }
 
         _ => Err(Error::undefined_func(name)),
     }
@@ -388,7 +406,7 @@ fn builtin_nth(
             let (list, nth) = args.split_first_mut().unwrap();
 
             Ok(format!("{}[{}]", list.eval(stdlib)?, nth[0].eval(stdlib)?))
-        },
+        }
         _ => Err(Error::too_many_arguments("nth".to_string())),
     }
 }
@@ -412,17 +430,21 @@ fn builtin_def_alias(
             alias.retain(|c| c != '"');
 
             // We insert the alias into the map
-            stdlib.alias_map.insert(alias.clone(), function_name.clone());
+            stdlib
+                .alias_map
+                .insert(alias.clone(), function_name.clone());
 
             // We add the alias into the function
             stdlib.function_table.insert(alias.clone(), builtin_alias);
 
             // The function being alised needs to be added as a generic function
-            stdlib.function_table.insert(function_name.clone(), builtin_generic_function);
+            stdlib
+                .function_table
+                .insert(function_name.clone(), builtin_generic_function);
 
             // The function doesn't actually produce any output!
             Ok("".to_string())
-        },
+        }
         _ => Err(Error::too_many_arguments("alias".to_string())),
     }
 }
