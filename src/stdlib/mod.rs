@@ -13,9 +13,11 @@ type Callback = fn(String, &mut [Box<Expression>], &mut Stdlib) -> Result<String
 
 type FunctionMap = HashMap<String, Callback>;
 
+#[derive(Clone)]
 pub struct Stdlib<'a> {
     pub function_table: FunctionMap,
     pub variable_table: Table<'a, String>,
+    pub alias_map: HashMap<String, String>,
 }
 
 impl<'a> Stdlib<'a> {
@@ -23,6 +25,7 @@ impl<'a> Stdlib<'a> {
         let mut stdlib = Stdlib {
             function_table: FunctionMap::new(),
             variable_table,
+            alias_map: HashMap::new(),
         };
 
         stdlib.populate();
@@ -31,37 +34,59 @@ impl<'a> Stdlib<'a> {
     }
 
     fn populate(&mut self) {
-        self.function_table.insert("if".to_string(), builtin_if);
+        self.function_table.insert(String::from("if"), builtin_if);
 
         self.function_table
-            .insert("return".to_string(), builtin_return);
+            .insert(String::from("return"), builtin_return);
 
         self.function_table
-            .insert("const".to_string(), builtin_binding);
+            .insert(String::from("const"), builtin_binding);
 
         self.function_table
-            .insert("var".to_string(), builtin_binding);
+            .insert(String::from("var"), builtin_binding);
 
         self.function_table
-            .insert("let".to_string(), builtin_binding);
+            .insert(String::from("let"), builtin_binding);
 
         self.function_table
-            .insert("function".to_string(), builtin_function_definition);
+            .insert(String::from("function"), builtin_function_definition);
 
         self.function_table
-            .insert("quote".to_string(), builtin_quote);
+            .insert(String::from("quote"), builtin_quote);
 
         self.function_table
-            .insert("lambda".to_string(), builtin_lambda);
+            .insert(String::from("lambda"), builtin_lambda);
 
-        self.function_table.insert("js".to_string(), builtin_raw_js);
+        self.function_table.insert(String::from("js"), builtin_raw_js);
+
+        self.function_table.insert(String::from("nth"), builtin_nth);
+
+        self.function_table.insert(String::from("defalias"), builtin_def_alias);
+
+        self.alias_map.insert(String::from("map"), String::from("Array.prototype.map.call"));
+
+        self.alias_map.insert(String::from("forEach"), String::from("Array.prototype.forEach.call"));
+
+        self.alias_map.insert(String::from("filter"), String::from("Array.prototype.filter.call"));
+
+        self.alias_map.insert(String::from("define"), String::from("const"));
+
+        self.alias_map.insert(String::from("defun"), String::from("function"));
+
+        self.alias_map.insert(String::from("not"), String::from("!"));
+
+        self.alias_map.insert(String::from("and"), String::from("&&"));
+
+        self.alias_map.insert(String::from("or"), String::from("||"));
+
+        self.alias_map.insert(String::from("="), String::from("==="));
 
         for generic in GENERIC_FUNCTION {
             self.function_table
                 .insert(generic.to_string(), builtin_generic_function);
         }
 
-        for (builtin, _) in FUNCTION_ALIAS_MAP.iter() {
+        for (builtin, _) in self.alias_map.iter() {
             self.function_table
                 .insert(builtin.to_string(), builtin_alias);
         }
@@ -180,10 +205,9 @@ fn builtin_alias(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    match FUNCTION_ALIAS_MAP.get::<str>(&name) {
-        Some(name) => {
-            stdlib.function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib)
-        }
+    match stdlib.alias_map.clone().get_mut::<str>(&name) {
+        Some(name) =>
+            stdlib.clone().function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib),
 
         _ => Err(Error::undefined_func(name)),
     }
@@ -303,7 +327,7 @@ fn builtin_lambda(
                     let args_fmt = list.value
                         .clone()
                         .into_iter()
-                        .map(|arg| arg.to_string_stdlib())
+                        .map(|arg| arg.to_string())
                         .collect::<Vec<String>>()
                         .join(",");
 
@@ -350,6 +374,56 @@ fn builtin_raw_js(
 
             Ok(format!("eval({})", js_fmt))
         }
+    }
+}
+
+fn builtin_nth(
+    _name: String,
+    args: &mut [Box<Expression>],
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
+    match args.len() {
+        0 | 1 => Err(Error::too_few_arguments("nth".to_string())),
+        2 => {
+            let (list, nth) = args.split_first_mut().unwrap();
+
+            Ok(format!("{}[{}]", list.eval(stdlib)?, nth[0].eval(stdlib)?))
+        },
+        _ => Err(Error::too_many_arguments("nth".to_string())),
+    }
+}
+
+fn builtin_def_alias(
+    _name: String,
+    args: &mut [Box<Expression>],
+    stdlib: &mut Stdlib,
+) -> Result<String, Error> {
+    match args.len() {
+        0 | 1 => Err(Error::too_few_arguments("alias".to_string())),
+        2 => {
+            let mut function_name = args[0].eval(stdlib)?.clone();
+
+            // Strip the quotes from the string
+            function_name.retain(|c| c != '"');
+
+            let mut alias = args[1].eval(stdlib)?.clone();
+
+            // Strip the quotes from the string
+            alias.retain(|c| c != '"');
+
+            // We insert the alias into the map
+            stdlib.alias_map.insert(alias.clone(), function_name.clone());
+
+            // We add the alias into the function
+            stdlib.function_table.insert(alias.clone(), builtin_alias);
+
+            // The function being alised needs to be added as a generic function
+            stdlib.function_table.insert(function_name.clone(), builtin_generic_function);
+
+            // The function doesn't actually produce any output!
+            Ok("".to_string())
+        },
+        _ => Err(Error::too_many_arguments("alias".to_string())),
     }
 }
 

@@ -132,7 +132,7 @@ impl ListExpression {
         match lambda {
             box Expression::List(inner_list)
                 // TODO: Remove clone
-                if inner_list.value[0].clone().to_string_stdlib() == "lambda" => {
+                if inner_list.value[0].clone().to_string() == "lambda" => {
 
                 let args = join(
                     args.into_iter().map(|e| e.eval(stdlib)).fold_results(
@@ -216,7 +216,7 @@ pub enum Expression {
 
 impl Expression {
     /// Used to convert expressions to string
-    pub fn to_string_stdlib(self) -> String {
+    pub fn to_string(self) -> String {
         match self {
             // TODO: Clean this code up
             Expression::Number(expr) => expr.value.to_string(),
@@ -228,7 +228,7 @@ impl Expression {
                     .value
                     .clone()
                     .into_iter()
-                    .map(|expr| expr.to_string_stdlib())
+                    .map(|expr| expr.to_string())
                     .collect::<Vec<String>>()
                     .join(",");
 
