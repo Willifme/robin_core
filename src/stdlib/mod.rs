@@ -18,7 +18,11 @@ pub struct Stdlib<'a> {
 }
 
 impl<'a> Stdlib<'a> {
-    pub fn new(function_table: Table<'a, Callback>, variable_table: Table<'a, String>, alias_map: Table<'a, String>) -> Stdlib<'a> {
+    pub fn new(
+        function_table: Table<'a, Callback>,
+        variable_table: Table<'a, String>,
+        alias_map: Table<'a, String>,
+    ) -> Stdlib<'a> {
         let mut stdlib = Stdlib {
             function_table,
             variable_table,
@@ -251,11 +255,11 @@ fn builtin_function_definition(
 
                     // Create a new child stdlib
                     // TODO: Remove clone
-                    let mut stdlib =
-                        Stdlib::new(
-                            Table::new(Some(Box::new(&stdlib.function_table))), 
-                            Table::new(Some(Box::new(&stdlib.variable_table))), 
-                            stdlib.alias_map.clone());
+                    let mut stdlib = Stdlib::new(
+                        Table::new(Some(Box::new(&stdlib.function_table))),
+                        Table::new(Some(Box::new(&stdlib.variable_table))),
+                        stdlib.alias_map.clone(),
+                    );
 
                     let args_fmt = join(
                         args_expr
@@ -334,8 +338,9 @@ fn builtin_lambda(
             // TODO: Remove clone
             let mut stdlib = Stdlib::new(
                 Table::new(Some(Box::new(&stdlib.function_table))),
-                Table::new(Some(Box::new(&stdlib.variable_table))), 
-                stdlib.alias_map.clone());
+                Table::new(Some(Box::new(&stdlib.variable_table))),
+                stdlib.alias_map.clone(),
+            );
 
             match args {
                 box Expression::List(list) => {
