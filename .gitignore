@@ -3,3 +3,4 @@
 Cargo.lock
 /robin_web/target/
 .DS_Store
+/robin_web/deploy.sh
