@@ -1,7 +1,6 @@
 mod stdlib_names;
 
 use itertools::{join, Itertools};
-use std::collections::HashMap;
 
 use ast::Expression;
 use error::Error;
@@ -11,21 +10,19 @@ use to_javascript::ToJavaScript;
 
 type Callback = fn(String, &mut [Box<Expression>], &mut Stdlib) -> Result<String, Error>;
 
-type FunctionMap = HashMap<String, Callback>;
-
 #[derive(Clone)]
 pub struct Stdlib<'a> {
-    pub function_table: FunctionMap,
+    pub function_table: Table<'a, Callback>,
     pub variable_table: Table<'a, String>,
-    pub alias_map: HashMap<String, String>,
+    pub alias_map: Table<'a, String>,
 }
 
 impl<'a> Stdlib<'a> {
-    pub fn new(variable_table: Table<'a, String>) -> Stdlib<'a> {
+    pub fn new(function_table: Table<'a, Callback>, variable_table: Table<'a, String>, alias_map: Table<'a, String>) -> Stdlib<'a> {
         let mut stdlib = Stdlib {
-            function_table: FunctionMap::new(),
+            function_table,
             variable_table,
-            alias_map: HashMap::new(),
+            alias_map,
         };
 
         stdlib.populate();
@@ -103,7 +100,7 @@ impl<'a> Stdlib<'a> {
                 .insert(generic.to_string(), builtin_generic_function);
         }
 
-        for (builtin, _) in self.alias_map.iter() {
+        for (builtin, _) in self.alias_map.container.iter() {
             self.function_table
                 .insert(builtin.to_string(), builtin_alias);
         }
@@ -222,9 +219,10 @@ fn builtin_alias(
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    match stdlib.alias_map.clone().get_mut::<str>(&name) {
+    // TODO: Remove clone
+    match stdlib.alias_map.clone().get_mut(&name.clone()) {
         Some(name) => {
-            stdlib.clone().function_table.get::<str>(name).unwrap()(name.to_string(), args, stdlib)
+            stdlib.clone().function_table.get(name).unwrap()(name.to_string(), args, stdlib)
         }
 
         _ => Err(Error::undefined_func(name)),
@@ -252,8 +250,12 @@ fn builtin_function_definition(
                         .insert(func_name.value.clone(), func_name.value.clone());
 
                     // Create a new child stdlib
+                    // TODO: Remove clone
                     let mut stdlib =
-                        Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
+                        Stdlib::new(
+                            Table::new(Some(Box::new(&stdlib.function_table))), 
+                            Table::new(Some(Box::new(&stdlib.variable_table))), 
+                            stdlib.alias_map.clone());
 
                     let args_fmt = join(
                         args_expr
@@ -329,13 +331,19 @@ fn builtin_lambda(
             let (args, exprs) = args.split_first_mut().unwrap();
 
             // Create a new child stdlib
-            let mut stdlib = Stdlib::new(Table::new(Some(Box::new(&stdlib.variable_table))));
+            // TODO: Remove clone
+            let mut stdlib = Stdlib::new(
+                Table::new(Some(Box::new(&stdlib.function_table))),
+                Table::new(Some(Box::new(&stdlib.variable_table))), 
+                stdlib.alias_map.clone());
 
             match args {
                 box Expression::List(list) => {
                     list.value.clone().into_iter().for_each(|expr| {
                         // TODO: Remove unwrap
-                        let expr_name = identifier_to_string(expr.clone()).unwrap();
+                        //let expr_name = identifier_to_string(expr.clone()).unwrap();
+
+                        let expr_name = expr.to_string();
 
                         stdlib
                             .variable_table

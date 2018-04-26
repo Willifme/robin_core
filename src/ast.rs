@@ -163,8 +163,9 @@ impl ListExpression {
 
         let expr_name = name.eval(stdlib)?;
 
-        match (name, stdlib.function_table.clone().get::<str>(&expr_name)) {
-            (box Expression::Identifier(_), Some(func)) => func(expr_name, args, stdlib),
+        match (name, stdlib.function_table.clone().get(&expr_name)) {
+            // TODO: Remove clone
+            (box Expression::Identifier(_), Some(func)) => func(expr_name.clone(), args, stdlib),
 
             (box Expression::Identifier(_), _) => {
                 let args = join(
@@ -192,7 +193,7 @@ impl ToJavaScript for ListExpression {
         // The expression is quoted automatically if the ' is used
         // We send all the arguments when evaluating
         match (self.qouted, self.value.get(0)) {
-            (true, _) => stdlib.function_table.get("quote").unwrap()(
+            (true, _) => stdlib.function_table.get(&String::from("quote")).unwrap()(
                 "quote".to_string(),
                 self.value.as_mut_slice(),
                 stdlib,
