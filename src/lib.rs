@@ -1,5 +1,8 @@
 #![feature(box_patterns, box_syntax, match_default_bindings)]
 
+///! # Library module
+///!
+///! This module is the main library for Robin.
 extern crate ansi_term;
 
 extern crate itertools;

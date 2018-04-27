@@ -1,11 +1,14 @@
-use std::default::Default;
-
+///! # Compiler
+///!
+///! This module defines the struct for the Compiler.
+///! The compiler struct acts like an interface for the CLI and web editor to use
 use ast::Expression;
 use error::ErrorStack;
 use stdlib::Stdlib;
 use table::Table;
 use to_javascript::ToJavaScript;
 
+/// This is the main struct for interacting with the Robin translator
 pub struct Compiler<'a> {
     pub errors: ErrorStack,
     pub stdlib: Stdlib<'a>,
@@ -21,7 +24,9 @@ impl<'a> Compiler<'a> {
         }
     }
 
+    // This function takes a tree from the parser and translates it
     pub fn compile(&mut self, tree: &mut [Expression]) -> String {
+        // Iterate over each node from the AST and translate it
         tree
             .into_iter()
             // TODO: Remove unwrap
@@ -36,11 +41,5 @@ impl<'a> Compiler<'a> {
             })
             .collect::<Vec<String>>()
             .join(";")
-    }
-}
-
-impl<'a> Default for Compiler<'a> {
-    fn default() -> Self {
-        Self::new()
     }
 }

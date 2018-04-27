@@ -143,23 +143,23 @@ impl<'a> Stdlib<'a> {
 
 /// # Robin to JS transformation (If Statement)
 /// Note: '=>' is used to as 'translated to'
-/// 
+///
 /// (if) => Error: Too few arguments
 /// (if true) => Error: Too few arguments
 /// (if true (return 1)) => if (true) { return 1 }
 /// (if true (return 1) (return 2)) => if (true) { return 1 } else { return 2 }
 /// (if true (return 1) (return 3) (return 4)) => Error: too many arguments
-/// 
+///
 fn builtin_if(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 => Err(Error::too_few_arguments("if statement".to_string())),
-        1 => Err(Error::too_few_arguments(
-            "if statement condition".to_string(),
-        )),
+        0 => Err(Error::too_few_arguments(String::from("if statement"))),
+        1 => Err(Error::too_few_arguments(String::from(
+            "if statement condition",
+        ))),
         2 => Ok(format!(
             "if ({}) {{ {} }}",
             args[0].eval(stdlib)?,
@@ -172,39 +172,39 @@ fn builtin_if(
             args[2].eval(stdlib)?
         )),
         // TODO: Add error message here
-        _ => Err(Error::too_many_arguments(
-            "unknown number of arguments supplied to if statement".to_string(),
-        )),
+        _ => Err(Error::too_many_arguments(String::from(
+            "unknown number of arguments supplied to if statement",
+        ))),
     }
 }
 
 /// # Robin to JS transformation (Return statement)
 /// Note: '=>' is used to as 'translated to'
-/// 
+///
 /// (return) => Error: Too few arguments
-/// (return 100) => return 100 
+/// (return 100) => return 100
 /// (return 100 200) => Error: too many arguments
-/// 
+///
 fn builtin_return(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 => Err(Error::too_few_arguments("return".to_string())),
+        0 => Err(Error::too_few_arguments(String::from("return"))),
         1 => Ok(format!("return {}", args[0].eval(stdlib)?)),
-        _ => Err(Error::too_many_arguments("return".to_string())),
+        _ => Err(Error::too_many_arguments(String::from("return"))),
     }
 }
 
 /// # Robin to JS transformation (Const / Var / Let) statement
 /// Note: '=>' is used to as 'translated to'
-/// 
+///
 /// (const) => Error: Too few arguments
 /// (const x) => Error: Too few arguments
-/// (const x 100) => const x = 100 
+/// (const x 100) => const x = 100
 /// (const x 100 200) => Error: Too many arguments
-/// 
+///
 fn builtin_binding(
     name: String,
     args: &mut [Box<Expression>],
@@ -212,7 +212,7 @@ fn builtin_binding(
 ) -> Result<String, Error> {
     // TODO: Add name to the error messages
     match args.len() {
-        0 | 1 => Err(Error::too_few_arguments("binding".to_string())),
+        0 | 1 => Err(Error::too_few_arguments(String::from("binding"))),
         2 => {
             let (ident, value) = args.split_first_mut().unwrap();
 
@@ -234,26 +234,26 @@ fn builtin_binding(
                     ))
                 }
 
-                _ => Err(Error::invalid_expression(
-                    "non-identifier given to binding".to_string(),
-                )),
+                _ => Err(Error::invalid_expression(String::from(
+                    "non-identifier given to binding",
+                ))),
             }
         }
-        _ => Err(Error::too_many_arguments("binding".to_string())),
+        _ => Err(Error::too_many_arguments(String::from("binding"))),
     }
 }
 
 /// # Robin to JS transformation (Generic Function)
 /// Note: '=>' is used to as 'translated to'
-/// 
+///
 /// (map (1 2 3 4) (lambda (n) (return n))) => Array.prototype.map.call([1, 2, 3, 4], (n) => { return n })
-/// 
+///
 fn builtin_generic_function(
     name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
-    // Evaluate each of the results and join them with a comma 
+    // Evaluate each of the results and join them with a comma
     let args_fmt = join(
         args.into_iter()
             .map(|expr| expr.eval(stdlib))
@@ -270,7 +270,7 @@ fn builtin_generic_function(
 
 /// # Robin to JS transformation (Function Alias)
 /// A funciton which converts an alias to the built-in function  
-/// 
+///
 fn builtin_alias(
     name: String,
     args: &mut [Box<Expression>],
@@ -291,20 +291,22 @@ fn builtin_alias(
 
 /// # Robin to JS transformation (Function Definition)
 /// Note: '=>' is used to as 'translated to'
-/// 
+///
 /// (defun) => Error: Too few arguments
 /// (defun example) => Error: Too few arguments
 /// (defun example ()) => Error: Too few arguments
 /// (defun example (n) (console.log n)) => Error: Too few arguments
 /// (defun example (n) (console.log n) (console.log n)) => Error: Too many arguments
-/// 
+///
 fn builtin_function_definition(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 | 1 | 2 => Err(Error::too_few_arguments("function definition".to_string())),
+        0 | 1 | 2 => Err(Error::too_few_arguments(String::from(
+            "function definition",
+        ))),
         3 => {
             // First get the name of the function then the rest of the arguments
             let (name, rest) = args.split_first_mut().unwrap();
@@ -366,12 +368,14 @@ fn builtin_function_definition(
                 }
 
                 // If incorrect expressions are given, we raise an error
-                (_, _) => Err(Error::invalid_expression(
-                    "non list given to function binding".to_string(),
-                )),
+                (_, _) => Err(Error::invalid_expression(String::from(
+                    "non list given to function binding",
+                ))),
             }
         }
-        _ => Err(Error::too_many_arguments("function definition".to_string())),
+        _ => Err(Error::too_many_arguments(String::from(
+            "function definition",
+        ))),
     }
 }
 
@@ -380,7 +384,7 @@ fn builtin_function_definition(
 /// (quote 100) => [100]
 /// (quote (100)) => [[100]]
 /// (quote (+ 100 1)) => [101]
-/// 
+///
 fn builtin_quote(
     _name: String,
     args: &mut [Box<Expression>],
@@ -408,14 +412,14 @@ fn builtin_quote(
 /// (lambda) => Error: Too few arguments
 /// (lambda ()) => Error: Too few arguments
 /// (lambda (n) (+ n n)) => (n) => { n + n }
-/// 
+///
 fn builtin_lambda(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 | 1 => Err(Error::too_few_arguments("lambda".to_string())),
+        0 | 1 => Err(Error::too_few_arguments(String::from("lambda"))),
         _ => {
             // TODO: Remove unwrap
             let (args, exprs) = args.split_first_mut().unwrap();
@@ -448,7 +452,7 @@ fn builtin_lambda(
                         .collect::<Vec<String>>()
                         .join(",");
 
-                    // Evaluate each expression after the argument and join them with a comma 
+                    // Evaluate each expression after the argument and join them with a comma
                     let exprs_fmt = join(
                         exprs
                             .into_iter()
@@ -465,9 +469,9 @@ fn builtin_lambda(
                 }
 
                 // If a non-list has been given
-                _ => Err(Error::invalid_expression(
-                    "non-list given to lambda expression".to_string(),
-                )),
+                _ => Err(Error::invalid_expression(String::from(
+                    "non-list given to lambda expression",
+                ))),
             }
         }
     }
@@ -476,18 +480,18 @@ fn builtin_lambda(
 /// # Robin to JS transformation (Raw JS)
 /// Note: '=>' is used to as 'translated to'
 /// (js) => Error: Too few arguments
-/// (js "100") => eval("100") 
+/// (js "100") => eval("100")
 /// (js "100" "200") => Error: Too many arguments
-/// 
+///
 fn builtin_raw_js(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 => Err(Error::too_few_arguments("raw javascript".to_string())),
+        0 => Err(Error::too_few_arguments(String::from("raw javascript"))),
         1 => Ok(format!("eval({})", args[0].eval(stdlib)?)),
-        _ => Err(Error::too_many_arguments(String::from("raw javascript")))
+        _ => Err(Error::too_many_arguments(String::from("raw javascript"))),
     }
 }
 
@@ -495,22 +499,22 @@ fn builtin_raw_js(
 /// Note: '=>' is used to as 'translated to'
 /// (nth) => Error: Too few arguments
 /// (nth (1 2 3 4)) => Error: Too few arguments
-/// (nth (1 2 3 4) 2) => [1, 2, 3, 4][2] 
-/// (nth (1 2 3 4) 2 4) => Error: Too many arguments 
-/// 
+/// (nth (1 2 3 4) 2) => [1, 2, 3, 4][2]
+/// (nth (1 2 3 4) 2 4) => Error: Too many arguments
+///
 fn builtin_nth(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 | 1 => Err(Error::too_few_arguments("nth".to_string())),
+        0 | 1 => Err(Error::too_few_arguments(String::from("nth"))),
         2 => {
             let (list, nth) = args.split_first_mut().unwrap();
 
             Ok(format!("{}[{}]", list.eval(stdlib)?, nth[0].eval(stdlib)?))
         }
-        _ => Err(Error::too_many_arguments("nth".to_string())),
+        _ => Err(Error::too_many_arguments(String::from("nth"))),
     }
 }
 
@@ -518,16 +522,16 @@ fn builtin_nth(
 /// Note: '=>' is used to as 'translated to'
 /// (defalias) => Error: Too few arguments
 /// (defalias "Array.prototype.find.call") => Error: Too few arguments
-/// (defalias "Array.prototype.find.call" "find") => "find" alises to "Array.prototype.find.call", no output 
-/// (defalias "Array.prototype.find.call" "find" "something") => Error: Too many arguments 
-/// 
+/// (defalias "Array.prototype.find.call" "find") => "find" alises to "Array.prototype.find.call", no output
+/// (defalias "Array.prototype.find.call" "find" "something") => Error: Too many arguments
+///
 fn builtin_def_alias(
     _name: String,
     args: &mut [Box<Expression>],
     stdlib: &mut Stdlib,
 ) -> Result<String, Error> {
     match args.len() {
-        0 | 1 => Err(Error::too_few_arguments("alias".to_string())),
+        0 | 1 => Err(Error::too_few_arguments(String::from("alias"))),
         2 => {
             // Get the function name being alised
             let mut function_name = args[0].eval(stdlib)?.clone();
@@ -557,7 +561,7 @@ fn builtin_def_alias(
             // The function doesn't actually produce any output!
             Ok(String::from(""))
         }
-        _ => Err(Error::too_many_arguments("alias".to_string())),
+        _ => Err(Error::too_many_arguments(String::from("alias"))),
     }
 }
 
@@ -567,7 +571,7 @@ fn builtin_def_alias(
 /// (+ 1) => +1, Note: builtin_unary is called
 /// (+ 1 1) => 1+1
 /// (+ 1 1 1) => 1+1+1
-/// 
+///
 fn builtin_binop(
     op: String,
     args: &mut [Box<Expression>],
@@ -621,7 +625,7 @@ fn builtin_binop(
 /// (+ 1) => +1
 /// (typeof 100) => typeof 100
 /// (. 100) => Error: invalid expression
-/// 
+///
 fn builtin_unary(
     op: String,
     args: &mut [Box<Expression>],
@@ -632,7 +636,7 @@ fn builtin_unary(
 
         // Unary operators which are words next an extra space.
         "typeof" | "delete" => Ok(format!("{} {}", op, args[0].eval(stdlib)?)),
-        _ => Err(Error::invalid_expression("unary operator".to_string())),
+        _ => Err(Error::invalid_expression(String::from("unary operator"))),
     }
 }
 
@@ -646,13 +650,13 @@ fn precalculate_numbers(op: String, left: f64, right: f64) -> Result<String, Err
         "/" if right != 0.0 => Ok(format!("{}", left / right)),
         "%" => Ok(format!("{}", left % right)),
 
-        "/" => Err(Error::invalid_expression(
-            "Divide by zero encountered on numeric literal binary operation".to_string(),
-        )),
+        "/" => Err(Error::invalid_expression(String::from(
+            "Divide by zero encountered on numeric literal binary operation",
+        ))),
 
         // Assume divide by 0 here
-        _ => Err(Error::invalid_expression(
-            "Divide by zero encountered on numeric literal binary operation".to_string(),
-        )),
+        _ => Err(Error::invalid_expression(String::from(
+            "Divide by zero encountered on numeric literal binary operation",
+        ))),
     }
 }

@@ -1,3 +1,8 @@
+///! # Table
+///!
+///! Define a module which is a hashmap with a child-parent association.
+///! This module is used for the variable, function and alias table.
+///! These tables will first look in their hashmap then their parent (etc.) until a value has been found
 use std::boxed::Box;
 use std::collections::HashMap;
 
@@ -40,7 +45,7 @@ impl<'a, T> Table<'a, T> {
             None => self.parent.as_ref().and_then(|i| i.get(key)),
         }
     }
-    /// Attempt to get a value from the table
+    /// Attempt to get a mutable value from the table
     /// If the value can't be found within this scope. try the parent.
     /// After descending through all the scopes, return an undefiend error
     pub fn get_mut(&mut self, key: &'a String) -> Option<&T> {
