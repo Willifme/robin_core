@@ -38,7 +38,7 @@ fn create_error_element(error: Error) -> Element {
 fn main() {
     stdweb::initialize();
 
-    /// Create the compiler
+    // Create the compiler
     let mut compiler = Compiler::new();
 
     // Get the run button
@@ -46,7 +46,7 @@ fn main() {
 
     // Add a click event to the element
     run.add_event_listener(move |_: ClickEvent| {
-        /// Get the Robin 
+        // Get the Robin 
         let lisp_input = js! {
             return lisp_input.getSession().getValue();
         };
@@ -83,7 +83,7 @@ fn main() {
 
             let compiled = &compiler.borrow_mut().compile(&mut parse_result_unwrapped);
 
-            /// Add the compiler errors
+            // Add the compiler errors
             if !compiler.errors.0.is_empty() {
                 compiler.errors.0.iter().for_each(|error| {
                     compiler_list.append_child(&create_error_element(error.clone()));
