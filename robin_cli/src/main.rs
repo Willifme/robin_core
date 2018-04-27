@@ -173,7 +173,7 @@ impl<'a> Repl<'a> {
 
         // Iterate for ever
         loop {
-            let readline = self.editor.readline("robin> ");
+            let readline = self.editor.readline("> ");
 
             match readline {
                 Ok(line) => {
